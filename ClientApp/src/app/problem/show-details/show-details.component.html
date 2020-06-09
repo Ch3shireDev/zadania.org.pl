@@ -1,0 +1,45 @@
+<div class="border rounded p-3 mb-3" *ngIf="problem">
+  <div class="">
+    <div class="">
+      <div class="px-1">
+        <h3>{{ problem.title }}</h3>
+      </div>
+<hr/>
+      <div class="flex-row d-flex">
+        <div class="pt-0 px-2">
+        <app-points
+          [element]="problem"
+          (upvote)="upvote()"
+          (downvote)="downvote()"
+        ></app-points>
+      </div>
+        <div class="py-1">{{ problem.content }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="pt-5">
+    <p>
+      <small>Utworzono: {{ problem.created | date }}</small>
+    </p>
+    <p *ngIf="problem.edited">
+      <small>Edytowano: {{ problem.edited | date }}</small>
+    </p>
+    <p>
+      <small
+        ><a routerLink="/authors/{{ problem.author.id }}">{{
+          problem.author.name
+        }}</a></small
+      >
+    </p>
+  </div>
+  <div class="pt-1">
+    <button class="btn btn-primary mr-2" routerLink="..">Wróć</button>
+    <button class="btn btn-info mr-2" routerLink="edit">Edytuj</button>
+    <button class="btn btn-danger mr-2" routerLink="delete">Usuń</button>
+  </div>
+</div>
+<app-answer
+  *ngIf="problem"
+  [answers]="problem.answers"
+  [parentId]="id"
+></app-answer>

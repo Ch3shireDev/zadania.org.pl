@@ -1,0 +1,13 @@
+<div class="border rounded pt-3 px-5 pb-4">
+  <h5>Usuń zadanie</h5>
+  <p>Czy usunąć następujące zadanie:</p>
+
+  <div class="border rounded p-3">
+    <app-show [problem]="problem" [showControls]="false"></app-show>
+  </div>
+
+  <div class="pt-3">
+    <button class="btn btn-danger mr-2" (click)="confirmDelete()">Usuń</button>
+    <button class="btn btn-info mr-2" (click)="goBack()">Wróć</button>
+  </div>
+</div>

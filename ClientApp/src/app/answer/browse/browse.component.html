@@ -1,0 +1,7 @@
+<div *ngFor="let answer of answers" class="border rounded p-3 mt-3">
+  <app-show
+    [answer]="answer"
+    [parentId]="parentId"
+    (delete)="onDelete($event)"
+  ></app-show>
+</div>

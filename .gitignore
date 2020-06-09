@@ -1,0 +1,14 @@
+ResourceAPI/.vs/*`
+ResourceAPI/bin/**
+ResourceAPI/obj/**
+ClientApp/node_modules/**
+*.exe
+*.pdb
+*.manifest
+*.cache
+*/**/bin/Debug
+*/**/bin/Release
+*/**/obj/Debug
+*/**/obj/Release
+ResourceAPI/obj/ResourceAPI.csproj*
+package-lock.json

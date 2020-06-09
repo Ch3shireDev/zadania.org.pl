@@ -1,0 +1,9 @@
+<div class="p-3 border rounded" *ngIf="isCreate">
+  <app-create [parentId]="parentId" (close)="onClose($event)"></app-create>
+</div>
+<div class="px-3">
+  <button class="btn btn-primary" (click)="addAnswer()" *ngIf="!isCreate">
+    Dodaj odpowiedź
+  </button>
+</div>
+<app-browse [answers]="answers" [parentId]="parentId"></app-browse>

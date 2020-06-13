@@ -22,9 +22,9 @@ namespace ResourceAPI.Controllers
         private DatabaseContext Context { get; }
 
         [HttpGet]
-        public ActionResult Get()
+        public ActionResult Get([FromQuery] int from=0, [FromQuery] int to=100)
         {
-            var problems = Context.Problems.ToArray().Reverse().ToList();
+            var problems = Context.Problems.ToArray().Reverse().Skip(from).Take(to-from).ToList();
             foreach (var problem in problems)
             {
                 if (problem.Author == null) continue;

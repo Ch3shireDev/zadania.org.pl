@@ -45,8 +45,11 @@ namespace ResourceAPI.Controllers
             if (result.AuthorId > 0)
             {
                 result.Author = Context.Authors.FirstOrDefault(author => author.Id == result.AuthorId);
-                result.Author.Problems = null;
-                result.Author.Answers = null;
+                if (result.Author != null)
+                {
+                    result.Author.Problems = null;
+                    result.Author.Answers = null;
+                }
             }
 
             return StatusCode(200, result);

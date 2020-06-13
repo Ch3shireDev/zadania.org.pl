@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PointsComponent } from './points/points.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SafeHtmlPipe } from './safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -22,8 +23,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     DeleteComponent,
     ShowComponent,
     PointsComponent,
+    SafeHtmlPipe,
   ],
   imports: [CommonModule, FormsModule, RouterModule, FontAwesomeModule],
-  exports: [AnswerComponent],
+  exports: [AnswerComponent, SafeHtmlPipe],
 })
 export class AnswerModule {}

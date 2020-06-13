@@ -1,0 +1,10 @@
+.main {
+    max-width: 800px;
+    min-height: calc(100vh - 92px);
+}
+
+.background {
+    background-image: url("/assets/wallpaper.png");
+    background-attachment: fixed;
+    background-size: cover;
+}

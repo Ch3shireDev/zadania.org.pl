@@ -3,7 +3,7 @@
     <a href="" routerLink="/problems/{{ problem.id }}">{{ problem.title }}</a>
   </h5>
 </div>
-<div class="pb-3">{{ problem.content }}</div>
+<div class="pb-3" [innerHTML]="problem.content | safeHtml"></div>
 
 <div>
   <small>{{ problem.created | date }}</small>

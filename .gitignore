@@ -1,4 +1,4 @@
-ResourceAPI/.vs/*`
+ResourceAPI/.vs/*
 ResourceAPI/bin/**
 ResourceAPI/obj/**
 ClientApp/node_modules/**
@@ -12,3 +12,6 @@ ClientApp/node_modules/**
 */**/obj/Release
 ResourceAPI/obj/ResourceAPI.csproj*
 package-lock.json
+zadania.info
+ResourceAPI/sqlite.db
+sqlite.db

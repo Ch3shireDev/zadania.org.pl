@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { ProblemComponent } from './problem.component';
+import { ProblemComponent} from './problem.component';
 import { CreateComponent } from './create/create.component';
 import { EditComponent } from './edit/edit.component';
 import { EditorComponent } from './editor/editor.component';
@@ -14,6 +14,7 @@ import { RouterModule } from '@angular/router';
 import { AnswerModule } from '../answer/answer.module';
 import { PointsComponent } from './points/points.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+// import { SafePipe } from './safe.pipe';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     BrowseComponent,
     ShowDetailsComponent,
     PointsComponent,
+    // SafePipe
   ],
   imports: [
     CommonModule,
@@ -34,7 +36,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FormsModule,
     FontAwesomeModule,
   ],
-  providers: [DatePipe],
+  providers: [DatePipe ],
   exports: [ProblemComponent],
 })
 export class ProblemModule {}

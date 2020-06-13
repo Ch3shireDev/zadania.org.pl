@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProblemService } from '../problem.service';
 import { Problem } from '../problem';
 import { Location } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-show-details',
@@ -12,17 +14,19 @@ import { Location } from '@angular/common';
 export class ShowDetailsComponent implements OnInit {
   id: number;
   public problem: Problem;
+  sanitized: SafeHtml;
   constructor(
     private activatedRoute: ActivatedRoute,
     private problemService: ProblemService,
-    private location: Location
+    private location: Location,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.params.id;
     this.problemService.getProblem(this.id).subscribe((problem) => {
       this.problem = problem;
-      console.log(this.problem);
+      this.problem.edited = new Date(this.problem.edited);
     });
   }
 

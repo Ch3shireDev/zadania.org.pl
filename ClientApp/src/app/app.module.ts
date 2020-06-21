@@ -12,8 +12,9 @@ import { FormsModule } from '@angular/forms';
 import { AuthorModule } from './author/author.module';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FooterComponent } from './footer/footer.component';
 @NgModule({
-  declarations: [AppComponent, NavbarComponent, HomeComponent],
+  declarations: [AppComponent, NavbarComponent, HomeComponent, FooterComponent],
   imports: [
     AuthorModule,
     FormsModule,

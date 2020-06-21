@@ -1,19 +1,5 @@
-<div class="col pl-1 pr-4 pt-0">
-  <div>
-    <fa-icon
-      [icon]="faAngleUp"
-      class="fa-2x mt-0 pt-0 clickable"
-      style="line-height: 1;"
-      (click)="onUpvote()"
-    ></fa-icon>
-  </div>
-  <div class="text-center">{{element.points}}</div>
-  <div>
-    <fa-icon
-      [icon]="faAngleDown"
-      class="fa-2x clickable"
-      style="line-height: 1;"
-      (click)="onDownvote()"
-    ></fa-icon>
-  </div>
+<div>
+    <div>Punkty: {{element.points}}</div>
+    <button (click)="onUpvote()">Dodaj punkt</button>
+    <button (click)="onDownvote()">Odejmij punkt</button>
 </div>

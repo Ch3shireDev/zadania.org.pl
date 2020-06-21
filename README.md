@@ -10,3 +10,4 @@ Każdy post może być również przekształcony w formę interaktywnego zadania
 
 - generowanie sprawdzianów
 - generowanie zestawów ćwiczeniowych
+

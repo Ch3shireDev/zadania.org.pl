@@ -1,12 +1,13 @@
 <div>
-  <button class="btn btn-primary" routerLink="/problems/create">
+    <h2>Lista problemów</h2>
+    <button routerLink="/problems/create">
     Dodaj wpis
   </button>
 </div>
 <div *ngIf="problems">
-  <div *ngFor="let problem of problems" class="py-3">
-    <div class="border rounded shadow p-3 bg-white">
-      <app-show [problem]="problem"></app-show>
+    <div *ngFor="let problem of problems">
+        <div>
+            <app-show [problem]="problem"></app-show>
+        </div>
     </div>
-  </div>
 </div>

@@ -1,10 +1,10 @@
-<div *ngIf="state === showState.Show"  class="d-flex flex-row">
-    <div class="flex-shrink pt-0 px-2 mt-3">
+<div *ngIf="state === showState.Show"  >
+    <div >
       <app-points [element]="answer" (upvote)="onUpvote()" (downvote)="onDownvote()"></app-points>
     </div>
-<div class="border rounded p-3 mt-3 bg-white">
-  <div class="d-flex flex-row">
-    <div class="pt-2" [innerHtml]="answer.content | safeHtml">
+<div >
+  <div >
+    <div  [innerHtml]="answer.content | safeHtml">
     </div>
   </div>
   <p>
@@ -15,8 +15,8 @@
     </small>
   </p>
   <div>
-    <button class="btn btn-info mr-2" (click)="onEdit()">Edytuj</button>
-    <button class="btn btn-danger mr-2" (click)="onDelete()">Usuń</button>
+    <button  (click)="onEdit()">Edytuj</button>
+    <button  (click)="onDelete()">Usuń</button>
   </div>
 </div>
 </div>

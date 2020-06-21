@@ -1,7 +1,25 @@
-nav {
-    background-color: rgb(255, 228, 218);
+li a {
+    display: block;
 }
 
-a {
-    color: #444;
+li {
+    padding: 1rem;
+}
+
+ul {
+    list-style-type: none;
+    display: flex;
+}
+
+nav {
+    margin: 0;
+    padding: 0;
+}
+
+div {
+    display: block;
+}
+
+nav {
+    border-bottom: 1px solid;
 }

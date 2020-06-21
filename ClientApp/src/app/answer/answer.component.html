@@ -1,12 +1,14 @@
 <div *ngIf="isCreate">
-  <app-create [parentId]="parentId" (close)="onClose($event)"></app-create>
+    <app-create [parentId]="parentId" (close)="onClose($event)"></app-create>
 </div>
-<div class="pl-5">
-<div class="pl-3">
-<h2>Odpowiedzi</h2>
-<div class="pt-2">
-  <button class="btn btn-primary" (click)="addAnswer()" *ngIf="!isCreate">
+<div>
+    <div>
+        <h2>Odpowiedzi</h2>
+        <div>
+            <button (click)="addAnswer()" *ngIf="!isCreate">
     Dodaj odpowiedź
   </button>
-</div>  </div></div>
+        </div>
+    </div>
+</div>
 <app-browse [answers]="answers" [parentId]="parentId"></app-browse>

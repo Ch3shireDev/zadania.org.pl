@@ -1,10 +1,10 @@
-<div class="border rounded p-5" *ngIf="problem">
-  <h5 class="pb-3">Edytuj wpis</h5>
+<div  *ngIf="problem">
+  <h5 >Edytuj wpis</h5>
   <app-editor [problem]="problem"></app-editor>
-  <div class="pt-3">
-    <button class="btn btn-primary mr-2" (click)="submit()">
+  <div >
+    <button  (click)="submit()">
       Zapisz zmiany
     </button>
-    <button class="btn btn-danger mr-2" routerLink="..">Wróć</button>
+    <button  routerLink="..">Wróć</button>
   </div>
 </div>

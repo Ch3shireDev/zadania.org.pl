@@ -1,26 +1,24 @@
-<div class="pb-5 pl-5">
-    <div class="pl-3">
-        <button class="btn btn-lg btn-primary mr-2" routerLink="..">Wróć</button>
+<div>
+    <div>
+        <button routerLink="..">Wróć</button>
     </div>
 </div>
-<div class="d-flex flex-row" *ngIf="problem">
-    <div class="pt-0 px-2">
-        <app-points [element]="problem" (upvote)="upvote()" (downvote)="downvote()"></app-points>
-    </div>
-    <div class="border rounded p-3 mb-3 bg-white">
-        <div class="">
-            <div class="">
-                <div class="px-1">
+<div *ngIf="problem">
+
+    <div>
+        <div>
+            <div>
+                <div>
                     <h3>{{ problem.title }}</h3>
                 </div>
                 <hr/>
                 <div>
 
-                    <div class="py-1" [innerHtml]="problem.content|safeHtml"></div>
+                    <div [innerHtml]="problem.content|safeHtml"></div>
                 </div>
             </div>
         </div>
-        <div class="pt-5">
+        <div>
             <p>
                 <small>Utworzono: {{ problem.created | date }}</small>
             </p>
@@ -34,10 +32,13 @@
       >
     </p>
   </div>
-  <div class="pt-1">
-    <button class="btn btn-info mr-2" routerLink="edit">Edytuj</button>
-    <button class="btn btn-danger mr-2" routerLink="delete">Usuń</button>
+  <div >
+    <button  routerLink="edit">Edytuj</button>
+    <button  routerLink="delete">Usuń</button>
   </div>
+  <div>
+    <app-points [element]="problem" (upvote)="upvote()" (downvote)="downvote()"></app-points>
+</div>
 </div>
 </div>
 <app-answer

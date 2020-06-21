@@ -3,8 +3,19 @@
     min-height: calc(100vh - 92px);
 }
 
-.background {
-    background-image: url("/assets/wallpaper.png");
-    background-attachment: fixed;
-    background-size: cover;
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.body {
+    flex-grow: 1;
+}
+
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }

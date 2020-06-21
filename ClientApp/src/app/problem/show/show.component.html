@@ -3,25 +3,25 @@
     <a href="" routerLink="/problems/{{ problem.id }}">{{ problem.title }}</a>
   </h5>
 </div>
-<div class="pb-3" [innerHTML]="problem.content | safeHtml"></div>
+<div  [innerHTML]="problem.content | safeHtml"></div>
 
 <div>
   <small>{{ problem.created | date }}</small>
   <small *ngIf="problem.author">{{ problem.author.name }}</small>
 </div>
 
-<div class="pt-3" *ngIf="showControls">
-  <button class="btn btn-primary mr-2" routerLink="/problems/{{ problem.id }}">
+<div  *ngIf="showControls">
+  <button  routerLink="/problems/{{ problem.id }}">
     Wyświetl
   </button>
   <button
-    class="btn btn-info mr-2"
+
     routerLink="/problems/{{ problem.id }}/edit"
   >
     Edytuj
   </button>
   <button
-    class="btn btn-danger mr-2"
+
     routerLink="/problems/{{ problem.id }}/delete"
   >
     Usuń

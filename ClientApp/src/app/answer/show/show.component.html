@@ -1,37 +1,29 @@
-<div *ngIf="state === showState.Show"  >
-    <div >
-      <app-points [element]="answer" (upvote)="onUpvote()" (downvote)="onDownvote()"></app-points>
+<div *ngIf="state === showState.Show">
+    <div>
+        <app-points [element]="answer" (upvote)="onUpvote()" (downvote)="onDownvote()"></app-points>
     </div>
-<div >
-  <div >
-    <div  [innerHtml]="answer.content | safeHtml">
-    </div>
-  </div>
-  <p>
-    <small *ngIf="answer.author">
+    <div>
+        <div>
+            <div [innerHtml]="answer.content | safeHtml">
+            </div>
+        </div>
+        <p>
+            <small *ngIf="answer.author">
       <a routerLink="/authors/{{ answer.author.id }}">{{
         answer.author.name
       }}</a>
     </small>
-  </p>
-  <div>
-    <button  (click)="onEdit()">Edytuj</button>
-    <button  (click)="onDelete()">Usuń</button>
-  </div>
-</div>
+        </p>
+        <div>
+            <button (click)="onEdit()">Edytuj</button>
+            <button (click)="onDelete()">Usuń</button>
+        </div>
+    </div>
 </div>
 
 <div *ngIf="state === showState.Edit">
-  <app-edit
-    [answer]="answer"
-    [parentId]="parentId"
-    (close)="onEditClose($event)"
-  ></app-edit>
+    <app-edit [answer]="answer" [parentId]="parentId" (close)="onEditClose($event)"></app-edit>
 </div>
 <div *ngIf="state === showState.Delete">
-  <app-delete
-    [answer]="answer"
-    [parentId]="parentId"
-    (close)="onDeleteClose($event)"
-  ></app-delete>
+    <app-delete [answer]="answer" [parentId]="parentId" (close)="onDeleteClose($event)"></app-delete>
 </div>

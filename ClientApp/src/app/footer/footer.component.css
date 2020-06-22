@@ -1,3 +1,6 @@
 footer {
     border-top: 1px solid black;
+    padding: 0.5rem 1rem;
+    text-align: right;
+    background: orange;
 }

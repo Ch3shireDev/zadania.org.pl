@@ -1,48 +1,26 @@
-<div>
+<div *ngIf="problem">
+    <h1>{{ problem.title }}</h1>
+    <div [innerHtml]="problem.content|safeHtml"></div>
+
     <div>
+        <p>
+            <small><a routerLink="/authors/{{ problem.author.id }}">
+          {{problem.author.name}}
+        </a></small>
+        </p>
+        <p>
+            <small>Utworzono: {{ problem.created | date }}</small>
+        </p>
+        <p *ngIf="problem.edited && problem.edited.getFullYear() > 2000">
+            <small>Edytowano: {{ problem.edited | date }}</small>
+        </p>
+
+    </div>
+    <div>
+        <app-points [element]="problem" (upvote)="upvote()" (downvote)="downvote()"></app-points>
+        <button routerLink="edit">Edytuj</button>
+        <button routerLink="delete">Usuń</button>
         <button routerLink="..">Wróć</button>
+        <app-answer *ngIf="problem" [answers]="problem.answers" [parentId]="id"></app-answer>
     </div>
 </div>
-<div *ngIf="problem">
-
-    <div>
-        <div>
-            <div>
-                <div>
-                    <h3>{{ problem.title }}</h3>
-                </div>
-                <hr/>
-                <div>
-
-                    <div [innerHtml]="problem.content|safeHtml"></div>
-                </div>
-            </div>
-        </div>
-        <div>
-            <p>
-                <small>Utworzono: {{ problem.created | date }}</small>
-            </p>
-            <p *ngIf="problem.edited && problem.edited.getFullYear() > 2000">
-                <small>Edytowano: {{ problem.edited | date }}</small>
-            </p>
-            <p>
-                <small><a routerLink="/authors/{{ problem.author.id }}">{{
-          problem.author.name
-        }}</a></small
-      >
-    </p>
-  </div>
-  <div >
-    <button  routerLink="edit">Edytuj</button>
-    <button  routerLink="delete">Usuń</button>
-  </div>
-  <div>
-    <app-points [element]="problem" (upvote)="upvote()" (downvote)="downvote()"></app-points>
-</div>
-</div>
-</div>
-<app-answer
-  *ngIf="problem"
-  [answers]="problem.answers"
-  [parentId]="id"
-></app-answer>

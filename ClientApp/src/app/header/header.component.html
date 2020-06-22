@@ -1,9 +1,11 @@
 <nav>
-    <ul>
+    <ul class="left">
         <li>
             <a href="#">Zadania.org.pl</a>
         </li>
         <li> <a routerLink="/problems" routerLinkActive="active">Przeglądaj problemy</a></li>
+    </ul>
+    <ul class="right">
         <li *ngIf="auth.userProfile$ | async as profile">
             <a routerLink="/authors/self">{{ profile.name }}</a>
         </li>

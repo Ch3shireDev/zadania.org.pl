@@ -1,7 +1,5 @@
-<div *ngFor="let answer of answers" >
-  <app-show
-    [answer]="answer"
-    [parentId]="parentId"
-    (delete)="onDelete($event)"
-  ></app-show>
+<div *ngFor="let answer of answers">
+    <div class="container">
+        <app-show [answer]="answer" [parentId]="parentId" (delete)="onDelete($event)"></app-show>
+    </div>
 </div>

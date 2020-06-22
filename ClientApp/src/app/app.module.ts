@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
-import { NavbarComponent } from './navbar/navbar.component';
 import { ProblemModule } from './problem/problem.module';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -13,8 +12,9 @@ import { AuthorModule } from './author/author.module';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FooterComponent } from './footer/footer.component';
+import { HeaderComponent } from './header/header.component';
 @NgModule({
-  declarations: [AppComponent, NavbarComponent, HomeComponent, FooterComponent],
+  declarations: [AppComponent, HomeComponent, FooterComponent, HeaderComponent],
   imports: [
     AuthorModule,
     FormsModule,

@@ -2,13 +2,11 @@
     <app-create [parentId]="parentId" (close)="onClose($event)"></app-create>
 </div>
 <div>
+    <h3>Odpowiedzi</h3>
     <div>
-        <h2>Odpowiedzi</h2>
-        <div>
-            <button (click)="addAnswer()" *ngIf="!isCreate">
+        <button (click)="addAnswer()" *ngIf="!isCreate">
     Dodaj odpowiedź
   </button>
-        </div>
     </div>
 </div>
 <app-browse [answers]="answers" [parentId]="parentId"></app-browse>

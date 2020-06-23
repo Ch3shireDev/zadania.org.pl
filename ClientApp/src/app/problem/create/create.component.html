@@ -1,8 +1,13 @@
-<div >
-  <app-editor [problem]="problem" title="Nowe zapytanie"></app-editor>
+<h3>Dodaj nowe zapytanie</h3>
 
-  <div >
-    <button  (click)="submit()">Wyślij</button>
-    <button  (click)="goBack()">Wróć</button>
-  </div>
+<div>
+    <p class="description">Zapytanie powinno być w postaci pytania egzaminacyjnego, np. "Ustal długość przeciwprostokątnej trójkąta, jeśli przyprostokątne są długości 6 cm oraz 8 cm." Unikaj wycieczek osobistych w treści zadania w postaci "Ratunku, nie potrafię tego rozwiązać".
+        Tytuł powinien być przejrzysty i informować o kategorii pytania, np. "Oblicz długość boku trójkąta", lub "Zadanie z alkanów".</p>
+</div>
+
+<app-editor [problem]="problem" title="Nowe zapytanie"></app-editor>
+
+<div>
+    <button (click)="submit()">Wyślij</button>
+    <button (click)="goBack()">Wróć</button>
 </div>

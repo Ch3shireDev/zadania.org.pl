@@ -16,7 +16,6 @@
     width: 80%;
     min-width: 400px;
     line-height: 1.6;
-    font-size: 18px;
     display: flex;
     flex-grow: 1;
     background: white;
@@ -24,6 +23,7 @@
     border: 1px solid #444;
     border-radius: 2px;
     box-shadow: 0 5px 10px #444;
+    padding-bottom: 1rem;
 }
 
 :host {

@@ -22,7 +22,7 @@ namespace ResourceAPI.Controllers
             this.context = context;
         }
 
-        private IEnumerable<string> ScanDirs(string parentDir)
+        private IList<string> ScanDirs(string parentDir)
         {
             var dirs = Directory.EnumerateDirectories(parentDir);
             var list = new List<string>();
@@ -47,12 +47,17 @@ namespace ResourceAPI.Controllers
                 context.SaveChanges();
             }
 
+            var i = 0;
+            var n = dirs.Count;
             foreach (var dir in dirs)
             {
                 ReadDirectory(dir, author);
-                Console.WriteLine(dir);
+                Console.WriteLine($"{i}/{n} {dir}");
+                i++;
+                if (i > 100) break;
             }
 
+            context.SaveChanges();
             return StatusCode(200, dirs);
         }
 
@@ -118,13 +123,13 @@ namespace ResourceAPI.Controllers
                 Author = author,
                 AuthorId = author.Id,
                 Created = DateTime.Now,
-                Parent=problem
+                Parent=problem,
+                IsApproved = true
             };
 
             problem.Answers.Add(answer);
 
             context.Problems.Add(problem);
-            context.SaveChanges();
         }
     }
 }

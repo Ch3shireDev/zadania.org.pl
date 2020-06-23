@@ -1,5 +1,20 @@
-p{
-  word-wrap: break-word;
-  display:block;
-  max-width: 100%;
+p {
+    word-wrap: break-word;
+    display: block;
+    max-width: 100%;
+}
+
+.approved-answer {
+    background: rgb(153, 255, 153);
+    padding: 0.5rem 1rem;
+    left: -1rem;
+    position: relative;
+    width: 100%;
+    border: 1px solid #444;
+}
+
+.answer-container {
+    position: relative;
+    padding-top: 0;
+    padding-bottom: 1.5rem;
 }

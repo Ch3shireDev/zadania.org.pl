@@ -1,14 +1,14 @@
-<div >
-  <label>Tytuł</label>
-  <div >
-    <input type="text"  [(ngModel)]="problem.title" />
-  </div>
+<div id="title-container">
+    <label>Tytuł</label>
+    <input type="text" [(ngModel)]="problem.title" />
 </div>
-<div >
-  <label>Zawartość</label>
-  <div >
-    <textarea  [(ngModel)]="problem.content"></textarea>
-  </div>
+<div>
+    <label>Zawartość</label>
+    <div>
+        <quill-editor [styles]="editorStyle" [modules]="editorConfig" id="hints" type="text" class="form-control" [(ngModel)]="problem.content">
+        </quill-editor>
+        <!-- <textarea [(ngModel)]="problem.content"></textarea> -->
+    </div>
 </div>
 <!-- <div >
     <button  (click)="onSubmit()">

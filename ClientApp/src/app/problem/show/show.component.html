@@ -1,29 +1,23 @@
 <div>
-  <h5>
-    <a href="" routerLink="/problems/{{ problem.id }}">{{ problem.title }}</a>
-  </h5>
+    <h5>
+        <a routerLink="/problems/{{ problem.id }}">{{ problem.title }}</a>
+    </h5>
 </div>
-<div  [innerHTML]="problem.content | safeHtml"></div>
+<div [innerHTML]="problem.content | safeHtml"></div>
 
 <div>
-  <small>{{ problem.created | date }}</small>
-  <small *ngIf="problem.author">{{ problem.author.name }}</small>
+    <!-- <small>{{ problem.created | date }}</small> -->
+    <small *ngIf="problem.author">{{ problem.author.name }}</small>
 </div>
 
-<div  *ngIf="showControls">
-  <button  routerLink="/problems/{{ problem.id }}">
+<div *ngIf="showControls">
+    <button routerLink="/problems/{{ problem.id }}">
     Wyświetl
   </button>
-  <button
-
-    routerLink="/problems/{{ problem.id }}/edit"
-  >
+    <button routerLink="/problems/{{ problem.id }}/edit">
     Edytuj
   </button>
-  <button
-
-    routerLink="/problems/{{ problem.id }}/delete"
-  >
+    <button routerLink="/problems/{{ problem.id }}/delete">
     Usuń
   </button>
 </div>

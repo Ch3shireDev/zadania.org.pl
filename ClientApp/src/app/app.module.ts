@@ -13,6 +13,8 @@ import { AuthorModule } from './author/author.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+
+import { QuillModule } from 'ngx-quill';
 @NgModule({
   declarations: [AppComponent, HomeComponent, FooterComponent, HeaderComponent],
   imports: [
@@ -24,6 +26,7 @@ import { HeaderComponent } from './header/header.component';
     AppRoutingModule,
     RouterModule,
     FontAwesomeModule,
+    QuillModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent],

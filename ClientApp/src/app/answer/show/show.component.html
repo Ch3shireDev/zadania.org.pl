@@ -1,12 +1,7 @@
 <div *ngIf="state === showState.Show">
-    <div>
-        <app-points [element]="answer" (upvote)="onUpvote()" (downvote)="onDownvote()"></app-points>
-    </div>
-    <div>
-        <div>
-            <div [innerHtml]="answer.content | safeHtml">
-            </div>
-        </div>
+    <div [class.approved-answer]="answer.isApproved" class="answer-container">
+        <h3 *ngIf="answer.isApproved">Zatwierdzona odpowiedź</h3>
+        <div [innerHtml]="answer.content | safeHtml"> </div>
         <p>
             <small *ngIf="answer.author">
       <a routerLink="/authors/{{ answer.author.id }}">{{
@@ -15,6 +10,7 @@
     </small>
         </p>
         <div>
+            <app-points [element]="answer" (upvote)="onUpvote()" (downvote)="onDownvote()"></app-points>
             <button (click)="onEdit()">Edytuj</button>
             <button (click)="onDelete()">Usuń</button>
         </div>

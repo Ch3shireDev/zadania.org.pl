@@ -15,5 +15,7 @@ namespace ResourceAPI
         {
             optionsBuilder.UseSqlite("Filename=sqlite.db");
         }
+
+        
     }
 }

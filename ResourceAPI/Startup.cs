@@ -10,7 +10,6 @@ namespace ResourceAPI
     public class Startup
     {
         public Startup(IConfiguration configuration)
-
         {
             Configuration = configuration;
             using var client = new DatabaseContext();
@@ -23,26 +22,22 @@ namespace ResourceAPI
         {
             services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>();
 
-
             services.AddControllers();
             services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                //options.AddScheme()
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = "https://dev-f8t1k7iq.auth0.com/";
-                options.Audience = "https://localhost:5001";
-                //options.Configuration.a
-            });
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }
+            ).AddJwtBearer(options =>
+                {
+                    options.Authority = "https://dev-f8t1k7iq.auth0.com/";
+                    options.Audience = "https://localhost:5001";
+                }
+            );
             services.AddCors(o =>
                 o.AddPolicy("MyPolicy", builder => { builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); }));
-
-            //services.AddScoped<IUserService, UserService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();

@@ -1,3 +1,5 @@
 <div>
-    <textarea [(ngModel)]="answer.content"></textarea>
+    <!-- <textarea [(ngModel)]=""></textarea> -->
+    <quill-editor [styles]="editorStyle" [modules]="editorConfig" id="hints" type="text" class="form-control" [(ngModel)]="answer.content">
+    </quill-editor>
 </div>

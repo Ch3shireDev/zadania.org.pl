@@ -1,9 +1,9 @@
-<div class="problems-header">
+<!-- <div class="problems-header">
     <h2>Lista problemów</h2>
     <button routerLink="/problems/create">
     Dodaj wpis
   </button>
-</div>
+</div> -->
 <div *ngIf="problems">
     <div *ngFor="let problem of problems" class="container">
         <app-show [problem]="problem"></app-show>

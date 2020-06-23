@@ -1,7 +1,15 @@
 li a {
     display: block;
+    font-weight: 600;
     color: #444;
     text-decoration: none;
+    position: relative;
+    top: 2px;
+}
+
+nav {
+    border-bottom: 1px solid;
+    background: rgb(255, 125, 78);
 }
 
 li {
@@ -28,9 +36,4 @@ nav {
     margin: 0;
     padding: 0 1rem;
     display: flex;
-}
-
-nav {
-    border-bottom: 1px solid;
-    background: orangered;
 }

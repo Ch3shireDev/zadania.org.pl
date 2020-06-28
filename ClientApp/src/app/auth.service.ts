@@ -13,11 +13,12 @@ import {
 import { tap, catchError, concatMap, shareReplay } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthorService } from './author/author.service';
+import { environment } from 'src/environments/environment';
 
 const config = {
   clientId: 'yqwruvTBtYj94aoIqKktuoGdM9aNLIn7',
   domain: 'dev-f8t1k7iq.auth0.com',
-  audience: 'https://localhost:5001',
+  audience: environment.url,
   scope: 'openid email profile'
 };
 @Injectable({

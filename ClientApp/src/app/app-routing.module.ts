@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './interceptor.service';
-import { TestComponent } from './test/test.component';
 import { HomeComponent } from './home/home.component';
 import { problemRoutes } from './problem/problem-routing.module';
 import { AuthorComponent } from './author/author.component';
@@ -10,7 +9,6 @@ import { AuthorComponent } from './author/author.component';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'problems' },
   { path: 'home', component: HomeComponent },
-  { path: 'test', component: TestComponent },
   { path: 'problems', children: problemRoutes },
   { path: 'authors/self', component: AuthorComponent },
   { path: 'authors/:id', component: AuthorComponent },

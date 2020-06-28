@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ResourceAPI.Controllers
 {
@@ -11,10 +10,10 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult GetPublic()
         {
-            return StatusCode(200, "public");
+            return StatusCode(200, "public xxx");
         }
 
-        [Authorize]
+        //[Authorize]
         [Route("private")]
         [HttpGet]
         public ActionResult GetPrivate()

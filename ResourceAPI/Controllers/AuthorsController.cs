@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -40,7 +39,7 @@ namespace ResourceAPI.Controllers
 
         [HttpGet]
         [Route("self")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Get()
         {
             var author = GetAuthor(HttpContext, Context);
@@ -62,6 +61,7 @@ namespace ResourceAPI.Controllers
 
         public static Author GetAuthor(HttpContext httpContext, DatabaseContext context)
         {
+            return null;
             var httpContextUser = httpContext.User;
             var idClaim = httpContextUser.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier);
             var nameIdentifier = idClaim.Value;
@@ -70,7 +70,7 @@ namespace ResourceAPI.Controllers
             {
                 var profileData = httpContext.Request.Headers["profile"][0];
                 var profile = JsonConvert.DeserializeObject<UserData>(profileData);
-                var newProfile = new Author { UserId = nameIdentifier, Name = profile.Name, Email = profile.Email };
+                var newProfile = new Author {UserId = nameIdentifier, Name = profile.Name, Email = profile.Email};
                 context.Authors.Add(newProfile);
                 context.SaveChanges();
             }

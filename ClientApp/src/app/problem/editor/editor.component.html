@@ -1,11 +1,11 @@
 <div id="title-container">
     <label>Tytuł</label>
-    <input type="text" [(ngModel)]="problem.title" />
+    <input type="text" [(ngModel)]="problem.title" placeholder="Tytuł problemu..." />
 </div>
-<div>
+<div class="content-container">
     <label>Zawartość</label>
     <div>
-        <quill-editor [styles]="editorStyle" [modules]="editorConfig" id="hints" type="text" class="form-control" [(ngModel)]="problem.content">
+        <quill-editor [styles]="editorStyle" [modules]="editorConfig" placeholder="Przedstaw problem..." id="hints" type="text" class="form-control" [(ngModel)]="problem.content">
         </quill-editor>
         <!-- <textarea [(ngModel)]="problem.content"></textarea> -->
     </div>

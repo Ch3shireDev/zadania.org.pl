@@ -15,3 +15,8 @@ package-lock.json
 zadania.info
 ResourceAPI/sqlite.db
 sqlite.db
+appsettings.json
+ResourceAPI/appsettings.json
+config.py
+*zip
+__pycache__/**

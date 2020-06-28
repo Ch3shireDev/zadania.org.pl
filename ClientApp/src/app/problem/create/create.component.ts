@@ -13,14 +13,16 @@ export class CreateComponent implements OnInit {
   constructor(
     private location: Location,
     private problemService: ProblemService
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   submit() {
+    console.log('xxxxxxxx')
     this.problemService.postProblem(this.problem).subscribe((res) => {
+      console.log('xxx')
       this.goBack();
-    });
+    }, err => { console.log(err);console.log('xxxyyyy') });
   }
 
   goBack() {

@@ -13,14 +13,14 @@ namespace ResourceAPI.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private  ILogger<ProblemsController> logger { get; set; }
-        private  DatabaseContext context { get; set; }
-
         public AdminController(ILogger<ProblemsController> logger, DatabaseContext context)
         {
             this.logger = logger;
             this.context = context;
         }
+
+        private ILogger<ProblemsController> logger { get; }
+        private DatabaseContext context { get; }
 
         private IList<string> ScanDirs(string parentDir)
         {
@@ -33,7 +33,7 @@ namespace ResourceAPI.Controllers
 
 
         [HttpPost]
-        [Route("upload")]
+        //[Route("upload")]
         public ActionResult PostFiles()
         {
             var curr = Directory.GetCurrentDirectory();
@@ -96,7 +96,7 @@ namespace ResourceAPI.Controllers
             return string.Join("\n", lines);
         }
 
-        private void ReadDirectory(string dir,Author author)
+        private void ReadDirectory(string dir, Author author)
         {
             var exerciseText = System.IO.File.ReadAllText(Path.Join(dir, "exercise.md"));
             var solutionText = System.IO.File.ReadAllText(Path.Join(dir, "solution.md"));
@@ -106,12 +106,12 @@ namespace ResourceAPI.Controllers
             var title = exerciseText.Substring(0, 50);
             var titleList = title.Split(' ').Where(word => word.Length > 0 && !Regex.IsMatch(word, @"[\!\(\)]"))
                 .Take(2);
-            title = string.Join(' ', titleList)+"...";
+            title = string.Join(' ', titleList) + "...";
 
             var problem = new Problem
             {
                 Title = title,
-                Content = exercise, 
+                Content = exercise,
                 Created = DateTime.Now,
                 AuthorId = author.Id,
                 Author = author
@@ -123,7 +123,7 @@ namespace ResourceAPI.Controllers
                 Author = author,
                 AuthorId = author.Id,
                 Created = DateTime.Now,
-                Parent=problem,
+                Parent = problem,
                 IsApproved = true
             };
 

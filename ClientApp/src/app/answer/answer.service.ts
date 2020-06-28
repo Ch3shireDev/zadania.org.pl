@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Answer } from './answer';
-
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class AnswerService {
-  url = 'http://localhost:5000/api/v1';
+  url = `${environment.url}/api/v1`;
 
   constructor(private http: HttpClient) {}
 

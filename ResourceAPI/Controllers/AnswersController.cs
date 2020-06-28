@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
@@ -56,7 +55,7 @@ namespace ResourceAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public ActionResult Post(int problemId, Answer answer)
         {
             if (!Context.Problems.Any(p => p.Id == problemId)) return StatusCode(404);
@@ -73,7 +72,7 @@ namespace ResourceAPI.Controllers
 
         [HttpPut]
         [Route("{answerId}")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Put(int problemId, int answerId, Answer answer)
         {
             var originalAnswer = Context.Answers.First(a => a.Id == answerId);
@@ -85,7 +84,7 @@ namespace ResourceAPI.Controllers
 
         [HttpDelete]
         [Route("{answerId}")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Delete(int problemId, int answerId)
         {
             var answer = Context.Answers.First(a => a.Id == answerId);
@@ -96,7 +95,7 @@ namespace ResourceAPI.Controllers
 
         [HttpPut]
         [Route("{answerId}/upvote")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Upvote(int problemId, int answerId)
         {
             return Vote(problemId, answerId, Models.Vote.Upvote);
@@ -104,7 +103,7 @@ namespace ResourceAPI.Controllers
 
         [HttpPut]
         [Route("{answerId}/downvote")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Downvote(int problemId, int answerId)
         {
             return Vote(problemId, answerId, Models.Vote.Downvote);

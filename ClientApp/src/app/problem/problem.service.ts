@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Problem } from './problem';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProblemService {
-  url = 'http://localhost:5000/api/v1';
+  url = `${environment.url}/api/v1`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
 
   downvoteProblem(id: number) {
@@ -28,6 +29,7 @@ export class ProblemService {
   }
 
   postProblem(problem: Problem) {
+    console.log(this.url);
     return this.http.post(`${this.url}/problems`, problem);
   }
 

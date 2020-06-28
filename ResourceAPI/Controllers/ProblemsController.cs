@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
@@ -22,9 +21,9 @@ namespace ResourceAPI.Controllers
         private DatabaseContext Context { get; }
 
         [HttpGet]
-        public ActionResult Get([FromQuery] int from=0, [FromQuery] int to=100)
+        public ActionResult Get()
         {
-            var problems = Context.Problems.ToArray().Reverse().Skip(from).Take(to-from).ToList();
+            var problems = Context.Problems.ToArray().Reverse();
             foreach (var problem in problems)
             {
                 if (problem.Author == null) continue;
@@ -69,16 +68,24 @@ namespace ResourceAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public ActionResult Post(Problem problem)
         {
             var author = AuthorsController.GetAuthor(HttpContext, Context);
-            if (author == null) return StatusCode(401);
+            //if (author == null) return StatusCode(403);
             problem.Created = DateTime.Now;
             problem.Author = author;
-            problem.AuthorId = author.Id;
-            author.Problems.Add(problem);
-            Context.Authors.Update(author);
+            if (author != null)
+            {
+                problem.AuthorId = author.Id;
+                author.Problems.Add(problem);
+                Context.Authors.Update(author);
+            }
+            else
+            {
+                problem.AuthorId = null;
+            }
+
             Context.Problems.Add(problem);
             Context.SaveChanges();
             return StatusCode(201);
@@ -87,7 +94,7 @@ namespace ResourceAPI.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Put(int id, Problem problem)
         {
             if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
@@ -105,7 +112,7 @@ namespace ResourceAPI.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Delete(int id)
         {
             if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
@@ -125,7 +132,7 @@ namespace ResourceAPI.Controllers
 
         [HttpPut]
         [Route("{id}/upvote")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Upvote(int id)
         {
             return Vote(id, Models.Vote.Upvote);
@@ -133,7 +140,7 @@ namespace ResourceAPI.Controllers
 
         [HttpPut]
         [Route("{id}/downvote")]
-        [Authorize]
+        //[Authorize]
         public ActionResult Downvote(int id)
         {
             return Vote(id, Models.Vote.Downvote);
@@ -141,7 +148,7 @@ namespace ResourceAPI.Controllers
 
         [HttpPut]
         [Route("{id}/nullvote")]
-        [Authorize]
+        //[Authorize]
         public ActionResult NullVote(int id)
         {
             return Vote(id, Models.Vote.None);

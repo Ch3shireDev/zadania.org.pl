@@ -49,8 +49,15 @@ namespace ResourceAPI.Controllers
             var max = Context.Problems.Select(problem => problem.Id).Max();
             var problems = Context.Problems.Where(problem => problem.Id > max - num).ToArray().Reverse();
 
+            var tags = Context.Tags.ToList();
+
+            foreach (var tag in tags) tag.Parent = null;
+
             foreach (var problem in problems)
             {
+                problem.Tags = tags.Where(tag => tag.ParentId == problem.Id).ToList();
+
+
                 if (problem.Author == null) continue;
                 problem.Author.Problems = null;
                 problem.Author.Answers = null;
@@ -100,16 +107,20 @@ namespace ResourceAPI.Controllers
             if (problem.Content.Length > 1024 * 1024) return StatusCode(413);
             var author = AuthorsController.GetAuthor(HttpContext, Context);
             if (author == null) return StatusCode(403);
+
+            TagsController.RefreshTags(problem, Context);
+
             problem.Created = DateTime.Now;
             problem.Author = author;
             problem.AuthorId = author.Id;
+
+
             author.Problems.Add(problem);
             Context.Authors.Update(author);
             Context.Problems.Add(problem);
             Context.SaveChanges();
             return StatusCode(201);
         }
-
 
         [HttpPut]
         [Route("{id}")]

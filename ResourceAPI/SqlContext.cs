@@ -14,12 +14,12 @@ namespace ResourceAPI
         public DbSet<Problem> Problems { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Author> Authors { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         public static string ConnectionString { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
-
     }
 }

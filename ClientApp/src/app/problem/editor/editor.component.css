@@ -1,6 +1,6 @@
 input {
     width: calc(100% - 1rem);
-    margin: 1rem 0;
+    margin: 0.5rem 0 0.1rem;
     border: 1px solid #ccc;
     padding: 0.5rem;
 }
@@ -16,4 +16,35 @@ input {
 
 .content-container label {
     margin-bottom: 1rem;
+}
+
+.editor-container {
+    margin-top: 0.5rem;
+}
+
+small {
+    color: #666;
+}
+
+.form-container {
+    margin: 1rem 0;
+}
+
+.form-container button {
+    margin-top: 0.5rem;
+}
+
+.tags-field {
+    border: 1px solid #ccc;
+    width: auto;
+    padding: 0.5rem;
+}
+
+.tags-input-field {
+    display: flex;
+}
+
+.tags-input-field button {
+    width: 120px;
+    border: 1px solid #ccc;
 }

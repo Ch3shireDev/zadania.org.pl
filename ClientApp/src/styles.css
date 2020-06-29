@@ -43,9 +43,6 @@ h6 {
 
 .container {
     width: 100%;
-}
-
-.container {
     border-bottom: 1px solid #444;
     padding: 1rem 0;
     display: block;
@@ -76,4 +73,17 @@ button:hover {
 img {
     max-width: 100%;
     height: auto;
+}
+
+.tag-element {
+    display: inline-block;
+    background: bisque;
+    border-radius: 2rem;
+    border: 1px solid #444;
+    padding: 0.2rem 1rem;
+    font-weight: 600;
+}
+
+.clickable {
+    cursor: pointer;
 }

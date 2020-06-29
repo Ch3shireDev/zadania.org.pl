@@ -25,17 +25,21 @@ export class BrowseComponent implements OnInit, AfterViewInit {
   getAllProblems() {
     this.problemService.getProblems().subscribe((problems) => {
       this.problems = problems;
+      console.log(this.problems);
     });
   }
 
   search(): void {
     if (this.searchQuery === null || this.searchQuery === undefined) {
       this.getAllProblems();
+      return;
     }
-    // if (this.searchQuery === this.lastSearchQuery) { return; }
-    // if (this.searchQuery.trim() === this.lastSearchQuery.trim()) { return; }
-    this.problemService.searchProblems(this.searchQuery.trim()).subscribe((problems) => {
+    if (this.searchQuery === this.lastSearchQuery) { return; }
+    if (this.searchQuery.trim() === this.lastSearchQuery.trim()) { return; }
+    const searchQuery = this.searchQuery.trim();
+    this.problemService.searchProblems(searchQuery).subscribe((problems) => {
       this.problems = problems;
+      this.lastSearchQuery = searchQuery;
     });
   }
 }

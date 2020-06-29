@@ -6,6 +6,10 @@
 <div [innerHTML]="problem.content | safeHtml" class="problem-preview"></div>
 
 <div>
+    <div *ngFor="let tag of problem.tags" class="tag-element">{{tag.name}}</div>
+</div>
+
+<div class="problem-tags">
     <!-- <small>{{ problem.created | date }}</small> -->
     <small *ngIf="problem.author">{{ problem.author.name }}</small>
 </div>

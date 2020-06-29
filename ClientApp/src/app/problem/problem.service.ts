@@ -43,7 +43,6 @@ export class ProblemService {
 
   searchProblems(query: string): Observable<Problem[]> {
     if (query === null || query === undefined) { return null; }
-    console.log('abc')
     return this.http.get<Problem[]>(`${this.url}/problems/search?query=${query}`);
   }
 }

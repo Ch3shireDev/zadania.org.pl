@@ -54,7 +54,7 @@ namespace ResourceAPI.Controllers
             {
                 i++;
                 ReadDirectory(dir, author);
-                Console.WriteLine($"{i}/{n} {dir.Substring(dir.Length-50,50)}");
+                Console.WriteLine($"{i}/{n} {dir.Substring(dir.Length - 50, 50)}");
                 if (i > 100) break;
             }
 

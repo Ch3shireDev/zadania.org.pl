@@ -1,19 +1,28 @@
-<div id="title-container">
+<div id="title-container" class="form-container">
     <label>Tytuł</label>
-    <input type="text" [(ngModel)]="problem.title" placeholder="Tytuł problemu..." />
+    <input type="text" [(ngModel)]="problem.title" placeholder="Tytuł" />
+    <small>Opisowa nazwa zadania. Może być "Zad. 1", może być bardziej twórcza.</small>
 </div>
-<div class="content-container">
-    <label>Zawartość</label>
-    <div>
-        <quill-editor id="hints" type="text" class="form-control" [styles]="editorStyle" [modules]="editorConfig" placeholder="Przedstaw problem..." [(ngModel)]="problem.content">
+<div id="source-container" class="form-container">
+    <label>Źródło</label>
+    <input type="text" [(ngModel)]="problem.source" placeholder="Źródło" />
+    <small>Pochodzenie zadania. Może być "Egzamin z OAK 2019". Zadania mogą być grupowane według pochodzenia.</small>
+</div>
+<div class="content-container form-container">
+    <label>Treść</label>
+    <div class="editor-container">
+        <quill-editor id="hints" type="text" class="form-control" [styles]="editorStyle" [modules]="editorConfig" placeholder="Treść zadania." [(ngModel)]="problem.content">
         </quill-editor>
-        <!-- <textarea [(ngModel)]="problem.content"></textarea> -->
     </div>
 </div>
-<!-- <div >
-    <button  (click)="onSubmit()">
-      Wyślij
-    </button>
-    <button  (click)="goBack()">Wróć</button>
-  </div> -->
-<!-- </div> -->
+<div class="tags-container form-container">
+    <label>Tagi</label>
+    <div class="tags-field" *ngIf="problem.tags && problem.tags.length > 0">
+        <div *ngFor="let tag of problem.tags" class="tag-element clickable" (click)="removeTag(tag.name)">{{tag.name}}</div>
+    </div>
+    <div class="tags-input-field">
+        <button (click)="addTag()">Dodaj tag</button>
+        <input text="text" [(ngModel)]="tagText">
+    </div>
+    <small>Tagi pozwalają na tematyczne zgrupowanie zamieszczanych problemów.</small>
+</div>

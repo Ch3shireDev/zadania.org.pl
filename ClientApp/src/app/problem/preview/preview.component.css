@@ -3,3 +3,7 @@
     overflow-y: auto;
     margin-bottom: 1rem;
 }
+
+.problem-tags {
+    padding: 1rem 0;
+}

@@ -13,14 +13,14 @@ namespace ResourceAPI.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        public AdminController(ILogger<ProblemsController> logger, DatabaseContext context)
+        public AdminController(ILogger<ProblemsController> logger, SqlContext context)
         {
             this.logger = logger;
             this.context = context;
         }
 
         private ILogger<ProblemsController> logger { get; }
-        private DatabaseContext context { get; }
+        private SqlContext context { get; }
 
         private IList<string> ScanDirs(string parentDir)
         {
@@ -31,9 +31,10 @@ namespace ResourceAPI.Controllers
             return list;
         }
 
-
+#if DEBUG
         [HttpPost]
-        //[Route("upload")]
+        [Route("upload")]
+#endif
         public ActionResult PostFiles()
         {
             var curr = Directory.GetCurrentDirectory();
@@ -51,9 +52,9 @@ namespace ResourceAPI.Controllers
             var n = dirs.Count;
             foreach (var dir in dirs)
             {
-                ReadDirectory(dir, author);
-                Console.WriteLine($"{i}/{n} {dir}");
                 i++;
+                ReadDirectory(dir, author);
+                Console.WriteLine($"{i}/{n} {dir.Substring(dir.Length-50,50)}");
                 if (i > 100) break;
             }
 
@@ -107,6 +108,9 @@ namespace ResourceAPI.Controllers
             var titleList = title.Split(' ').Where(word => word.Length > 0 && !Regex.IsMatch(word, @"[\!\(\)]"))
                 .Take(2);
             title = string.Join(' ', titleList) + "...";
+
+            if (exercise.Length > 1024 * 1024) return;
+            if (solution.Length > 1024 * 1024) return;
 
             var problem = new Problem
             {

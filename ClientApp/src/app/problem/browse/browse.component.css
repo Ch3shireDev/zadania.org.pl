@@ -2,6 +2,32 @@
     width: 100%;
 }
 
-.problems-header {
-    /* padding: 0 1rem; */
+.search-container {
+    border: 1px solid #bbb;
+    width: 100%;
+    margin: 2rem 0;
+    display: flex;
+}
+
+input[type=text] {
+    padding: 6px 16px;
+    font-size: 17px;
+    border: none;
+    color: #666;
+    flex-grow: 1;
+}
+
+.search-container button {
+    float: right;
+    background: #ddd;
+    padding: 6px 2rem;
+    font-size: 17px;
+    border: none;
+    margin: 0;
+    cursor: pointer;
+    color: #444;
+}
+
+.search-container:hover {
+    box-shadow: 0 0 6px #888;
 }

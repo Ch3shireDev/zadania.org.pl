@@ -9,12 +9,12 @@ namespace ResourceAPI.Controllers
     {
         private readonly ILogger<ProblemsController> _logger;
 
-        public ExercisesController(ILogger<ProblemsController> logger, DatabaseContext context)
+        public ExercisesController(ILogger<ProblemsController> logger, SqlContext context)
         {
             _logger = logger;
             Context = context;
         }
 
-        private DatabaseContext Context { get; }
+        private SqlContext Context { get; }
     }
 }

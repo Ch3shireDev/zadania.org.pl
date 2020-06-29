@@ -5,7 +5,7 @@
 <div class="content-container">
     <label>Zawartość</label>
     <div>
-        <quill-editor [styles]="editorStyle" [modules]="editorConfig" placeholder="Przedstaw problem..." id="hints" type="text" class="form-control" [(ngModel)]="problem.content">
+        <quill-editor id="hints" type="text" class="form-control" [styles]="editorStyle" [modules]="editorConfig" placeholder="Przedstaw problem..." [(ngModel)]="problem.content">
         </quill-editor>
         <!-- <textarea [(ngModel)]="problem.content"></textarea> -->
     </div>

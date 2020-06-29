@@ -21,7 +21,7 @@ namespace ResourceAPI.Models
 
         public List<VoteElement> VotedProblems { get; set; } = new List<VoteElement>();
 
-        public Vote GetVote(DatabaseContext context, Problem element)
+        public Vote GetVote(SqlContext context, Problem element)
         {
             if (VotedProblems.All(vote => vote.ElementId != element.Id)) return Vote.None;
             return VotedProblems.First(vote => vote.ElementId == element.Id).Vote;

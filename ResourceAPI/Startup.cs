@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -13,34 +14,39 @@ namespace ResourceAPI
         {
             Configuration = configuration;
             var connStr = Configuration.GetConnectionString("Default");
-            DatabaseContext.ConnectionString = connStr;
-            var context = new DatabaseContext();
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
+            SqlContext.ConnectionString = connStr;
+            //var context = new SqlContext();
+            //context.Database.EnsureDeleted();
+            //context.Database.EnsureCreated();
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>(options =>
+            services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
                 options.UseMySQL(Configuration.GetConnectionString("Default"));
+                //options.UseInternalServiceProvider(serviceProvider);
             });
 
 
             services.AddControllers();
-            //services.AddAuthentication(options =>
-            //    {
-            //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    }
-            //).AddJwtBearer(options =>
-            //    {
-            //        options.Authority = "https://dev-f8t1k7iq.auth0.com/";
-            //        options.Audience = "https://zadania.org.pl";
-            //    }
-            //);
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }
+            ).AddJwtBearer(options =>
+                {
+                    options.Authority = "https://dev-f8t1k7iq.auth0.com/";
+#if DEBUG
+                    options.Audience = "http://localhost:5000";
+#else
+                    options.Audience = "https://zadania.org.pl";
+#endif
+                }
+            );
             services.AddCors(o =>
                 o.AddPolicy("MyPolicy", builder => { builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); }));
         }
@@ -48,9 +54,17 @@ namespace ResourceAPI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<SqlContext>();
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
+
             app.UseRouting();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

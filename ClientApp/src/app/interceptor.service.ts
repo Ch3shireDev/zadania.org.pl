@@ -6,14 +6,14 @@ import {
   HttpInterceptor,
 } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InterceptorService implements HttpInterceptor {
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService) { }
 
   profile;
 

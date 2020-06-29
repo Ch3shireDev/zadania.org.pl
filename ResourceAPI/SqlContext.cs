@@ -3,13 +3,9 @@ using ResourceAPI.Models;
 
 namespace ResourceAPI
 {
-    public class DatabaseContext : DbContext
+    public class SqlContext : DbContext
     {
-        public DatabaseContext(DbContextOptions options) : base(options)
-        {
-        }
-
-        public DatabaseContext()
+        public SqlContext(DbContextOptions options) : base(options)
         {
         }
 
@@ -23,8 +19,7 @@ namespace ResourceAPI
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL(ConnectionString);
-            //Database.EnsureCreated();
         }
+
     }
 }

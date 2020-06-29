@@ -14,13 +14,13 @@ namespace ResourceAPI.Controllers
     {
         private readonly ILogger<ProblemsController> _logger;
 
-        public AuthorsController(ILogger<ProblemsController> logger, DatabaseContext context)
+        public AuthorsController(ILogger<ProblemsController> logger, SqlContext context)
         {
             _logger = logger;
             Context = context;
         }
 
-        private DatabaseContext Context { get; }
+        private SqlContext Context { get; }
 
         //[HttpPost]
         //[Route("register")]
@@ -59,9 +59,8 @@ namespace ResourceAPI.Controllers
             return StatusCode(200, profile);
         }
 
-        public static Author GetAuthor(HttpContext httpContext, DatabaseContext context)
+        public static Author GetAuthor(HttpContext httpContext, SqlContext context)
         {
-            return null;
             var httpContextUser = httpContext.User;
             var idClaim = httpContextUser.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier);
             var nameIdentifier = idClaim.Value;

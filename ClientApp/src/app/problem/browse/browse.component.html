@@ -1,11 +1,7 @@
-<!-- <div class="problems-header">
-    <h2>Lista problemów</h2>
-    <button routerLink="/problems/create">
-    Dodaj wpis
-  </button>
-</div> -->
-<div *ngIf="problems">
-    <div *ngFor="let problem of problems" class="container">
-        <app-show [problem]="problem"></app-show>
-    </div>
+<div class="search-container">
+    <input [(ngModel)]="searchQuery" type="text" placeholder="Wyszukaj zadania..." name="search" (keyup.enter)="search()" #searchInput autofocus/>
+    <button (click)="search()">Wyślij</button>
+</div>
+<div *ngFor="let problem of problems" class="container">
+    <app-preview [problem]="problem"></app-preview>
 </div>

@@ -72,3 +72,8 @@ button {
 button:hover {
     background: lightgray;
 }
+
+img {
+    max-width: 100%;
+    height: auto;
+}

@@ -15,9 +15,6 @@ namespace ResourceAPI
             Configuration = configuration;
             var connStr = Configuration.GetConnectionString("Default");
             SqlContext.ConnectionString = connStr;
-            //var context = new SqlContext();
-            //context.Database.EnsureDeleted();
-            //context.Database.EnsureCreated();
         }
 
         public IConfiguration Configuration { get; }
@@ -27,7 +24,6 @@ namespace ResourceAPI
             services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
                 options.UseMySQL(Configuration.GetConnectionString("Default"));
-                //options.UseInternalServiceProvider(serviceProvider);
             });
 
 
@@ -58,7 +54,9 @@ namespace ResourceAPI
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<SqlContext>();
+#if DEBUG
                 //context.Database.EnsureDeleted();
+#endif
                 context.Database.EnsureCreated();
             }
 

@@ -1,0 +1,19 @@
+.tags-body {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+}
+
+.tags-header {
+    text-align: center;
+}
+
+.tags-container {
+    padding: 2rem;
+}
+
+.tag-element {
+    margin: 0.1rem 0;
+    text-align: center;
+}

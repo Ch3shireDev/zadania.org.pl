@@ -5,7 +5,7 @@ import { CreateComponent } from './create/create.component';
 import { EditComponent } from './edit/edit.component';
 import { EditorComponent } from './editor/editor.component';
 import { DeleteComponent } from './delete/delete.component';
-import { PreviewComponent } from './preview/preview.component';
+import { PreviewComponent as ProblemPreviewComponent } from './preview/preview.component';
 import { BrowseComponent } from './browse/browse.component';
 import { FormsModule } from '@angular/forms';
 import { ShowDetailsComponent } from './show-details/show-details.component';
@@ -22,7 +22,7 @@ import { QuillModule } from 'ngx-quill';
     EditComponent,
     EditorComponent,
     DeleteComponent,
-    PreviewComponent,
+    ProblemPreviewComponent,
     BrowseComponent,
     ShowDetailsComponent,
     PointsComponent,
@@ -37,6 +37,6 @@ import { QuillModule } from 'ngx-quill';
     QuillModule.forRoot(),
   ],
   providers: [DatePipe],
-  exports: [ProblemComponent],
+  exports: [ProblemComponent, ProblemPreviewComponent],
 })
 export class ProblemModule { }

@@ -2,6 +2,18 @@
     <input [(ngModel)]="searchQuery" type="text" placeholder="Wyszukaj zadania..." name="search" (keyup.enter)="search()" #searchInput autofocus/>
     <button (click)="search()">Wyślij</button>
 </div>
+<div *ngIf="totalPages !==null && totalPages>0" class="browse-nav">
+    <div><button (click)="previousPage()" [disabled]="pageNum<2">Poprzednia</button></div>
+    <div>Strona {{pageNum}} z {{totalPages}}</div>
+    <div><button (click)="nextPage()" [disabled]="pageNum>=totalPages">Następna</button></div>
+</div>
 <div *ngFor="let problem of problems" class="container">
-    <app-preview [problem]="problem"></app-preview>
+    <div class="problem-container-link" routerLink="/problems/{{problem.id}}">
+        <app-preview [problem]="problem"></app-preview>
+    </div>
+</div>
+<div *ngIf="totalPages !==null && totalPages>0" class="browse-nav">
+    <div><button (click)="previousPage()" [disabled]="pageNum<2">Poprzednia</button></div>
+    <div>Strona {{pageNum}} z {{totalPages}}</div>
+    <div><button (click)="nextPage()" [disabled]="pageNum>=totalPages">Następna</button></div>
 </div>

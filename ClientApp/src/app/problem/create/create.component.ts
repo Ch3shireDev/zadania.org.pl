@@ -10,6 +10,9 @@ import { ProblemService } from '../problem.service';
 })
 export class CreateComponent implements OnInit {
   problem = new Problem();
+
+  errorMessage: string;
+
   constructor(
     private location: Location,
     private problemService: ProblemService
@@ -18,11 +21,15 @@ export class CreateComponent implements OnInit {
   ngOnInit(): void { }
 
   submit() {
-    console.log('xxxxxxxx')
+    this.errorMessage = null;
     this.problemService.postProblem(this.problem).subscribe((res) => {
-      console.log('xxx')
       this.goBack();
-    }, err => { console.log(err);console.log('xxxyyyy') });
+    }, err => {
+      if (err.status === 0) { this.errorMessage = 'Błąd połączenia z serwerem.'; }
+      else {
+        this.errorMessage = err.message;
+      }
+    });
   }
 
   goBack() {

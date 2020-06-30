@@ -31,3 +31,48 @@ input[type=text] {
 .search-container:hover {
     box-shadow: 0 0 6px #888;
 }
+
+.problem-container-link {
+    padding: 0.5rem 1rem;
+    border: 1px solid #888;
+    border-radius: 3px;
+}
+
+.problem-container-link:hover {
+    box-shadow: 0 0 10px #444;
+    cursor: pointer;
+}
+
+.browse-nav {
+    display: flex;
+}
+
+.browse-nav div {
+    flex-grow: 1;
+    text-align: center;
+    user-select: none;
+}
+
+button:disabled {
+    color: #888;
+    border-color: #bbb;
+    pointer-events: none;
+}
+
+
+/*
+.browse-nav div a {
+    font-weight: 600;
+    background: #bbb;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 0.2rem 1rem;
+} */
+
+
+/* button .muted {
+    background: #ddd;
+    color: #888;
+    border: 1px solid #888 !important;
+    cursor: initial;
+} */

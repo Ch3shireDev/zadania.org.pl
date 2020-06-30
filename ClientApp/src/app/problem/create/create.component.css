@@ -3,3 +3,8 @@
     text-align: justify;
     font-size: 0.8rem;
 }
+
+.error-container p {
+    text-align: center;
+    color: red;
+}

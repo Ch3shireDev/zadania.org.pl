@@ -1,0 +1,8 @@
+<div class="tags-container">
+    <div class="tags-header">
+        <h3>Popularne tagi</h3>
+    </div>
+    <div class="tags-body">
+        <div *ngFor="let tag of tags" routerLink="/problems/browse" [queryParams]="{tags: tag.url}" class="tag-element clickable">{{tag.name}}: {{tag.count}}</div>
+    </div>
+</div>

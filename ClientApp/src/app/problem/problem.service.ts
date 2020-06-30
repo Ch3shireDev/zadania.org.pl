@@ -4,6 +4,13 @@ import { Problem } from './problem';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
+
+export class BrowseResult {
+  public pageNum: number;
+  public totalPages: number;
+  public problems: Problem[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,8 +27,9 @@ export class ProblemService {
     return this.http.put(`${this.url}/problems/${id}/upvote`, {});
   }
 
-  getProblems(): Observable<Problem[]> {
-    return this.http.get<Problem[]>(`${this.url}/problems`);
+  getProblems(params: any = null): Observable<BrowseResult> {
+    if (params === null) { return this.http.get<BrowseResult>(`${this.url}/problems`); }
+    return this.http.get<BrowseResult>(`${this.url}/problems`, { params });
   }
 
   getProblem(id): Observable<Problem> {
@@ -44,5 +52,9 @@ export class ProblemService {
   searchProblems(query: string): Observable<Problem[]> {
     if (query === null || query === undefined) { return null; }
     return this.http.get<Problem[]>(`${this.url}/problems/search?query=${query}`);
+  }
+
+  getProblemsByTag(tag: string): Observable<Problem[]> {
+    return this.http.get<Problem[]>(`${this.url}/problems/search?tag=${tag}`);
   }
 }

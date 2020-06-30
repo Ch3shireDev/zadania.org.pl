@@ -15,8 +15,9 @@ import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 
 import { QuillModule } from 'ngx-quill';
+import { TagsComponent } from './tags/tags.component';
 @NgModule({
-  declarations: [AppComponent, HomeComponent, FooterComponent, HeaderComponent],
+  declarations: [AppComponent, HomeComponent, FooterComponent, HeaderComponent, TagsComponent],
   imports: [
     AuthorModule,
     FormsModule,
@@ -31,4 +32,4 @@ import { QuillModule } from 'ngx-quill';
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

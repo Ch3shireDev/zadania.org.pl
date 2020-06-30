@@ -1,6 +1,10 @@
 <div *ngIf="problem">
     <h1>{{ problem.title }}</h1>
     <div [innerHtml]="problem.content|safeHtml"></div>
+    <div class="problem-tags">
+        <div *ngFor="let tag of problem.tags" class="tag-element clickable" routerLink="/problems/browse" [queryParams]="{tags: tag.url}">{{tag.name}}</div>
+
+    </div>
 
     <div>
         <p>

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
 
@@ -22,9 +24,41 @@ namespace ResourceAPI.Controllers
         private SqlContext Context { get; }
 
         [HttpGet]
-        public ActionResult Get()
+        public ActionResult Browse([FromQuery] string tags = null, [FromQuery] int page = 1)
         {
-            return Get(0, 10);
+            var tag = tags;
+            var problemsQuery = Context.Problems.AsQueryable();
+
+            if (tags != null)
+                problemsQuery = problemsQuery
+                    .Where(p => p.ProblemTags.Select(pt => pt.Tag.Url)
+                        .Any(t => t == tag));
+
+            var resultQuery = problemsQuery
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Title,
+                    p.Content,
+                    Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray()
+                }
+                );
+
+            var num = resultQuery.Count();
+
+            var lastRecordIndex = page * 10;
+            var firstRecordIndex = lastRecordIndex - 10;
+
+            var subQuery = resultQuery;
+            if (firstRecordIndex < num) subQuery = subQuery.Skip(firstRecordIndex);
+            if (lastRecordIndex < num) subQuery = subQuery.Take(10);
+
+            return StatusCode(200, new
+            {
+                pageNum = page,
+                totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1,
+                problems = subQuery.ToArray()
+            });
         }
 
         [HttpGet]
@@ -47,21 +81,24 @@ namespace ResourceAPI.Controllers
         {
             if (!Context.Problems.Any()) return StatusCode(204);
             var max = Context.Problems.Select(problem => problem.Id).Max();
-            var problems = Context.Problems.Where(problem => problem.Id > max - num).ToArray().Reverse();
+            var problems = Context.Problems
+                .Include(p => p.ProblemTags)
+                .Where(problem => problem.Id > max - num)
+                .Select(p =>
+                    new Problem
+                    {
+                        Id = p.Id,
+                        Content = p.Content,
+                        Title = p.Title,
+                        Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray()
+                    }
+                )
+                .ToArray()
+                .Reverse()
+                .ToArray();
 
-            var tags = Context.Tags.ToList();
-
-            foreach (var tag in tags) tag.Parent = null;
-
-            foreach (var problem in problems)
-            {
-                problem.Tags = tags.Where(tag => tag.ParentId == problem.Id).ToList();
-
-
-                if (problem.Author == null) continue;
-                problem.Author.Problems = null;
-                problem.Author.Answers = null;
-            }
+            //var pcs = Context.ProblemTags.ToArray();
+            //var tags = Context.Tags.ToArray();
 
             return StatusCode(200, problems);
         }
@@ -71,30 +108,42 @@ namespace ResourceAPI.Controllers
         public ActionResult Get(int id)
         {
             if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
-            var problem = Context.Problems.First(p => p.Id == id);
+            var problem = Context.Problems
+                .Select(p => new Problem
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Content = p.Content,
+                    Answers = p.Answers,
+                    Author = p.Author.NoLists(),
+                    Created = p.Created,
+                    Edited = p.Edited,
+                    Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray()
+                })
+                .First(p => p.Id == id);
 
             var author = AuthorsController.GetAuthor(HttpContext, Context);
             if (author != null) problem.UserVote = author.GetVote(Context, problem);
 
-            if (problem.AuthorId != 0)
-            {
-                problem.Author = Context.Authors.FirstOrDefault(a => a.Id == problem.AuthorId);
-                if (problem.Author != null)
-                {
-                    problem.Author.Problems = null;
-                    problem.Author.Answers = null;
-                }
-            }
+            //if (problem.AuthorId != 0)
+            //{
+            //    problem.Author = Context.Authors.FirstOrDefault(a => a.Id == problem.AuthorId);
+            //    if (problem.Author != null)
+            //    {
+            //        problem.Author.Problems = null;
+            //        problem.Author.Answers = null;
+            //    }
+            //}
 
-            var answers = Context.Answers.Where(answer => answer.Parent == problem).ToArray().Reverse().ToList();
-            foreach (var answer in answers)
-            {
-                answer.Parent = null;
-                answer.Author.Answers = null;
-                answer.Author.Problems = null;
-            }
+            //var answers = Context.Answers.Where(answer => answer.Parent == problem).ToArray().Reverse().ToList();
+            //foreach (var answer in answers)
+            //{
+            //    answer.Parent = null;
+            //    answer.Author.Answers = null;
+            //    answer.Author.Problems = null;
+            //}
 
-            problem.Answers = answers;
+            //problem.Answers = answers;
 
             return StatusCode(200, problem);
         }
@@ -108,18 +157,32 @@ namespace ResourceAPI.Controllers
             var author = AuthorsController.GetAuthor(HttpContext, Context);
             if (author == null) return StatusCode(403);
 
-            TagsController.RefreshTags(problem, Context);
+            problem.ProblemTags = RefreshTags(problem).ToArray();
 
             problem.Created = DateTime.Now;
             problem.Author = author;
             problem.AuthorId = author.Id;
-
 
             author.Problems.Add(problem);
             Context.Authors.Update(author);
             Context.Problems.Add(problem);
             Context.SaveChanges();
             return StatusCode(201);
+        }
+
+        private IEnumerable<ProblemTag> RefreshTags(Problem problem)
+        {
+            return RefreshTags(problem, Context);
+        }
+
+        public static IEnumerable<ProblemTag> RefreshTags(Problem problem, SqlContext context)
+        {
+            foreach (var tag in problem.Tags)
+            {
+                tag.Url = tag.GenerateUrl();
+                var existing = context.Tags.Find(tag.Url) ?? tag;
+                yield return new ProblemTag { Problem = problem, Tag = existing };
+            }
         }
 
         [HttpPut]
@@ -157,7 +220,7 @@ namespace ResourceAPI.Controllers
         public ActionResult Points(int id)
         {
             var points = Context.Problems.First(problem => problem.Id == id).Points;
-            return StatusCode(200, new {points});
+            return StatusCode(200, new { points });
         }
 
         [HttpPut]
@@ -191,7 +254,7 @@ namespace ResourceAPI.Controllers
             if (vote == Models.Vote.Downvote) problem.Points--;
             Context.Problems.Update(problem);
             Context.SaveChanges();
-            return StatusCode(200, new {points = problem.Points});
+            return StatusCode(200, new { points = problem.Points });
 
             //var author = AuthorsController.GetAuthor(HttpContext.User, Context);
             //var containsKey = author.VotedProblems.Any(voted => voted.ElementId == problem.Id);

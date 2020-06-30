@@ -11,6 +11,7 @@
 
 .body {
     flex-grow: 1;
+    display: flex;
 }
 
 .body-content {
@@ -52,8 +53,16 @@
         padding: 0;
         width: 100%;
         border: 0;
+        min-width: 100% !important;
     }
     .body-content div {
         padding: 0 20px 20px;
     }
+}
+
+.sidebar {
+    min-width: 200px;
+    border-right: 1px solid #444;
+    background: rgba(0, 0, 0, 0.349);
+    height: 100%;
 }

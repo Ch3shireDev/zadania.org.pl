@@ -50,12 +50,13 @@ namespace ResourceAPI.Controllers
 
             var i = 0;
             var n = dirs.Count;
-            foreach (var dir in dirs)
+            foreach (var dir in dirs.OrderBy(a => Guid.NewGuid()).ToList())
             {
                 i++;
                 ReadDirectory(dir, author);
                 Console.WriteLine($"{i}/{n} {dir.Substring(dir.Length - 50, 50)}");
-                if (i > 100) break;
+                if (i % 100 == 0) context.SaveChanges();
+                if (i > 200) break;
             }
 
             context.SaveChanges();
@@ -104,13 +105,17 @@ namespace ResourceAPI.Controllers
             var exercise = TextReplace(exerciseText, dir);
             var solution = TextReplace(solutionText, dir);
 
-            var title = exerciseText.Substring(0, 50);
+            var title = "";
+            if (exerciseText.Length > 100) title = exerciseText.Substring(0, 100);
+            else title = exerciseText;
             var titleList = title.Split(' ').Where(word => word.Length > 0 && !Regex.IsMatch(word, @"[\!\(\)]"))
-                .Take(2);
+                .Take(5);
             title = string.Join(' ', titleList) + "...";
 
-            if (exercise.Length > 1024 * 1024) return;
-            if (solution.Length > 1024 * 1024) return;
+            if (exercise.Length > 64 * 1024) return;
+            if (solution.Length > 64 * 1024) return;
+
+            var category = dir.Split('\\').TakeLast(2).First();
 
             var problem = new Problem
             {
@@ -118,8 +123,15 @@ namespace ResourceAPI.Controllers
                 Content = exercise,
                 Created = DateTime.Now,
                 AuthorId = author.Id,
-                Author = author
+                Author = author,
+                Source = "zadania.info",
+                Tags = new[] {new Tag {Name = "zadania.info"}, new Tag {Name = "Matematyka"}, new Tag {Name = category}}
             };
+
+            problem.ProblemTags = ProblemsController.RefreshTags(problem, context).ToArray();
+            problem.Tags = null;
+
+            //TagsController.RefreshTags(problem,context);
 
             var answer = new Answer
             {
@@ -131,9 +143,9 @@ namespace ResourceAPI.Controllers
                 IsApproved = true
             };
 
-            problem.Answers.Add(answer);
-
+            problem.Answers = new[] {answer};
             context.Problems.Add(problem);
+            //context.SaveChanges();
         }
     }
 }

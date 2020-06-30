@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.Models;
 
 namespace ResourceAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class TagsController : ControllerBase
     {
@@ -20,24 +18,21 @@ namespace ResourceAPI.Controllers
 
         private SqlContext Context { get; }
 
-        public static void RefreshTags(Problem problem, SqlContext context)
+        [HttpGet]
+        public ActionResult GetTags()
         {
-            if (problem.Tags == null) return;
-            var list = new List<Tag>();
-            foreach (var tag in problem.Tags)
-            {
-                var tagElement = context.Tags.FirstOrDefault(element => element.Name == tag.Name);
-                if (tagElement == null)
+            var tags = Context.Tags.Select(t =>
+                new
                 {
-                    tagElement = tag;
-                    context.Tags.Add(tagElement);
-                }
+                    t.Name,
+                    t.Url,
+                    t.ProblemCategories.Count
+                })
+                .OrderByDescending(t=>t.Count)
+                .Take(10)
+                .ToArray();
 
-                tagElement.Parent = problem;
-                list.Add(tagElement);
-            }
-
-            problem.Tags = list;
+            return StatusCode(200, tags);
         }
     }
 }

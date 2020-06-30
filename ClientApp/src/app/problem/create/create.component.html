@@ -8,6 +8,10 @@
 
 <app-editor [problem]="problem"></app-editor>
 
+<div *ngIf="errorMessage" class="error-container">
+    <p>{{errorMessage}}</p>
+</div>
+
 <div>
     <button (click)="submit()">Wyślij</button>
     <button (click)="goBack()">Wróć</button>

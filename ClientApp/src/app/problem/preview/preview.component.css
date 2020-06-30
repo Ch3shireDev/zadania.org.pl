@@ -1,9 +1,9 @@
 .problem-preview {
     max-height: 400px;
     overflow-y: auto;
-    margin-bottom: 1rem;
 }
 
 .problem-tags {
-    padding: 1rem 0;
+    /* padding: 1rem 0; */
+    margin-bottom: 0.5rem;
 }

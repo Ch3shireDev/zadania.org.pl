@@ -1,7 +1,5 @@
 <div>
-    <h5>
-        <a routerLink="/problems/{{ problem.id }}">{{ problem.title }}</a>
-    </h5>
+    <h3>{{ problem.title }} </h3>
 </div>
 <div [innerHTML]="problem.content | safeHtml" class="problem-preview"></div>
 
@@ -13,7 +11,7 @@
     <!-- <small>{{ problem.created | date }}</small> -->
     <small *ngIf="problem.author">{{ problem.author.name }}</small>
 </div>
-
+<!--
 <div *ngIf="showControls">
     <button routerLink="/problems/{{ problem.id }}">
     Wyświetl
@@ -24,4 +22,4 @@
     <button routerLink="/problems/{{ problem.id }}/delete">
     Usuń
   </button>
-</div>
+</div> -->

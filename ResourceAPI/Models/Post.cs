@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MySql.Data.EntityFrameworkCore.DataAnnotations;
 
 namespace ResourceAPI.Models
 {
@@ -9,7 +10,10 @@ namespace ResourceAPI.Models
     {
         public int Id { get; set; }
 
-        [DataType(DataType.MultilineText)] public string Content { get; set; }
+        [Column(TypeName = "text")]
+        [StringLength(1024 * 64)]
+        [MySqlCharset("utf8")]
+        public string Content { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
         public int Points { get; set; }

@@ -1,0 +1,1 @@
+ssh root@zadania.org.pl -L 3306:127.0.0.1:3306 -N

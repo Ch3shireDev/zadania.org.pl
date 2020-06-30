@@ -38,19 +38,15 @@ h3,
 h4,
 h5,
 h6 {
-    margin-top: 1rem;
+    /* margin-top: 1rem; */
+    margin: 0;
 }
 
 .container {
     width: 100%;
-    border-bottom: 1px solid #444;
     padding: 1rem 0;
     display: block;
     width: auto;
-}
-
-.container:last-child {
-    border-bottom: none;
 }
 
 a {

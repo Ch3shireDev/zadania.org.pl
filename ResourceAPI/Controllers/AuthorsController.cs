@@ -62,7 +62,8 @@ namespace ResourceAPI.Controllers
         public static Author GetAuthor(HttpContext httpContext, SqlContext context)
         {
             var httpContextUser = httpContext.User;
-            var idClaim = httpContextUser.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier);
+            var idClaim = httpContextUser.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+            if (idClaim == null) return null;
             var nameIdentifier = idClaim.Value;
 
             if (!context.Authors.Any(profile => profile.UserId == nameIdentifier))

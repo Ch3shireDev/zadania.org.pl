@@ -10,21 +10,24 @@ import { AnswerService } from '../answer.service';
 export class DeleteComponent implements OnInit {
   @Input() answer: Answer;
   @Input() parentId: number;
-  @Output() close: EventEmitter<boolean> = new EventEmitter();
+  @Output() closeChange: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private answerService: AnswerService) {}
+  @Input() isCreate: boolean;
+  @Output() isCreateChange = new EventEmitter<boolean>();
 
-  ngOnInit(): void {}
+  constructor(private answerService: AnswerService) { }
+
+  ngOnInit(): void { }
 
   submit() {
     this.answerService
       .deleteAnswer(this.parentId, this.answer.id)
       .subscribe((res) => {
-        this.close.emit(true);
+        this.closeChange.emit(true);
       });
   }
 
   goBack() {
-    this.close.emit(false);
+    this.closeChange.emit(false);
   }
 }

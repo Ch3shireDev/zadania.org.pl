@@ -1,17 +1,28 @@
 <div *ngIf="problem">
     <h1>{{ problem.title }}</h1>
     <div [innerHtml]="problem.content|safeHtml"></div>
+
+    <div class="preview-footer-container">
+      <div class="problem-preview-points" (click)="$event.stopPropagation()">
+        <small><b>Punkty: </b>{{problem.points}}</small>
+        <div class="points-container" *ngIf="authService.loggedIn">
+        <button class="button-vote" (click)="downvote($event)" [class.downvote]="problem.userDownvoted">-</button>
+        <button class="button-vote" (click)="upvote($event)" [class.upvote]="problem.userUpvoted">+</button>
+      </div>
+      </div>
+      <div class="problem-author">
+        <small *ngIf="problem.author"><b>Autor:</b> {{ problem.author.name }}</small>
+      </div>
+      </div>
+
+
     <div class="problem-tags">
-        <div *ngFor="let tag of problem.tags" class="tag-element clickable" routerLink="/problems/browse" [queryParams]="{tags: tag.url}">{{tag.name}}</div>
+        <div *ngFor="let tag of problem.tags" class="tag-element clickable" routerLink="/problems/browse" [queryParams]="{tags: tag.url}">
+            {{tag.name}}
+        </div>
 
     </div>
-
-    <div>
-        <p>
-            <small><a routerLink="/authors/{{ problem.author.id }}">
-          {{problem.author.name}}
-        </a></small>
-        </p>
+    <div class="preview-points-container">
         <p>
             <small>Utworzono: {{ problem.created | date }}</small>
         </p>
@@ -21,10 +32,11 @@
 
     </div>
     <div>
-        <app-points [element]="problem" (upvote)="upvote()" (downvote)="downvote()"></app-points>
-        <button routerLink="edit">Edytuj</button>
-        <button routerLink="delete">Usuń</button>
+        <div *ngIf="isAuthor">
+            <button routerLink="edit">Edytuj</button>
+            <button routerLink="delete">Usuń</button>
+        </div>
         <button routerLink="..">Wróć</button>
-        <app-answer *ngIf="problem" [answers]="problem.answers" [parentId]="id"></app-answer>
+        <app-answer *ngIf="problem" [answers]="problem.answers" [parentId]="id" (reloadChange)="reload()"></app-answer>
     </div>
 </div>

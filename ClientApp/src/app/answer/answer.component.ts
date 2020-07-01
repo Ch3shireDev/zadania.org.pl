@@ -1,6 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Answer } from './answer';
 import { AnswerService } from './answer.service';
+import { ShowState } from './show-state';
+import { AuthService } from '../auth.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-answer',
@@ -11,18 +14,36 @@ export class AnswerComponent implements OnInit {
   @Input() answers: Answer[];
   @Input() parentId: number;
   @Input() isCreate: boolean;
+  state = ShowState.Show;
 
-  constructor(private answerService: AnswerService) {}
+  public ShowStates = ShowState;
+  @Output() reloadChange: EventEmitter<any> = new EventEmitter();
+
+  constructor(private answerService: AnswerService, private authService: AuthService, private location: Location) { }
+
+  changeState(event) {
+    this.state = event;
+  }
 
   ngOnInit(): void {
     console.log(this.answers);
   }
 
   addAnswer() {
-    this.isCreate = true;
+    this.authService.isAuthenticated$.subscribe(res => {
+      if (res) {
+
+        this.state = ShowState.Create;
+        this.isCreate = true;
+      }
+      else {
+        this.authService.login(this.location.path());
+      }
+    });
   }
 
   onClose(event) {
+    this.state = ShowState.Show;
     this.isCreate = false;
     if (event) {
       this.answerService.getAnswers(this.parentId).subscribe((answers) => {
@@ -31,4 +52,7 @@ export class AnswerComponent implements OnInit {
     }
   }
 
+  onReload(event) {
+    this.reloadChange.emit(event);
+  }
 }

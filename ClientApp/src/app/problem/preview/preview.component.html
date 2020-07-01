@@ -3,14 +3,23 @@
 </div>
 <div [innerHTML]="problem.content | safeHtml" class="problem-preview"></div>
 
-<div>
+<div class="preview-footer-container">
+<div class="problem-preview-points" (click)="$event.stopPropagation()">
+  <small><b>Punkty: </b>{{problem.points}}</small>
+  <div class="points-container" *ngIf="authService.loggedIn">
+  <button class="button-vote" (click)="downvote($event)" [class.downvote]="problem.userDownvoted">-</button>
+  <button class="button-vote" (click)="upvote($event)" [class.upvote]="problem.userUpvoted">+</button>
+</div>
+</div>
+<div class="problem-author">
+  <!-- <small>{{ problem.created | date }}</small> -->
+  <small *ngIf="problem.author"><b>Autor:</b> {{ problem.author.name }}</small>
+</div>
+</div>
+<div class="problem-tags">
     <div *ngFor="let tag of problem.tags" class="tag-element">{{tag.name}}</div>
 </div>
 
-<div class="problem-tags">
-    <!-- <small>{{ problem.created | date }}</small> -->
-    <small *ngIf="problem.author">{{ problem.author.name }}</small>
-</div>
 <!--
 <div *ngIf="showControls">
     <button routerLink="/problems/{{ problem.id }}">

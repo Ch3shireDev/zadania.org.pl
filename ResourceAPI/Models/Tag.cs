@@ -18,14 +18,14 @@ namespace ResourceAPI.Models
         public string GenerateUrl()
         {
             var url = Name
-                .ToLowerInvariant()
-                .Replace("ą", "a")
-                .Replace("ę", "e")
-                .Replace("ł", "l")
-                .Replace("ó", "o")
-                .Replace("ź", "z")
-                .Replace("ż", "z")
-                .Replace("ś", "s")
+                    .ToLowerInvariant()
+                    .Replace("ą", "a")
+                    .Replace("ę", "e")
+                    .Replace("ł", "l")
+                    .Replace("ó", "o")
+                    .Replace("ź", "z")
+                    .Replace("ż", "z")
+                    .Replace("ś", "s")
                 ;
             return Regex.Replace(url, @"[^a-z\d]+", "_");
         }

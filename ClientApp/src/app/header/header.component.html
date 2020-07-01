@@ -4,7 +4,8 @@
             <a routerLink="/">Zadania.org.pl</a>
         </li>
         <li> <a routerLink="/problems" routerLinkActive="active">Przeglądaj pytania</a></li>
-        <li> <a routerLink="/problems/create" routerLinkActive="active">Zadaj nowe pytanie</a></li>
+        <li *ngIf="auth.loggedIn"><a routerLink="/problems/create" routerLinkActive="active">Zadaj nowe pytanie</a></li>
+        <li *ngIf="!auth.loggedIn"><a (click)="auth.login('/problems/create')" class="clickable">Zadaj nowe pytanie (wymaga logowania)</a></li>
     </ul>
     <ul class="right">
         <li *ngIf="auth.userProfile$ | async as profile">

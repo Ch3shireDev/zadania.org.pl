@@ -1,21 +1,38 @@
 <div *ngIf="state === showState.Show">
+
     <div [class.approved-answer]="answer.isApproved" class="answer-container">
         <h3 *ngIf="answer.isApproved">Zatwierdzona odpowiedź</h3>
+        <h4 *ngIf="!answer.isApproved">Odpowiedź</h4>
         <div [innerHtml]="answer.content | safeHtml"> </div>
-        <p>
-            <small *ngIf="answer.author">
-      <a routerLink="/authors/{{ answer.author.id }}">{{
-        answer.author.name
-      }}</a>
-    </small>
-        </p>
-        <div>
-            <app-points [element]="answer" (upvote)="onUpvote()" (downvote)="onDownvote()"></app-points>
+
+
+        <div class="preview-footer-container">
+          <div class="problem-preview-points" (click)="$event.stopPropagation()">
+            <small><b>Punkty: </b>{{answer.points}}</small>
+            <div class="points-container" *ngIf="authService.loggedIn">
+            <button class="button-vote" (click)="downvote($event)" [class.downvote]="answer.userDownvoted">-</button>
+            <button class="button-vote" (click)="upvote($event)" [class.upvote]="answer.userUpvoted">+</button>
+          </div>
+          </div>
+          <div class="problem-author">
+            <small *ngIf="answer.author"><b>Autor:</b> {{ answer.author.name }}</small>
+          </div>
+          </div>
+
+
+
+        <div *ngIf="answer.author.userId===sub">
             <button (click)="onEdit()">Edytuj</button>
             <button (click)="onDelete()">Usuń</button>
         </div>
+
+        <div>
+            <button (click)="approveAnswer()" *ngIf="!answer.isApproved">Zatwierdź odpowiedź</button>
+            <button (click)="disapproveAnswer()" *ngIf="answer.isApproved">Unieważnij odpowiedź</button>
+        </div>
     </div>
 </div>
+
 
 <div *ngIf="state === showState.Edit">
     <app-edit [answer]="answer" [parentId]="parentId" (close)="onEditClose($event)"></app-edit>

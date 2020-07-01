@@ -19,6 +19,9 @@ namespace ResourceAPI.Models
         public List<Problem> Problems { get; set; } = new List<Problem>();
         public List<Answer> Answers { get; set; } = new List<Answer>();
 
+        public List<ProblemVote> ProblemVotes { get; set; } = new List<ProblemVote>();
+        public List<AnswerVote> AnswerVotes { get; set; } = new List<AnswerVote>();
+
         public List<VoteElement> VotedProblems { get; set; } = new List<VoteElement>();
 
         public Author NoLists()
@@ -31,6 +34,7 @@ namespace ResourceAPI.Models
 
         public Vote GetVote(SqlContext context, Problem element)
         {
+            if (VotedProblems == null) return Vote.None;
             if (VotedProblems.All(vote => vote.ElementId != element.Id)) return Vote.None;
             return VotedProblems.First(vote => vote.ElementId == element.Id).Vote;
         }

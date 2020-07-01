@@ -9,8 +9,10 @@ using ResourceAPI.Models;
 
 namespace ResourceAPI.Controllers
 {
+#if DEBUG
     [Route("api/v1/[controller]")]
     [ApiController]
+#endif
     public class AdminController : ControllerBase
     {
         public AdminController(ILogger<ProblemsController> logger, SqlContext context)
@@ -21,6 +23,20 @@ namespace ResourceAPI.Controllers
 
         private ILogger<ProblemsController> logger { get; }
         private SqlContext context { get; }
+
+        [HttpPost]
+        [Route("cleanTags")]
+        public ActionResult CleanTags()
+        {
+            var pt = context.ProblemTags.Where(pt => pt.Problem == null || pt.Tag == null);
+            context.ProblemTags.RemoveRange(pt);
+            context.SaveChanges();
+
+            var tags = context.Tags.Where(t => t.ProblemCategories.Count == 0);
+            context.Tags.RemoveRange(tags);
+            context.SaveChanges();
+            return StatusCode(200);
+        }
 
         private IList<string> ScanDirs(string parentDir)
         {
@@ -35,7 +51,7 @@ namespace ResourceAPI.Controllers
         [HttpPost]
         [Route("upload")]
 #endif
-        public ActionResult PostFiles()
+        public ActionResult PostFiles([FromQuery] string all = null)
         {
             var curr = Directory.GetCurrentDirectory();
             var dirs = ScanDirs(Path.Join(curr, "../zadania.info/zadania-info"));
@@ -56,7 +72,7 @@ namespace ResourceAPI.Controllers
                 ReadDirectory(dir, author);
                 Console.WriteLine($"{i}/{n} {dir.Substring(dir.Length - 50, 50)}");
                 if (i % 100 == 0) context.SaveChanges();
-                if (i > 200) break;
+                //if (i > 200 && all!=null) break;
             }
 
             context.SaveChanges();
@@ -105,9 +121,10 @@ namespace ResourceAPI.Controllers
             var exercise = TextReplace(exerciseText, dir);
             var solution = TextReplace(solutionText, dir);
 
-            var title = "";
-            if (exerciseText.Length > 100) title = exerciseText.Substring(0, 100);
-            else title = exerciseText;
+            var title = exerciseText.Split("\n").First();
+
+            if (title.Length > 100) title = title.Substring(0, 100);
+
             var titleList = title.Split(' ').Where(word => word.Length > 0 && !Regex.IsMatch(word, @"[\!\(\)]"))
                 .Take(5);
             title = string.Join(' ', titleList) + "...";

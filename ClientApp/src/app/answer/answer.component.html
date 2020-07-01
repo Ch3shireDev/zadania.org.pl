@@ -1,13 +1,11 @@
-<div *ngIf="isCreate">
+<div *ngIf="state===ShowStates.Create">
     <app-create [parentId]="parentId" (close)="onClose($event)"></app-create>
 </div>
-<!-- <div>
-    <h3>Odpowiedzi</h3>
-    <div>
-    </div>
-</div> -->
-<app-browse [answers]="answers" [parentId]="parentId"></app-browse>
 
-<button (click)="addAnswer()" *ngIf="!isCreate">
+<div>
+    <app-browse [answers]="answers" [parentId]="parentId" [(isCreate)]="isCreate" (state)="changeState($event)" (reloadChange)="onReload($event)"></app-browse>
+</div>
+
+<button (click)="addAnswer()" *ngIf="state===ShowStates.Show">
   Dodaj odpowiedź
 </button>

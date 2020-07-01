@@ -31,8 +31,8 @@ export class BrowseComponent implements OnInit, AfterViewInit {
   }
 
   getAllProblems(params=null) {
-    console.log('xxx');
-    console.log(params);
+    // console.log('xxx');
+    // console.log(params);
     this.problemService.getProblems(params).subscribe((res) => {
       this.pageNum = res.pageNum;
       this.totalPages = res.totalPages;
@@ -64,7 +64,7 @@ export class BrowseComponent implements OnInit, AfterViewInit {
   setPage(page) {
     const tags = this.activatedRoute.snapshot.queryParams.tags;
     const queryParams = { tags, page };
-    console.log(queryParams);
+    // console.log(queryParams);
     this.router.navigate(['/problems/browse'], { queryParams });
   }
 }

@@ -6,15 +6,15 @@ p {
 
 .approved-answer {
     background: rgb(153, 255, 153);
-    padding: 0.5rem 1rem;
-    left: -1rem;
-    position: relative;
-    width: 100%;
-    border: 1px solid #444;
 }
 
 .answer-container {
-    position: relative;
     padding-top: 0.5rem;
     padding-bottom: 1rem;
+    border: 1px solid #444;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    position: relative;
+    left: -1rem;
+    width: 100%;
 }

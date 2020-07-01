@@ -22,13 +22,13 @@ namespace ResourceAPI.Controllers
         public ActionResult GetTags()
         {
             var tags = Context.Tags.Select(t =>
-                new
-                {
-                    t.Name,
-                    t.Url,
-                    t.ProblemCategories.Count
-                })
-                .OrderByDescending(t=>t.Count)
+                    new
+                    {
+                        t.Name,
+                        t.Url,
+                        t.ProblemCategories.Count
+                    })
+                .OrderByDescending(t => t.Count)
                 .Take(10)
                 .ToArray();
 

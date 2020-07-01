@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 export class AnswerService {
   url = `${environment.url}/api/v1`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAnswers(parentId: number): Observable<Answer[]> {
     return this.http.get<Answer[]>(`${this.url}/problems/${parentId}/answers`);
@@ -38,17 +38,33 @@ export class AnswerService {
     );
   }
 
-  upvoteAnswer(parentId: number, answerId: number) {
-    return this.http.put(
+  upvoteAnswer(answer: Answer) {
+    const parentId = answer.parentId;
+    const answerId = answer.id;
+    return this.http.post(
       `${this.url}/problems/${parentId}/answers/${answerId}/upvote`,
       {}
     );
   }
 
-  downvoteAnswer(parentId: number, answerId: number) {
-    return this.http.put(
+  downvoteAnswer(answer: Answer) {
+    const parentId = answer.parentId;
+    const answerId = answer.id;
+    return this.http.post(
       `${this.url}/problems/${parentId}/answers/${answerId}/downvote`,
       {}
     );
+  }
+
+  approveAnswer(answer: Answer): Observable<any> {
+    const answerId = answer.id;
+    const problemId = answer.parentId;
+    return this.http.post(`${this.url}/problems/${problemId}/answers/${answerId}/approve`, {});
+  }
+
+  disapproveAnswer(answer: Answer): Observable<any> {
+    const answerId = answer.id;
+    const problemId = answer.parentId;
+    return this.http.post(`${this.url}/problems/${problemId}/answers/${answerId}/disapprove`, {});
   }
 }

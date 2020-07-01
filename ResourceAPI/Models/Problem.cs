@@ -14,6 +14,8 @@ namespace ResourceAPI.Models
 
         public ICollection<ProblemTag> ProblemTags { get; set; }
 
+        public ICollection<ProblemVote> ProblemVotes { get; set; }
+
         public Problem Serializable<TResult>(int depth = 0)
         {
             Answers = Answers.Select(a => a.Serializable()).ToArray();

@@ -20,11 +20,13 @@ export class ProblemService {
   constructor(private http: HttpClient) { }
 
 
-  downvoteProblem(id: number) {
-    return this.http.put(`${this.url}/problems/${id}/downvote`, {});
+  downvoteProblem(problem: Problem) {
+    const id = problem.id;
+    return this.http.post(`${this.url}/problems/${id}/downvote`, {});
   }
-  upvoteProblem(id: number) {
-    return this.http.put(`${this.url}/problems/${id}/upvote`, {});
+  upvoteProblem(problem: Problem) {
+    const id = problem.id;
+    return this.http.post(`${this.url}/problems/${id}/upvote`, {});
   }
 
   getProblems(params: any = null): Observable<BrowseResult> {
@@ -37,7 +39,7 @@ export class ProblemService {
   }
 
   postProblem(problem: Problem) {
-    console.log(this.url);
+    // console.log(this.url);
     return this.http.post(`${this.url}/problems`, problem);
   }
 

@@ -13,4 +13,7 @@ export class Problem {
   public answers: Answer[];
   public author: Author;
   public tags = [];
+
+  public userUpvoted: boolean;
+  public userDownvoted: boolean;
 }

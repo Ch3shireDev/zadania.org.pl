@@ -24,29 +24,48 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult Get(int problemId)
         {
-            var answers = Context.Answers.Where(answer => answer.Parent.Id == problemId).ToArray().Reverse().ToList();
-
-            foreach (var answer in answers)
+            var answers = Context.Answers.Where(answer => answer.Parent.Id == problemId).Select(a => new
             {
-                answer.Parent = null;
-                if (answer.Author == null) continue;
-                answer.Author.Problems = null;
-                answer.Author.Answers = null;
-            }
+                a.Id,
+                a.ParentId,
+                a.Content,
+                a.AuthorId,
+                Author = new {a.Author.UserId, a.Author.Id, a.Author.Name, a.Author.Email},
+                //Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
+                //Author = new { p.Author.Name, p.Author.UserId, p.Author.Email, p.Author.Id },
+                Points = a.AnswerVotes.Count(pv => pv.Vote == Models.Vote.Upvote) -
+                         a.AnswerVotes.Count(pv => pv.Vote == Models.Vote.Downvote),
+                UserUpvoted = a.AnswerVotes.Any(pv => pv.Vote == Models.Vote.Upvote),
+                UserDownvoted = a.AnswerVotes.Any(pv => pv.Vote == Models.Vote.Downvote)
+            }).OrderByDescending(a => a.Points);
 
-            return StatusCode(200, answers);
+            return StatusCode(200, answers.ToArray());
         }
 
         [HttpGet]
         [Route("{answerId}")]
         public ActionResult Get(int problemId, int answerId)
         {
-            var result = Context.Answers.First(answer => answer.Id == answerId);
+            var result = Context.Answers.Select(a => new
+            {
+                a.Id,
+                a.ParentId,
+                a.IsApproved,
+                a.Content,
+                a.Points,
+                a.Edited,
+                a.Created,
+                a.AuthorId,
+                Author = new
+                {
+                    a.Author.Id,
+                    a.Author.Name,
+                    a.Author.UserId,
+                    a.Author.Email
+                }
+            }).FirstOrDefault(a => a.ParentId == problemId && a.Id == answerId);
+            if (result == null) return StatusCode(404);
             if (!(result.AuthorId > 0)) return StatusCode(200, result);
-            result.Author = Context.Authors.FirstOrDefault(author => author.Id == result.AuthorId);
-            if (result.Author == null) return StatusCode(200, result);
-            result.Author.Problems = null;
-            result.Author.Answers = null;
             return StatusCode(200, result);
         }
 
@@ -122,6 +141,79 @@ namespace ResourceAPI.Controllers
             var answer = Context.Answers.FirstOrDefault(a => a.Id == answerId);
             if (answer == null) return StatusCode(400);
             return StatusCode(200, new {points = answer.Points});
+        }
+
+        [HttpPost]
+        [Route("{answerId}/approve")]
+        [Authorize]
+        public ActionResult ApproveAnswer(int problemId, int answerId)
+        {
+            var author = AuthorsController.GetAuthor(HttpContext, Context);
+
+            var answer = Context.Answers.FirstOrDefault(a =>
+                a.Id == answerId && a.Parent.Id == problemId && a.AuthorId == author.Id);
+            if (answer == null) return StatusCode(403);
+            if (answer.IsApproved) return StatusCode(304);
+            foreach (var a in Context.Answers.Where(a => a.ParentId == problemId))
+                Context.Entry(a).CurrentValues["IsApproved"] = a.Id == answerId;
+            Context.SaveChanges();
+            return StatusCode(200);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("{answerId}/disapprove")]
+        public ActionResult DisapproveAnswer(int problemId, int answerId)
+        {
+            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var answer = Context.Answers.FirstOrDefault(a =>
+                a.Id == answerId && a.Parent.Id == problemId && a.AuthorId == author.Id);
+            if (answer == null) return StatusCode(403);
+            if (!answer.IsApproved) return StatusCode(304);
+            Context.Entry(answer).CurrentValues["IsApproved"] = false;
+
+            Context.SaveChanges();
+            return StatusCode(200);
+        }
+
+
+        [HttpPost]
+        [Route("{answerId}/upvote")]
+        [Authorize]
+        public ActionResult UpvoteAnswer(int id)
+        {
+            return VoteAnswer(id, Models.Vote.Upvote);
+        }
+
+        [HttpPost]
+        [Route("{answerId}/downvote")]
+        [Authorize]
+        public ActionResult DownvoteAnswer(int id)
+        {
+            return VoteAnswer(id, Models.Vote.Downvote);
+        }
+
+        public ActionResult VoteAnswer(int id, Vote vote)
+        {
+            var answer = Context.Answers.FirstOrDefault(p => p.Id == id);
+            if (answer == null) return StatusCode(403);
+            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            if (author == null) return StatusCode(403);
+            var answerVote = Context.AnswerVotes.FirstOrDefault(pv => pv.AuthorId == author.Id && pv.AnswerId == id);
+            if (answerVote == null)
+            {
+                answerVote = new AnswerVote {Author = author, Answer = answer};
+                Context.AnswerVotes.Add(answerVote);
+            }
+            else
+            {
+                answerVote.Vote = answerVote.Vote == vote ? Models.Vote.None : vote;
+                Context.AnswerVotes.Update(answerVote);
+            }
+
+            Context.SaveChanges();
+
+            return StatusCode(200, answerVote.Vote);
         }
     }
 }

@@ -29,6 +29,7 @@ namespace ResourceAPI.Controllers
                         t.ProblemCategories.Count
                     })
                 .OrderByDescending(t => t.Count)
+                .Where(t=>t.Count>0)
                 .Take(10)
                 .ToArray();
 

@@ -205,6 +205,7 @@ namespace ResourceAPI.Controllers
 
         public static IEnumerable<ProblemTag> RefreshTags(Problem problem, SqlContext context)
         {
+            if (problem.Tags == null) yield break;
             foreach (var tag in problem.Tags)
             {
                 tag.Url = tag.GenerateUrl();

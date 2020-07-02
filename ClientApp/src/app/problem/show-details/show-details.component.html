@@ -36,7 +36,7 @@
             <button routerLink="edit">Edytuj</button>
             <button routerLink="delete">Usuń</button>
         </div>
-        <button routerLink="..">Wróć</button>
+        <button (click)="goBack()">Wróć</button>
         <app-answer *ngIf="problem" [answers]="problem.answers" [parentId]="id" (reloadChange)="reload()"></app-answer>
     </div>
 </div>

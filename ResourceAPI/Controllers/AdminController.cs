@@ -164,5 +164,64 @@ namespace ResourceAPI.Controllers
             context.Problems.Add(problem);
             //context.SaveChanges();
         }
+
+#if DEBUG
+        [Route("upload-exercises")]
+        [HttpPost]
+#endif
+        public void LoadMd()
+        {
+            var author = context.Authors.FirstOrDefault(a => a.Name == "Igor Nowicki");
+            var problems = GetProblemsFromDirectory("../../WIT-Zajecia/semestr-2/OAK");
+            foreach (var problem in problems)
+            {
+                problem.Author = author;
+                var tags = ProblemsController.RefreshTags(problem, context);
+                problem.ProblemTags = tags.ToArray();
+                context.Problems.Add(problem);
+            }
+
+            context.SaveChanges();
+        }
+
+        private IEnumerable<Problem> GetProblemsFromDirectory(string dir)
+        {
+            var files = Directory.GetFiles(dir);
+            foreach (var file in files)
+            {
+                var text = System.IO.File.ReadAllText(file).Replace("\r", "");
+                var problems = GetProblemsFromMd(text);
+                foreach (var problem in problems) yield return problem;
+            }
+        }
+
+        private IEnumerable<Problem> GetProblemsFromMd(string text)
+        {
+            var matches = Regex.Matches(text, @"### (Zadanie \d+)[\s\n]*([^#]+)", RegexOptions.Multiline);
+
+            var tags =  new[] {new Tag {Name = "OAK"}, new Tag{Name="WIT"}, new Tag{Name="Informatyka"}, new Tag{Name="Studia"}};
+            foreach (Match match in matches)
+            {
+                var title = match.Groups[1].Value;
+                var content = match.Groups[2].Value;
+                yield return new Problem {Title = title, Content = ToHtml(content),Tags=tags};
+            }
+
+            //var match2 = Regex.Match(text, @"### (Zadanie \d+)[s\n]*([\w\s\S^\#]+?)$");
+            //var m1 = match2.Groups[1].Value;
+            //var m2 = match2.Groups[2].Value;
+            //yield return new Problem {Title = $"Organizacja i architektura komputerów - {m1}", Content = ToHtml(m2), Tags=tags};
+        }
+
+        string ToHtml(string value)
+        {
+            var output = "";
+            foreach (var line in value.Split("\n"))
+            {
+                output += $"<p>{line.Trim()}</p>\n";
+            }
+
+            return output;
+        }
     }
 }

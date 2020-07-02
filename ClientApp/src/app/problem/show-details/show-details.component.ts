@@ -31,7 +31,8 @@ export class ShowDetailsComponent implements OnInit {
   }
 
   goBack() {
-    this.location.back();
+    window.history.back();
+    // this.location.back();
   }
 
 

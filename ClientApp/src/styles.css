@@ -86,6 +86,10 @@ img {
   font-weight: 600;
 }
 
+.tag-element:hover{
+  box-shadow: 0 0 5px #444;
+}
+
 .clickable {
   cursor: pointer;
 }
@@ -134,9 +138,13 @@ background: greenyellow;
   background: rgb(255, 173, 50);
 }
 
+.problem-preview-points:hover, .problem-author:hover{
+  box-shadow: 0 0 5px #444;
+}
+
 .problem-preview-points small, .problem-author small{
-top:1px;
-position: relative;
+/* top:1px; */
+/* position: relative; */
 }
 
 .preview-footer-container {
@@ -146,4 +154,9 @@ position: relative;
 
 .points-container{
   margin-left:1rem;
+}
+
+.points-container{
+  position:relative;
+  top:-1px;
 }

@@ -48,7 +48,8 @@ namespace ResourceAPI.Controllers
                                  p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
                     Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
                     UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                    UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
+                    UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
+                    IsAnswered = p.Answers.Any(a=>a.IsApproved)
                 }
                 ).AsQueryable();
 
@@ -108,8 +109,9 @@ namespace ResourceAPI.Controllers
                                      p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
                             Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
                             UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                            UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
-                        }
+                            UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
+                            IsAnswered = p.Answers.Any(a => a.IsApproved)
+                    }
                     )
                     .Where(problem => problem.Content.Contains(query))
                 .OrderByDescending(problem => problem.Id)
@@ -132,7 +134,8 @@ namespace ResourceAPI.Controllers
                         Id = p.Id,
                         Content = p.Content,
                         Title = p.Title,
-                        Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray()
+                        Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
+                        IsAnswered = p.Answers.Any(a=>a.IsApproved)
                     }
                 )
                 .ToArray()

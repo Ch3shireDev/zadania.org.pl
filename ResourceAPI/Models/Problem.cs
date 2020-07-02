@@ -16,6 +16,7 @@ namespace ResourceAPI.Models
 
         public ICollection<ProblemVote> ProblemVotes { get; set; }
 
+        [NotMapped] public bool IsAnswered { get; set; }
         public Problem Serializable<TResult>(int depth = 0)
         {
             Answers = Answers.Select(a => a.Serializable()).ToArray();

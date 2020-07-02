@@ -160,3 +160,7 @@ background: greenyellow;
   position:relative;
   top:-1px;
 }
+
+.preview-solved{
+  background:rgb(179, 255, 179);
+}

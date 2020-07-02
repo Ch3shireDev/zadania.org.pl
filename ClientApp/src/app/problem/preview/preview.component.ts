@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Problem } from '../problem';
 import { ProblemService } from '../problem.service';
 import { AuthService } from 'src/app/auth.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-preview',
   templateUrl: './preview.component.html',
@@ -10,10 +11,17 @@ import { AuthService } from 'src/app/auth.service';
 export class PreviewComponent implements OnInit {
   @Input() problem: Problem;
   @Input() showControls = true;
+  @Input() showDetails = true;
+  @Input() showContent = true;
 
-  constructor(private problemService: ProblemService, public authService: AuthService) { }
+  constructor(private problemService: ProblemService, public authService: AuthService, public router: Router) { }
 
   ngOnInit(): void { }
+
+  getAuthor(event) {
+    event.stopPropagation();
+    this.router.navigateByUrl(`/authors/${this.problem.author.id}`);
+  }
 
   upvote(event) {
     event.stopPropagation();

@@ -1,5 +1,19 @@
 <div *ngIf="author">
     <h4>Profil użytkownika</h4>
     <p>Imię: {{ author.name }}</p>
+
+    <h5>Zamieszczone zadania:</h5>
+    <div>
+<ul *ngFor="let problem of author.problems">
+  <li><a routerLink="/problems/{{problem.id}}">{{problem.title}}</a></li>
+  <!-- <app-preview [problem]="problem" [showDetails]="false" [showContent]="false"></app-preview> -->
+</ul>
+
+<h5>Zamieszczone rozwiązania:</h5>
+
+<ul *ngFor="let answer of author.answers">
+<li><a routerLink="/problems/{{answer.parentId}}">{{answer.parent.title}}</a></li>
+</ul>
+</div>
     <p><button (click)="goBack()">Wróć</button></p>
 </div>

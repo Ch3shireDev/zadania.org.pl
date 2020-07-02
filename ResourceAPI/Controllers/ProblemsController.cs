@@ -52,7 +52,7 @@ namespace ResourceAPI.Controllers
                 }
                 ).AsQueryable();
 
-            var newest = resultQuery.OrderByDescending(r=>r.Points).Take(10).AsQueryable();
+            var newest = resultQuery.OrderByDescending(r=>r.Points).AsQueryable();
 
             //var points = resultQuery.OrderByDescending(r => r.Points).AsQueryable();
 
@@ -95,7 +95,23 @@ namespace ResourceAPI.Controllers
             if (!Context.Problems.Any()) return StatusCode(204);
 
             var problems = Context.Problems
-                .Where(problem => problem.Content.Contains(query))
+                    .Include(p => p.Author)
+                    .Select(p => new Problem
+                        {
+                            Id = p.Id,
+                            Title = p.Title,
+                            Content = p.Content,
+                            Created = p.Created,
+                            Edited = p.Edited,
+                            Author = new Author { Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id },
+                            Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
+                                     p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
+                            Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
+                            UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
+                            UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
+                        }
+                    )
+                    .Where(problem => problem.Content.Contains(query))
                 .OrderByDescending(problem => problem.Id)
                 .ToArray();
 

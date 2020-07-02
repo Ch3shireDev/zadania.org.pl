@@ -50,12 +50,52 @@ namespace ResourceAPI.Controllers
         }
 
         [HttpGet]
-        [Route("{userId}")]
-        public ActionResult Get(int userId)
+        [Route("{id}")]
+        public ActionResult Get(int id)
         {
-            if (!Context.Authors.Any(p => p.Id == userId)) return StatusCode(404);
-            var profile = Context.Authors.First(p => p.Id == userId);
-            profile.UserId = null;
+            if (!Context.Authors.Any(p => p.Id == id)) return StatusCode(404);
+
+            var problems = Context.Problems
+                .Where(p => p.Author.Id == id)
+                .Select(p => new
+                    {
+                        p.Id,
+                        p.Title,
+                        p.Content,
+                        Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
+                                 p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
+                        p.Created
+                    }
+                )
+                .OrderByDescending(p => p.Created)
+                .Take(10)
+                .ToList();
+
+            var answers = Context.Answers
+                .Where(a => a.Author.Id == id)
+                .Select(a => new
+                {
+                    a.ParentId,
+                    Parent = new {a.Parent.Title},
+                    a.Created
+                })
+                .OrderByDescending(p=>p.Created)
+                .Take(10)
+                .ToList();
+            
+            var profile = Context.Authors
+                .Select(a => new
+                    {
+                        a.Id,
+                        a.UserId,
+                        a.Name,
+                        a.Email,
+                        Problems = problems,
+                        Answers = answers
+                    }
+                )
+                .First(p => p.Id == id);
+
             return StatusCode(200, profile);
         }
 

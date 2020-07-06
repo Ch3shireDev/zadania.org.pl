@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using MySql.Data.EntityFrameworkCore.DataAnnotations;
 
 namespace ResourceAPI.Models
 {
@@ -10,10 +9,12 @@ namespace ResourceAPI.Models
     {
         public int Id { get; set; }
 
-        [Column(TypeName = "text")]
         [StringLength(1024 * 64)]
-        [MySqlCharset("utf8")]
+        [Column("Content")]
         public string Content { get; set; }
+
+        //[NotMapped]
+        public string ContentRaw { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
         public int Points { get; set; }
@@ -24,5 +25,7 @@ namespace ResourceAPI.Models
         public Author Author { get; set; }
         public DateTime Created { get; set; }
         public DateTime Edited { get; set; }
+
+        public ICollection<FileData> FileData { get; set; }
     }
 }

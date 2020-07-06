@@ -10,13 +10,14 @@ namespace ResourceAPI.Models
         public string Source { get; set; }
         public IList<Answer> Answers { get; set; } = new List<Answer>();
 
-        [NotMapped] public ICollection<Tag> Tags { get; set; }
+        [NotMapped] public IEnumerable<Tag> Tags { get; set; }
 
         public ICollection<ProblemTag> ProblemTags { get; set; }
 
         public ICollection<ProblemVote> ProblemVotes { get; set; }
 
         [NotMapped] public bool IsAnswered { get; set; }
+
         public Problem Serializable<TResult>(int depth = 0)
         {
             Answers = Answers.Select(a => a.Serializable()).ToArray();
@@ -35,6 +36,16 @@ namespace ResourceAPI.Models
             Answers = null;
             Tags = null;
             ProblemTags = null;
+            return this;
+        }
+
+        public Problem Render()
+        {
+            Content = SqlContext.Render(ContentRaw, FileData);
+            if (Answers != null)
+                foreach (var answer in Answers)
+                    answer.Render();
+
             return this;
         }
     }

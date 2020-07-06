@@ -23,8 +23,9 @@ namespace ResourceAPI
         {
             services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
-                //options.UseSqlite("Filename=sqlite.db");
-                options.UseMySQL(Configuration.GetConnectionString("Default"));
+                options.UseSqlite("Filename=sqlite.db");
+                options.EnableSensitiveDataLogging();
+                //options.UseMySQL(Configuration.GetConnectionString("Default"));
             });
 
 

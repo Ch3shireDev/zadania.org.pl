@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -74,8 +73,10 @@ namespace ResourceAPI.Controllers
         public ActionResult Post(int problemId, Answer answer)
         {
             if (!Context.Problems.Any(p => p.Id == problemId)) return StatusCode(404);
-            var userId = HttpContext.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-            var author = Context.Authors.First(profile => profile.UserId == userId);
+            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            if (author == null) return StatusCode(403);
+            //var userId = HttpContext.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            //var author = Context.Authors.First(profile => profile.UserId == userId);
             var problem = Context.Problems.First(p => p.Id == problemId);
             answer.Parent = problem;
             answer.Author = author;
@@ -124,6 +125,7 @@ namespace ResourceAPI.Controllers
             return Vote(problemId, answerId, Models.Vote.Downvote);
         }
 
+        [NonAction]
         public ActionResult Vote(int problemId, int answerId, Vote vote)
         {
             var answer = Context.Answers.First(a => a.Id == answerId);

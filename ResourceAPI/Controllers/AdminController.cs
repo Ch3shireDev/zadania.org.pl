@@ -17,24 +17,77 @@ namespace ResourceAPI.Controllers
     {
         public AdminController(ILogger<ProblemsController> logger, SqlContext context)
         {
-            this.logger = logger;
-            this.context = context;
+            Logger = logger;
+            Context = context;
         }
 
-        private ILogger<ProblemsController> logger { get; }
-        private SqlContext context { get; }
+        private ILogger<ProblemsController> Logger { get; }
+        private SqlContext Context { get; }
+#if DEBUG
+        [HttpPost]
+        [Route("upload")]
+#endif
+        public ActionResult PostFiles([FromQuery] string all = null)
+        {
+            var curr = Directory.GetCurrentDirectory();
+            var filePath = Path.Join(curr, "../zadania.info/exercises.md");
+
+            var author = Context.Authors.FirstOrDefault(auth => auth.Name == "zadania.info");
+            if (author == null)
+            {
+                author = new Author {Name = "zadania.info"};
+                Context.Authors.Add(author);
+                Context.SaveChanges();
+            }
+
+            var text = System.IO.File.ReadAllText(filePath);
+            var problems = GetProblemsFromMd(text, filePath);
+
+            var i = 0;
+            foreach (var problem in problems)
+            {
+                Context.AddProblem(problem, author, true);
+                //Context.Problems.Add(problem);
+                i++;
+                if (i % 100 == 0)
+                {
+                    Context.SaveChanges();
+                    Console.WriteLine(i);
+                }
+
+                if (i > 100) break;
+            }
+
+
+            return StatusCode(200);
+
+
+            //var i = 0;
+            //var n = dirs.Count;
+            //foreach (var dir in dirs.OrderBy(a => Guid.NewGuid()).ToList())
+            //{
+            //    i++;
+            //    ReadDirectory(dir, author);
+            //    Console.WriteLine($"{i}/{n} {dir.Substring(dir.Length - 50, 50)}");
+            //    if (i % 100 == 0) Context.SaveChanges();
+            //    //if (i > 200 && all!=null) break;
+            //}
+
+            //Context.SaveChanges();
+            //return StatusCode(200, dirs);
+        }
 
         [HttpPost]
         [Route("cleanTags")]
         public ActionResult CleanTags()
         {
-            var pt = context.ProblemTags.Where(pt => pt.Problem == null || pt.Tag == null);
-            context.ProblemTags.RemoveRange(pt);
-            context.SaveChanges();
+            var pt = Context.ProblemTags.Where(pt => pt.Problem == null || pt.Tag == null);
+            Context.ProblemTags.RemoveRange(pt);
+            Context.SaveChanges();
 
-            var tags = context.Tags.Where(t => t.ProblemCategories.Count == 0);
-            context.Tags.RemoveRange(tags);
-            context.SaveChanges();
+            var tags = Context.Tags.Where(t => t.ProblemTags.Count == 0);
+            Context.Tags.RemoveRange(tags);
+            Context.SaveChanges();
             return StatusCode(200);
         }
 
@@ -47,37 +100,6 @@ namespace ResourceAPI.Controllers
             return list;
         }
 
-#if DEBUG
-        [HttpPost]
-        [Route("upload")]
-#endif
-        public ActionResult PostFiles([FromQuery] string all = null)
-        {
-            var curr = Directory.GetCurrentDirectory();
-            var dirs = ScanDirs(Path.Join(curr, "../zadania.info/zadania-info"));
-
-            var author = context.Authors.FirstOrDefault(auth => auth.Name == "zadania.info");
-            if (author == null)
-            {
-                author = new Author {Name = "zadania.info"};
-                context.Authors.Add(author);
-                context.SaveChanges();
-            }
-
-            var i = 0;
-            var n = dirs.Count;
-            foreach (var dir in dirs.OrderBy(a => Guid.NewGuid()).ToList())
-            {
-                i++;
-                ReadDirectory(dir, author);
-                Console.WriteLine($"{i}/{n} {dir.Substring(dir.Length - 50, 50)}");
-                if (i % 100 == 0) context.SaveChanges();
-                //if (i > 200 && all!=null) break;
-            }
-
-            context.SaveChanges();
-            return StatusCode(200, dirs);
-        }
 
         private string convertImages(string inputText, string dir)
         {
@@ -145,7 +167,7 @@ namespace ResourceAPI.Controllers
                 Tags = new[] {new Tag {Name = "zadania.info"}, new Tag {Name = "Matematyka"}, new Tag {Name = category}}
             };
 
-            problem.ProblemTags = ProblemsController.RefreshTags(problem, context).ToArray();
+            //problem.ProblemTags = ProblemsController.RefreshTags(problem, Context).ToArray();
             problem.Tags = null;
 
             //TagsController.RefreshTags(problem,context);
@@ -161,7 +183,7 @@ namespace ResourceAPI.Controllers
             };
 
             problem.Answers = new[] {answer};
-            context.Problems.Add(problem);
+            Context.Problems.Add(problem);
             //context.SaveChanges();
         }
 
@@ -171,17 +193,10 @@ namespace ResourceAPI.Controllers
 #endif
         public void LoadMd()
         {
-            var author = context.Authors.FirstOrDefault(a => a.Name == "Igor Nowicki");
+            var author = Context.Authors.FirstOrDefault(a => a.Name == "Igor Nowicki");
             var problems = GetProblemsFromDirectory("../../WIT-Zajecia/semestr-2/OAK");
-            foreach (var problem in problems)
-            {
-                problem.Author = author;
-                var tags = ProblemsController.RefreshTags(problem, context);
-                problem.ProblemTags = tags.ToArray();
-                context.Problems.Add(problem);
-            }
-
-            context.SaveChanges();
+            foreach (var problem in problems) Context.AddProblem(problem, author);
+            Context.SaveChanges();
         }
 
         private IEnumerable<Problem> GetProblemsFromDirectory(string dir)
@@ -190,38 +205,92 @@ namespace ResourceAPI.Controllers
             foreach (var file in files)
             {
                 var text = System.IO.File.ReadAllText(file).Replace("\r", "");
-                var problems = GetProblemsFromMd(text);
+                var problems = GetProblemsFromMd(text, dir);
                 foreach (var problem in problems) yield return problem;
             }
         }
 
-        private IEnumerable<Problem> GetProblemsFromMd(string text)
+        private IEnumerable<Problem> GetProblemsFromMd(string text, string path = null)
         {
-            var matches = Regex.Matches(text, @"### (Zadanie \d+)[\s\n]*([^#]+)", RegexOptions.Multiline);
+            var matches = Regex.Matches(text, @"### (?:Zad.*)[\s\n]*([^#]+)### (?:Rozw.*)[\s\n]*([^#]+)",
+                RegexOptions.Multiline);
+            var elements = matches.Select(m => new Element(m, path)).Select(e => e.GetProblem());
 
-            var tags =  new[] {new Tag {Name = "OAK"}, new Tag{Name="WIT"}, new Tag{Name="Informatyka"}, new Tag{Name="Studia"}};
-            foreach (Match match in matches)
-            {
-                var title = match.Groups[1].Value;
-                var content = match.Groups[2].Value;
-                yield return new Problem {Title = title, Content = ToHtml(content),Tags=tags};
-            }
-
-            //var match2 = Regex.Match(text, @"### (Zadanie \d+)[s\n]*([\w\s\S^\#]+?)$");
-            //var m1 = match2.Groups[1].Value;
-            //var m2 = match2.Groups[2].Value;
-            //yield return new Problem {Title = $"Organizacja i architektura komputerów - {m1}", Content = ToHtml(m2), Tags=tags};
+            foreach (var element in elements) yield return element;
         }
 
-        string ToHtml(string value)
+        private string ToHtml(string value)
         {
             var output = "";
-            foreach (var line in value.Split("\n"))
-            {
-                output += $"<p>{line.Trim()}</p>\n";
-            }
+            foreach (var line in value.Split("\n")) output += $"<p>{line.Trim()}</p>\n";
 
             return output;
+        }
+
+        private class Element
+        {
+            public Element(Match match, string path)
+            {
+                ContentProblem = match.Groups[1].Value;
+                ContentSolution = match.Groups[2].Value;
+
+                var dir = Path.GetDirectoryName(path);
+
+                ImagesProblem = Regex.Matches(ContentProblem, @"!\[\w*\]\((.*?)\)", RegexOptions.Multiline)
+                    .Select(m => new FileData(m.Groups[1].Value, dir)).ToList();
+
+                ImagesSolution = Regex.Matches(ContentSolution, @"!\[\w*\]\((.*?)\)", RegexOptions.Multiline)
+                    .Select(m => new FileData(m.Groups[1].Value, dir)).ToList();
+
+                var tagMatches = Regex.Match(ContentProblem, @"Tagi: (.*)");
+                if (!tagMatches.Success) return;
+                var tags = tagMatches.Groups[1].Value.Split(";").Select(tag => tag.Trim())
+                    .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                    .Select(tag => new Tag {Name = tag.Replace("...", "")})
+                    .Select(tag => new Tag {Name = tag.Name, Url = tag.GenerateUrl()});
+
+                var dict = new Dictionary<string, Tag>();
+                foreach (var tag in tags)
+                {
+                    if (dict.ContainsKey(tag.Url)) continue;
+                    dict.Add(tag.Url, tag);
+                }
+
+                Tags = dict.Select(p => p.Value).ToList();
+
+                ContentProblem = ContentProblem.Replace(tagMatches.Value, "").Trim();
+                ContentProblem = ContentProblem.Replace("\r", "");
+                ContentSolution = ContentSolution.Replace("\r", "");
+
+                ContentProblem = Regex.Replace(ContentProblem, @"\(\./images/\d+/(\d+.gif)\)", @"($1)");
+                ContentSolution = Regex.Replace(ContentSolution, @"\(\./images/\d+/(\d+.gif)\)", @"($1)");
+            }
+
+            //public string Title { get; }
+            public string ContentProblem { get; }
+            public string ContentSolution { get; }
+
+            public IEnumerable<Tag> Tags { get; }
+            public ICollection<FileData> ImagesProblem { get; }
+            public ICollection<FileData> ImagesSolution { get; }
+
+            public Problem GetProblem()
+            {
+                return new Problem
+                {
+                    ContentRaw = ContentProblem,
+                    Tags = Tags,
+                    FileData = ImagesProblem,
+                    Answers = new[]
+                    {
+                        new Answer
+                        {
+                            ContentRaw = ContentSolution,
+                            FileData = ImagesSolution
+                        }
+                    }
+                };
+            }
         }
     }
 }

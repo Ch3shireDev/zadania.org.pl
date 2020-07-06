@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,22 +37,26 @@ namespace ResourceAPI.Controllers
                 .Include(p => p.Author)
                 .Select(p => new Problem
                     {
-                       Id= p.Id,
-                        Title=p.Title,
-                       Content= p.Content,
-                        Created=p.Created,
-                        Edited=p.Edited,
-                        Author = new Author{Name=p.Author.Name,UserId= p.Author.UserId,Email= p.Author.Email, Id=p.Author.Id},
+                        Id = p.Id,
+                        Title = p.Title,
+                        Content = p.Content,
+                        Created = p.Created,
+                        ContentRaw = p.ContentRaw,
+                        Edited = p.Edited,
+                        Author = new Author
+                            {Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id},
                         Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
                                  p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
-                    Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                    UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                    UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
-                    IsAnswered = p.Answers.Any(a=>a.IsApproved)
-                }
+                        Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
+                        UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
+                        UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
+                        IsAnswered = p.Answers.Any(a => a.IsApproved),
+                        FileData = p.FileData
+                    }
                 ).AsQueryable();
 
-            var newest = resultQuery.OrderByDescending(r=>r.Points).AsQueryable();
+
+            var newest = resultQuery.OrderByDescending(r => r.Points).AsQueryable();
 
             //var points = resultQuery.OrderByDescending(r => r.Points).AsQueryable();
 
@@ -65,26 +68,16 @@ namespace ResourceAPI.Controllers
 
             var subQuery = newest;
 
-            //var list = new List<Problem>();
-            //foreach (var element in newest)
-            //{
-            //    list.Add(element);
-            //}
-            //foreach (var element in points)
-            //{
-            //    list.Add(element);
-            //}
-
-            //var subQuery = list.AsEnumerable();
-
             if (firstRecordIndex < num) subQuery = subQuery.Skip(firstRecordIndex);
             if (lastRecordIndex < num) subQuery = subQuery.Take(10);
+
+            var problems = subQuery.ToList().Select(p => p.Render()).ToList();
 
             return StatusCode(200, new
             {
                 pageNum = page,
                 totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1,
-                problems = subQuery.ToArray()
+                problems
             });
         }
 
@@ -96,24 +89,25 @@ namespace ResourceAPI.Controllers
             if (!Context.Problems.Any()) return StatusCode(204);
 
             var problems = Context.Problems
-                    .Include(p => p.Author)
-                    .Select(p => new Problem
-                        {
-                            Id = p.Id,
-                            Title = p.Title,
-                            Content = p.Content,
-                            Created = p.Created,
-                            Edited = p.Edited,
-                            Author = new Author { Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id },
-                            Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
-                                     p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
-                            Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                            UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                            UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
-                            IsAnswered = p.Answers.Any(a => a.IsApproved)
+                .Include(p => p.Author)
+                .Select(p => new Problem
+                    {
+                        Id = p.Id,
+                        Title = p.Title,
+                        Content = p.Content,
+                        Created = p.Created,
+                        Edited = p.Edited,
+                        Author = new Author
+                            {Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id},
+                        Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
+                                 p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
+                        Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
+                        UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
+                        UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
+                        IsAnswered = p.Answers.Any(a => a.IsApproved)
                     }
-                    )
-                    .Where(problem => problem.Content.Contains(query))
+                )
+                .Where(problem => problem.Content.Contains(query))
                 .OrderByDescending(problem => problem.Id)
                 .ToArray();
 
@@ -133,13 +127,15 @@ namespace ResourceAPI.Controllers
                     {
                         Id = p.Id,
                         Content = p.Content,
+                        ContentRaw = p.ContentRaw,
                         Title = p.Title,
                         Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                        IsAnswered = p.Answers.Any(a=>a.IsApproved)
+                        IsAnswered = p.Answers.Any(a => a.IsApproved)
                     }
                 )
                 .ToArray()
                 .Reverse()
+                .Select(p => p.Render())
                 .ToArray();
 
             //var pcs = Context.ProblemTags.ToArray();
@@ -155,18 +151,23 @@ namespace ResourceAPI.Controllers
             if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
             var problem = Context.Problems
                 .Include(p => p.ProblemTags)
+                .Include(p => p.Answers)
+                .ThenInclude(a => a.FileData)
+                .Include(p => p.Answers)
+                .ThenInclude(a => a.Author)
                 .Select(p => new Problem
                 {
                     Id = p.Id,
                     Title = p.Title,
                     Content = p.Content,
-                    Answers = p.Answers,
+                    ContentRaw = p.ContentRaw,
                     AuthorId = p.AuthorId,
                     Author = p.Author,
+                    Answers = p.Answers,
                     Created = p.Created,
                     Edited = p.Edited,
+                    FileData = p.FileData,
                     Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-
                     Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
                              p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
                     UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
@@ -175,8 +176,13 @@ namespace ResourceAPI.Controllers
                 .First(p => p.Id == id);
 
             problem.Author = problem.Author.Serializable();
+            foreach (var answer in problem.Answers)
+            {
+                answer.Author.Answers = null;
+                answer.Author.Problems = null;
+            }
 
-            return StatusCode(200, problem);
+            return StatusCode(200, problem.Render());
         }
 
         [HttpPost]
@@ -187,35 +193,11 @@ namespace ResourceAPI.Controllers
             if (problem.Content.Length > 1024 * 1024) return StatusCode(413);
             var author = AuthorsController.GetAuthor(HttpContext, Context);
             if (author == null) return StatusCode(403);
-
-            problem.ProblemTags = RefreshTags(problem).ToArray();
-
-            problem.Created = DateTime.Now;
-            problem.Author = author;
-            problem.AuthorId = author.Id;
-
-            author.Problems.Add(problem);
-            Context.Authors.Update(author);
-            Context.Problems.Add(problem);
-            Context.SaveChanges();
+            var result = Context.AddProblem(problem, author);
+            if (result) Context.SaveChanges();
             return StatusCode(201);
         }
 
-        private IEnumerable<ProblemTag> RefreshTags(Problem problem)
-        {
-            return RefreshTags(problem, Context);
-        }
-
-        public static IEnumerable<ProblemTag> RefreshTags(Problem problem, SqlContext context)
-        {
-            if (problem.Tags == null) yield break;
-            foreach (var tag in problem.Tags)
-            {
-                tag.Url = tag.GenerateUrl();
-                var existing = context.Tags.Find(tag.Url) ?? tag;
-                yield return new ProblemTag {Problem = problem, Tag = existing};
-            }
-        }
 
         [HttpPut]
         [Route("{id}")]

@@ -79,10 +79,10 @@ namespace ResourceAPI.Controllers
                     Parent = new {a.Parent.Title},
                     a.Created
                 })
-                .OrderByDescending(p=>p.Created)
+                .OrderByDescending(p => p.Created)
                 .Take(10)
                 .ToList();
-            
+
             var profile = Context.Authors
                 .Select(a => new
                     {

@@ -26,10 +26,10 @@ namespace ResourceAPI.Controllers
                     {
                         t.Name,
                         t.Url,
-                        t.ProblemCategories.Count
+                        t.ProblemTags.Count
                     })
                 .OrderByDescending(t => t.Count)
-                .Where(t=>t.Count>0)
+                .Where(t => t.Count > 0)
                 .Take(10)
                 .ToArray();
 

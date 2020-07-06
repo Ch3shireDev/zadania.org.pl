@@ -13,7 +13,7 @@ namespace ResourceAPI.Models
         [MySqlCharset("utf8")] public string Name { get; set; }
 
         public int PostCount { get; set; }
-        public ICollection<ProblemTag> ProblemCategories { get; set; }
+        public ICollection<ProblemTag> ProblemTags { get; set; }
 
         public string GenerateUrl()
         {
@@ -32,7 +32,7 @@ namespace ResourceAPI.Models
 
         public Tag Serializable(int depth = 0)
         {
-            ProblemCategories = null;
+            ProblemTags = null;
             return this;
         }
     }

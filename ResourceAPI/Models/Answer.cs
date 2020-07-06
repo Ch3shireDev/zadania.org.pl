@@ -15,5 +15,11 @@ namespace ResourceAPI.Models
             if (depth == 0) Parent = null;
             return this;
         }
+
+        public Answer Render()
+        {
+            Content = SqlContext.Render(ContentRaw, FileData);
+            return this;
+        }
     }
 }

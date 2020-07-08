@@ -97,6 +97,7 @@ namespace ResourceAPI
                 }
 
             problem.ProblemTags ??= new List<ProblemTag>();
+            problem.Tags ??= new List<Tag>();
 
             foreach (var tag in problem.Tags)
             {

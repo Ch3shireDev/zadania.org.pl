@@ -32,7 +32,7 @@ namespace ResourceAPI.Models
         {
             var dir = SqlContext.FileDirectory;
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-            var subdir = Directory.GetDirectories(dir).LastOrDefault()?.Split('\\').Last();
+            var subdir = Directory.GetDirectories(dir).LastOrDefault()?.Replace("/","\\").Split('\\').Last();
             if (subdir == null)
             {
                 subdir = "000";
@@ -52,7 +52,7 @@ namespace ResourceAPI.Models
             var ext = Path.GetExtension(FileName);
             var fname = $"{filesCount:D4}{ext}";
             File.WriteAllBytes(Path.Combine(ddir, fname), FileBytes);
-            FileDir = ddir;
+            FileDir = subdir;
             OldFileName = FileName;
             FileName = fname;
         }
@@ -61,7 +61,7 @@ namespace ResourceAPI.Models
         {
             try
             {
-                FileBytes = File.ReadAllBytes(Path.Combine(FileDir, FileName));
+                FileBytes = File.ReadAllBytes(Path.Combine(SqlContext.FileDirectory, FileDir, FileName));
             }
             catch (Exception e)
             {

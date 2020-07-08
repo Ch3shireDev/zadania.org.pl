@@ -14,12 +14,13 @@ namespace ResourceAPI.Models
     public class Author
     {
         public int Id { get; set; }
-        [StringLength(128)]
-        public string Name { get; set; }
-        [StringLength(64)]
-        public string Email { get; set; }
-        [StringLength(64)]
-        public string UserId { get; set; }
+
+        [StringLength(128)] public string Name { get; set; }
+
+        [StringLength(64)] public string Email { get; set; }
+
+        [StringLength(64)] public string UserId { get; set; }
+
         public List<Problem> Problems { get; set; } = new List<Problem>();
         public List<Answer> Answers { get; set; } = new List<Answer>();
 

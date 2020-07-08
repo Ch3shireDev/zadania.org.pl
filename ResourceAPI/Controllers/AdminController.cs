@@ -54,9 +54,10 @@ namespace ResourceAPI.Controllers
                     Console.WriteLine(i);
                 }
 
-                if (i > 100) break;
+                //if (i > 100) break;
             }
 
+            Context.SaveChanges();
             return StatusCode(200);
         }
 

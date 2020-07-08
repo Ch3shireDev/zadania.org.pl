@@ -23,9 +23,9 @@ namespace ResourceAPI
         {
             services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
-                options.UseSqlite("Filename=sqlite.db");
-                options.EnableSensitiveDataLogging();
-                //options.UseMySQL(Configuration.GetConnectionString("Default"));
+                //options.UseSqlite("Filename=sqlite.db");
+                //options.EnableSensitiveDataLogging();
+                options.UseMySQL(Configuration.GetConnectionString("Default"));
             });
 
 
@@ -57,7 +57,7 @@ namespace ResourceAPI
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<SqlContext>();
 #if DEBUG
-                //context.Database.EnsureDeleted();
+                context.Database.EnsureDeleted();
 #endif
                 context.Database.EnsureCreated();
             }

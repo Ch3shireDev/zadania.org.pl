@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/auth.service';
 })
 export class ShowComponent implements OnInit {
   @Input() answer: Answer;
-  @Input() parentId: number;
+  @Input() problemId: number;
 
 
   @Input() isCreate: boolean;
@@ -44,7 +44,7 @@ export class ShowComponent implements OnInit {
   onEditClose(event) {
     if (event === true) {
       this.answerService
-        .getAnswer(this.parentId, this.answer.id)
+        .getAnswer(this.problemId, this.answer.id)
         .subscribe((answer) => {
           this.answer = answer;
           this.state = ShowState.Show;
@@ -106,7 +106,7 @@ export class ShowComponent implements OnInit {
     this.reloadChange.emit(true);
     // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     // this.router.onSameUrlNavigation = 'reload';
-    // this.router.navigate([`/problems/${this.answer.parentId}`]);
+    // this.router.navigate([`/problems/${this.answer.problemId}`]);
   }
 
 }

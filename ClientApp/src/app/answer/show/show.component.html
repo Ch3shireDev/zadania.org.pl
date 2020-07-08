@@ -1,9 +1,9 @@
 <div *ngIf="state === showState.Show">
 
-    <div [class.approved-answer]="answer.isApproved" class="answer-container">
+    <div [class.bg-approved]="answer.isApproved" class="answer-container">
         <h3 *ngIf="answer.isApproved">Zatwierdzona odpowiedź</h3>
         <h4 *ngIf="!answer.isApproved">Odpowiedź</h4>
-        <div [innerHtml]="answer.content | safeHtml"> </div>
+        <div [innerHtml]="answer.contentHtml | safeHtml"> </div>
 
 
         <div class="preview-footer-container">
@@ -35,8 +35,8 @@
 
 
 <div *ngIf="state === showState.Edit">
-    <app-edit [answer]="answer" [parentId]="parentId" (close)="onEditClose($event)"></app-edit>
+    <app-edit [answer]="answer" [problemId]="problemId" (close)="onEditClose($event)"></app-edit>
 </div>
 <div *ngIf="state === showState.Delete">
-    <app-delete [answer]="answer" [parentId]="parentId" (close)="onDeleteClose($event)"></app-delete>
+    <app-delete [answer]="answer" [problemId]="problemId" (close)="onDeleteClose($event)"></app-delete>
 </div>

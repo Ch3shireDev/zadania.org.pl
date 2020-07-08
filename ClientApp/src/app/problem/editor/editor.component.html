@@ -1,7 +1,7 @@
 <div id="title-container" class="form-container">
     <label>Tytuł</label>
     <input type="text" [(ngModel)]="problem.title" placeholder="Tytuł" />
-    <small>Opisowa nazwa zadania. Może być "Zad. 1", może być bardziej twórcza.</small>
+    <small>Opisowa nazwa zadania. Może być "Zadanie 1", może być bardziej twórcza.</small>
 </div>
 <div id="source-container" class="form-container">
     <label>Źródło</label>
@@ -11,7 +11,7 @@
 <div class="content-container form-container">
     <label>Treść</label>
     <div class="editor-container">
-        <quill-editor id="hints" type="text" class="form-control" [styles]="editorStyle" [modules]="editorConfig" placeholder="Treść zadania." [(ngModel)]="problem.content">
+        <quill-editor id="hints" type="text" class="form-control" [styles]="editorStyle" [modules]="editorConfig" placeholder="Treść zadania." [(ngModel)]="problem.contentHtml">
         </quill-editor>
     </div>
 </div>

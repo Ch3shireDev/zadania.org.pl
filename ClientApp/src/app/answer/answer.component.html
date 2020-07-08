@@ -1,9 +1,9 @@
 <div *ngIf="state===ShowStates.Create">
-    <app-create [parentId]="parentId" (close)="onClose($event)"></app-create>
+    <app-create [problemId]="problemId" (close)="onClose($event)"></app-create>
 </div>
 
 <div>
-    <app-browse [answers]="answers" [parentId]="parentId" [(isCreate)]="isCreate" (state)="changeState($event)" (reloadChange)="onReload($event)"></app-browse>
+    <app-browse [answers]="answers" [problemId]="problemId" [(isCreate)]="isCreate" (state)="changeState($event)" (reloadChange)="onReload($event)"></app-browse>
 </div>
 
 <button (click)="addAnswer()" *ngIf="state===ShowStates.Show">

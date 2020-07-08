@@ -8,7 +8,7 @@
     <div><button (click)="nextPage()" [disabled]="pageNum>=totalPages">Następna</button></div>
 </div>
 <div *ngFor="let problem of problems" class="container">
-    <div class="problem-container-link" routerLink="/problems/{{problem.id}}" [class.bg-solved]="problem.isAnswered">
+    <div class="problem-container-link" routerLink="/problems/{{problem.id}}" [class.bg-approved]="problem.isAnswered">
         <app-preview [problem]="problem"></app-preview>
     </div>
 </div>

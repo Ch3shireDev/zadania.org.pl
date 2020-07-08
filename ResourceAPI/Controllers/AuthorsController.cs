@@ -61,7 +61,7 @@ namespace ResourceAPI.Controllers
                     {
                         p.Id,
                         p.Title,
-                        p.Content,
+                        Content = p.ContentHtml,
                         Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
                                  p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
                         p.Created
@@ -75,8 +75,8 @@ namespace ResourceAPI.Controllers
                 .Where(a => a.Author.Id == id)
                 .Select(a => new
                 {
-                    a.ParentId,
-                    Parent = new {a.Parent.Title},
+                    ParentId = a.ProblemId,
+                    Parent = new {a.Problem.Title},
                     a.Created
                 })
                 .OrderByDescending(p => p.Created)

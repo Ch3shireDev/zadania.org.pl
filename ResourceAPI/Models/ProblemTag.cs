@@ -11,6 +11,8 @@ namespace ResourceAPI.Models
 
         public Tag Tag { get; set; }
 
-        [Key] [Column(Order = 1)] public string TagUrl { get; set; }
+        [Key] [Column(Order = 1)] 
+        [StringLength(64)]
+        public string TagUrl { get; set; }
     }
 }

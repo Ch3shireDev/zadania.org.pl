@@ -25,6 +25,7 @@ namespace ResourceAPI
         public DbSet<AnswerVote> AnswerVotes { get; set; }
 
         public static string ConnectionString { get; set; }
+        public static string FileDirectory { get; set; } = "../../images";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -67,6 +68,7 @@ namespace ResourceAPI
             html = Regex.Replace(html, @"\[(.+)\]\((.+?)\)", "<a href=\"$2\">$1</a>", RegexOptions.Multiline);
             var lines = html.Split('\n').Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => $"<p>{x}</p>");
             var content = string.Join('\n', lines);
+            if (fileData == null) return content;
             foreach (var file in fileData)
             {
                 if (file.FileBytes == null) file.Load();
@@ -91,10 +93,10 @@ namespace ResourceAPI
                 {
                     file.Save();
                     var regex = @"!\[\]\(" + file.OldFileName + @"\)";
-                    problem.ContentRaw = Regex.Replace(problem.ContentRaw, regex, $"![]({file.FileName})");
+                    problem.Content = Regex.Replace(problem.Content, regex, $"![]({file.FileName})");
                 }
 
-            if (problem.ProblemTags == null) problem.ProblemTags = new List<ProblemTag>();
+            problem.ProblemTags ??= new List<ProblemTag>();
 
             foreach (var tag in problem.Tags)
             {
@@ -114,7 +116,7 @@ namespace ResourceAPI
                     {
                         file.Save();
                         var regex = @"!\[\]\(" + file.OldFileName + @"\)";
-                        answer.ContentRaw = Regex.Replace(answer.ContentRaw, regex, $"![]({file.FileName})");
+                        answer.Content = Regex.Replace(answer.Content, regex, $"![]({file.FileName})");
                     }
 
                     answer.Author = author;

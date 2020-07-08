@@ -13,8 +13,8 @@ namespace ResourceAPI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            var connStr = Configuration.GetConnectionString("Default");
-            SqlContext.ConnectionString = connStr;
+            //var connStr = Configuration.GetConnectionString("Default");
+            //SqlContext.ConnectionString = connStr;
         }
 
         public IConfiguration Configuration { get; }

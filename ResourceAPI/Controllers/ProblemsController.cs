@@ -39,12 +39,17 @@ namespace ResourceAPI.Controllers
                     {
                         Id = p.Id,
                         Title = p.Title,
-                        Content = p.Content,
+                        ContentHtml = p.ContentHtml,
                         Created = p.Created,
-                        ContentRaw = p.ContentRaw,
+                        Content = p.Content,
                         Edited = p.Edited,
                         Author = new Author
-                            {Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id},
+                        {
+                            Name = p.Author.Name,
+                            UserId = p.Author.UserId,
+                            Email = p.Author.Email,
+                            Id = p.Author.Id
+                        },
                         Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
                                  p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
                         Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
@@ -56,7 +61,10 @@ namespace ResourceAPI.Controllers
                 ).AsQueryable();
 
 
-            var newest = resultQuery.OrderByDescending(r => r.Points).AsQueryable();
+            var newest = resultQuery
+                //.OrderByDescending(r => r.Points)
+                .OrderByDescending(p => p.Created)
+                .AsQueryable();
 
             //var points = resultQuery.OrderByDescending(r => r.Points).AsQueryable();
 
@@ -109,7 +117,8 @@ namespace ResourceAPI.Controllers
                 )
                 .Where(problem => problem.Content.Contains(query))
                 .OrderByDescending(problem => problem.Id)
-                .ToArray();
+                .ToArray()
+                .Select(p => p.Render());
 
             return StatusCode(200, problems);
         }
@@ -126,8 +135,8 @@ namespace ResourceAPI.Controllers
                     new Problem
                     {
                         Id = p.Id,
+                        ContentHtml = p.ContentHtml,
                         Content = p.Content,
-                        ContentRaw = p.ContentRaw,
                         Title = p.Title,
                         Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
                         IsAnswered = p.Answers.Any(a => a.IsApproved)
@@ -159,8 +168,8 @@ namespace ResourceAPI.Controllers
                 {
                     Id = p.Id,
                     Title = p.Title,
+                    ContentHtml = p.ContentHtml,
                     Content = p.Content,
-                    ContentRaw = p.ContentRaw,
                     AuthorId = p.AuthorId,
                     Author = p.Author,
                     Answers = p.Answers,
@@ -180,7 +189,10 @@ namespace ResourceAPI.Controllers
             {
                 answer.Author.Answers = null;
                 answer.Author.Problems = null;
+                answer.Problem = null;
             }
+
+            foreach (var tag in problem.Tags) tag.ProblemTags = null;
 
             return StatusCode(200, problem.Render());
         }
@@ -189,8 +201,8 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Post(Problem problem)
         {
-            if (problem.Content == null) return StatusCode(400);
-            if (problem.Content.Length > 1024 * 1024) return StatusCode(413);
+            if (problem.ContentHtml == null) return StatusCode(400);
+            if (problem.ContentHtml.Length > 1024 * 1024) return StatusCode(413);
             var author = AuthorsController.GetAuthor(HttpContext, Context);
             if (author == null) return StatusCode(403);
             var result = Context.AddProblem(problem, author);
@@ -227,7 +239,7 @@ namespace ResourceAPI.Controllers
             if (problem == null) return StatusCode(403);
             Context.Problems.Remove(problem);
 
-            var answers = Context.Answers.Where(a => a.ParentId == id);
+            var answers = Context.Answers.Where(a => a.ProblemId == id);
             Context.Answers.RemoveRange(answers);
 
             var problemTags = Context.ProblemTags.Where(pt => pt.ProblemId == id);

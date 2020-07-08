@@ -12,7 +12,7 @@ import { Location } from '@angular/common';
 })
 export class AnswerComponent implements OnInit {
   @Input() answers: Answer[];
-  @Input() parentId: number;
+  @Input() problemId: number;
   @Input() isCreate: boolean;
   state = ShowState.Show;
 
@@ -46,7 +46,7 @@ export class AnswerComponent implements OnInit {
     this.state = ShowState.Show;
     this.isCreate = false;
     if (event) {
-      this.answerService.getAnswers(this.parentId).subscribe((answers) => {
+      this.answerService.getAnswers(this.problemId).subscribe((answers) => {
         this.answers = answers;
       });
     }

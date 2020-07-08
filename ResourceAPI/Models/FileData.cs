@@ -30,7 +30,7 @@ namespace ResourceAPI.Models
 
         public void Save()
         {
-            var dir = ".\\images";
+            var dir = SqlContext.FileDirectory;
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
             var subdir = Directory.GetDirectories(dir).LastOrDefault()?.Split('\\').Last();
             if (subdir == null)

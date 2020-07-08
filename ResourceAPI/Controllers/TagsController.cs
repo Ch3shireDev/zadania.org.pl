@@ -30,7 +30,7 @@ namespace ResourceAPI.Controllers
                     })
                 .OrderByDescending(t => t.Count)
                 .Where(t => t.Count > 0)
-                .Take(10)
+                //.Take(10)
                 .ToArray();
 
             return StatusCode(200, tags);

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Problem } from '../problem';
-// import { Location } from '@angular/common';
 import { editorConfig, editorStyle } from '../../editor-config';
 import { Tag } from '../tag';
 
@@ -40,12 +39,4 @@ export class EditorComponent implements OnInit {
       this.problem.tags.splice(index, 1);
     }
   }
-
-  // onSubmit() {
-  //   this.submit.emit(this.problem);
-  // }
-
-  // goBack() {
-  //   this.location.back();
-  // }
 }

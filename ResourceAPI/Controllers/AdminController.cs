@@ -47,7 +47,6 @@ namespace ResourceAPI.Controllers
             foreach (var problem in problems)
             {
                 Context.AddProblem(problem, author, true);
-                //Context.Problems.Add(problem);
                 i++;
                 if (i % 100 == 0)
                 {
@@ -58,23 +57,7 @@ namespace ResourceAPI.Controllers
                 if (i > 100) break;
             }
 
-
             return StatusCode(200);
-
-
-            //var i = 0;
-            //var n = dirs.Count;
-            //foreach (var dir in dirs.OrderBy(a => Guid.NewGuid()).ToList())
-            //{
-            //    i++;
-            //    ReadDirectory(dir, author);
-            //    Console.WriteLine($"{i}/{n} {dir.Substring(dir.Length - 50, 50)}");
-            //    if (i % 100 == 0) Context.SaveChanges();
-            //    //if (i > 200 && all!=null) break;
-            //}
-
-            //Context.SaveChanges();
-            //return StatusCode(200, dirs);
         }
 
         [HttpPost]
@@ -91,111 +74,23 @@ namespace ResourceAPI.Controllers
             return StatusCode(200);
         }
 
-        private IList<string> ScanDirs(string parentDir)
-        {
-            var dirs = Directory.EnumerateDirectories(parentDir);
-            var list = new List<string>();
-            foreach (var dir in dirs) list.AddRange(ScanDirs(dir));
-            if (list.Count == 0) list.Add(parentDir);
-            return list;
-        }
-
-
-        private string convertImages(string inputText, string dir)
-        {
-            inputText = Regex.Replace(inputText, @"(\[zadania.info\]\(.*\))$", "$1.");
-
-            var imageMatches = Regex.Matches(inputText, @"\!\[\]\((\w+\.\w+)\)", RegexOptions.Multiline);
-
-            foreach (Match match in imageMatches)
-            {
-                var originalPart = match.Groups[0].Value;
-                var filePath = match.Groups[1].Value;
-                var fileBytes = System.IO.File.ReadAllBytes(Path.Join(dir, filePath));
-                var base64 = Convert.ToBase64String(fileBytes);
-                var replacementString = @$"<img src=""data:image/gif;base64, {base64}""/>";
-                inputText = inputText.Replace(originalPart, replacementString);
-            }
-
-            var linksMatches = Regex.Matches(inputText, @"\[(.+?)\]\((.+?)\)");
-            foreach (Match match in linksMatches)
-            {
-                var text = match.Groups[1].Value;
-                var link = match.Groups[2].Value;
-                inputText = inputText.Replace(match.Groups[0].Value, $@"<a href=""{link}"">{text}</a>");
-            }
-
-            return inputText;
-        }
-
-        private string TextReplace(string text, string dir)
-        {
-            text = convertImages(text, dir);
-            var lines = text.Split('\n').Select(line => line.Trim()).Where(line => !string.IsNullOrWhiteSpace(line))
-                .Select(line => $"<p>{line}</p>");
-            return string.Join("\n", lines);
-        }
-
-        private void ReadDirectory(string dir, Author author)
-        {
-            var exerciseText = System.IO.File.ReadAllText(Path.Join(dir, "exercise.md"));
-            var solutionText = System.IO.File.ReadAllText(Path.Join(dir, "solution.md"));
-            var exercise = TextReplace(exerciseText, dir);
-            var solution = TextReplace(solutionText, dir);
-
-            var title = exerciseText.Split("\n").First();
-
-            if (title.Length > 100) title = title.Substring(0, 100);
-
-            var titleList = title.Split(' ').Where(word => word.Length > 0 && !Regex.IsMatch(word, @"[\!\(\)]"))
-                .Take(5);
-            title = string.Join(' ', titleList) + "...";
-
-            if (exercise.Length > 64 * 1024) return;
-            if (solution.Length > 64 * 1024) return;
-
-            var category = dir.Split('\\').TakeLast(2).First();
-
-            var problem = new Problem
-            {
-                Title = title,
-                Content = exercise,
-                Created = DateTime.Now,
-                AuthorId = author.Id,
-                Author = author,
-                Source = "zadania.info",
-                Tags = new[] {new Tag {Name = "zadania.info"}, new Tag {Name = "Matematyka"}, new Tag {Name = category}}
-            };
-
-            //problem.ProblemTags = ProblemsController.RefreshTags(problem, Context).ToArray();
-            problem.Tags = null;
-
-            //TagsController.RefreshTags(problem,context);
-
-            var answer = new Answer
-            {
-                Content = solution,
-                Author = author,
-                AuthorId = author.Id,
-                Created = DateTime.Now,
-                Parent = problem,
-                IsApproved = true
-            };
-
-            problem.Answers = new[] {answer};
-            Context.Problems.Add(problem);
-            //context.SaveChanges();
-        }
 
 #if DEBUG
-        [Route("upload-exercises")]
+        [Route("upload2")]
         [HttpPost]
 #endif
         public void LoadMd()
         {
             var author = Context.Authors.FirstOrDefault(a => a.Name == "Igor Nowicki");
             var problems = GetProblemsFromDirectory("../../WIT-Zajecia/semestr-2/OAK");
-            foreach (var problem in problems) Context.AddProblem(problem, author);
+            var n = 1;
+            foreach (var problem in problems)
+            {
+                problem.Title = $"Zadanie {n++}";
+                problem.Tags = new List<Tag> {new Tag {Name = "OAK"}, new Tag {Name = "Informatyka"}};
+                Context.AddProblem(problem, author, true);
+            }
+
             Context.SaveChanges();
         }
 
@@ -212,20 +107,13 @@ namespace ResourceAPI.Controllers
 
         private IEnumerable<Problem> GetProblemsFromMd(string text, string path = null)
         {
-            var matches = Regex.Matches(text, @"### (?:Zad.*)[\s\n]*([^#]+)### (?:Rozw.*)[\s\n]*([^#]+)",
+            var matches = Regex.Matches(text, @"### (?:Zad.*)[\s\n]*([^#]+)(?:### (?:Rozw.*)[\s\n]*([^#]+))?",
                 RegexOptions.Multiline);
             var elements = matches.Select(m => new Element(m, path)).Select(e => e.GetProblem());
 
             foreach (var element in elements) yield return element;
         }
 
-        private string ToHtml(string value)
-        {
-            var output = "";
-            foreach (var line in value.Split("\n")) output += $"<p>{line.Trim()}</p>\n";
-
-            return output;
-        }
 
         private class Element
         {
@@ -243,22 +131,26 @@ namespace ResourceAPI.Controllers
                     .Select(m => new FileData(m.Groups[1].Value, dir)).ToList();
 
                 var tagMatches = Regex.Match(ContentProblem, @"Tagi: (.*)");
-                if (!tagMatches.Success) return;
-                var tags = tagMatches.Groups[1].Value.Split(";").Select(tag => tag.Trim())
-                    .Where(tag => !string.IsNullOrWhiteSpace(tag))
-                    .Select(tag => new Tag {Name = tag.Replace("...", "")})
-                    .Select(tag => new Tag {Name = tag.Name, Url = tag.GenerateUrl()});
 
-                var dict = new Dictionary<string, Tag>();
-                foreach (var tag in tags)
+                if (tagMatches.Success)
                 {
-                    if (dict.ContainsKey(tag.Url)) continue;
-                    dict.Add(tag.Url, tag);
+                    var tags = tagMatches.Groups[1].Value.Split(";").Select(tag => tag.Trim())
+                        .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                        .Select(tag => new Tag {Name = tag.Replace("...", "")})
+                        .Select(tag => new Tag {Name = tag.Name, Url = tag.GenerateUrl()});
+
+                    var dict = new Dictionary<string, Tag>();
+                    foreach (var tag in tags)
+                    {
+                        if (dict.ContainsKey(tag.Url)) continue;
+                        dict.Add(tag.Url, tag);
+                    }
+
+                    Tags = dict.Select(p => p.Value).ToList();
+
+                    ContentProblem = ContentProblem.Replace(tagMatches.Value, "").Trim();
                 }
 
-                Tags = dict.Select(p => p.Value).ToList();
-
-                ContentProblem = ContentProblem.Replace(tagMatches.Value, "").Trim();
                 ContentProblem = ContentProblem.Replace("\r", "");
                 ContentSolution = ContentSolution.Replace("\r", "");
 
@@ -266,7 +158,6 @@ namespace ResourceAPI.Controllers
                 ContentSolution = Regex.Replace(ContentSolution, @"\(\./images/\d+/(\d+.gif)\)", @"($1)");
             }
 
-            //public string Title { get; }
             public string ContentProblem { get; }
             public string ContentSolution { get; }
 
@@ -276,20 +167,29 @@ namespace ResourceAPI.Controllers
 
             public Problem GetProblem()
             {
-                return new Problem
+                var problem = new Problem
                 {
-                    ContentRaw = ContentProblem,
+                    Content = ContentProblem,
                     Tags = Tags,
-                    FileData = ImagesProblem,
-                    Answers = new[]
+                    FileData = ImagesProblem
+                };
+
+                if (!string.IsNullOrWhiteSpace(ContentSolution))
+                    problem.Answers = new[]
                     {
                         new Answer
                         {
-                            ContentRaw = ContentSolution,
-                            FileData = ImagesSolution
+                            Content = ContentSolution,
+                            FileData = ImagesSolution,
+                            IsApproved = true
                         }
-                    }
-                };
+                    };
+
+
+                if (string.IsNullOrWhiteSpace(problem.Title) && problem.Tags != null && problem.Tags.Any())
+                    problem.Title = problem.Tags.Last().Name;
+
+                return problem;
             }
         }
     }

@@ -9,7 +9,7 @@ import { AnswerService } from '../answer.service';
 })
 export class DeleteComponent implements OnInit {
   @Input() answer: Answer;
-  @Input() parentId: number;
+  @Input() problemId: number;
   @Output() closeChange: EventEmitter<boolean> = new EventEmitter();
 
   @Input() isCreate: boolean;
@@ -21,7 +21,7 @@ export class DeleteComponent implements OnInit {
 
   submit() {
     this.answerService
-      .deleteAnswer(this.parentId, this.answer.id)
+      .deleteAnswer(this.problemId, this.answer.id)
       .subscribe((res) => {
         this.closeChange.emit(true);
       });

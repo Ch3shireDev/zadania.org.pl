@@ -9,7 +9,7 @@ import { AnswerService } from '../answer.service';
 })
 export class EditComponent implements OnInit {
   @Input() answer: Answer;
-  @Input() parentId: number;
+  @Input() problemId: number;
   @Output() close: EventEmitter<boolean> = new EventEmitter();
 
   constructor(private answerService: AnswerService) {}
@@ -18,7 +18,7 @@ export class EditComponent implements OnInit {
 
   submit() {
     this.answerService
-      .putAnswer(this.parentId, this.answer.id, this.answer)
+      .putAnswer(this.problemId, this.answer.id, this.answer)
       .subscribe((res) => {
         this.close.emit(true);
       });

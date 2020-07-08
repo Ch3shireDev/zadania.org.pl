@@ -17,8 +17,9 @@ namespace ResourceAPI.Models
         public ICollection<ProblemVote> ProblemVotes { get; set; }
 
         [NotMapped] public bool IsAnswered { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
-        public Problem Serializable<TResult>(int depth = 0)
+        public Problem Serializable(int depth = 0)
         {
             Answers = Answers.Select(a => a.Serializable()).ToArray();
             Tags = ProblemTags?.Select(pc => pc.Tag.Serializable()).ToArray();
@@ -41,7 +42,7 @@ namespace ResourceAPI.Models
 
         public Problem Render()
         {
-            Content = SqlContext.Render(ContentRaw, FileData);
+            ContentHtml = SqlContext.Render(Content, FileData);
             if (Answers != null)
                 foreach (var answer in Answers)
                     answer.Render();

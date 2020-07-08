@@ -1,6 +1,6 @@
 <div *ngIf="problem">
     <h1>{{ problem.title }}</h1>
-    <div [innerHtml]="problem.content|safeHtml"></div>
+    <div [innerHtml]="problem.contentHtml|safeHtml"></div>
 
     <div class="preview-footer-container">
       <div class="problem-preview-points" (click)="$event.stopPropagation()">
@@ -37,6 +37,6 @@
             <button routerLink="delete">Usuń</button>
         </div>
         <button (click)="goBack()">Wróć</button>
-        <app-answer *ngIf="problem" [answers]="problem.answers" [parentId]="id" (reloadChange)="reload()"></app-answer>
+        <app-answer *ngIf="problem" [answers]="problem.answers" [problemId]="id" (reloadChange)="reload()"></app-answer>
     </div>
 </div>

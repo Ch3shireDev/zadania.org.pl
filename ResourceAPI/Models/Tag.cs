@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
-using MySql.Data.EntityFrameworkCore.DataAnnotations;
 
 namespace ResourceAPI.Models
 {
     public class Tag
     {
-        //public int Id { get; set; }
-        [Key] public string Url { get; set; }
+        [Key] [StringLength(64)] public string Url { get; set; }
 
-        [MySqlCharset("utf8")] public string Name { get; set; }
+        [StringLength(64)] public string Name { get; set; }
 
-        public int PostCount { get; set; }
+        [NotMapped] public int PostCount { get; set; }
+
         public ICollection<ProblemTag> ProblemTags { get; set; }
 
         public string GenerateUrl()

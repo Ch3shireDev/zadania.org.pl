@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { AnswerModule } from '../answer/answer.module';
 import { PointsComponent } from './points/points.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MarkdownModule } from 'ngx-markdown';
 import { QuillModule } from 'ngx-quill';
 
 @NgModule({
@@ -35,6 +36,7 @@ import { QuillModule } from 'ngx-quill';
     FormsModule,
     FontAwesomeModule,
     QuillModule.forRoot(),
+    // MarkdownModule.forRoot()
   ],
   providers: [DatePipe],
   exports: [ProblemComponent, ProblemPreviewComponent],

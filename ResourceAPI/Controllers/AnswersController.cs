@@ -23,20 +23,22 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult Get(int problemId)
         {
-            var answers = Context.Answers.Where(answer => answer.Parent.Id == problemId).Select(a => new
-            {
-                a.Id,
-                a.ParentId,
-                a.Content,
-                a.AuthorId,
-                Author = new {a.Author.UserId, a.Author.Id, a.Author.Name, a.Author.Email},
-                //Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                //Author = new { p.Author.Name, p.Author.UserId, p.Author.Email, p.Author.Id },
-                Points = a.AnswerVotes.Count(pv => pv.Vote == Models.Vote.Upvote) -
-                         a.AnswerVotes.Count(pv => pv.Vote == Models.Vote.Downvote),
-                UserUpvoted = a.AnswerVotes.Any(pv => pv.Vote == Models.Vote.Upvote),
-                UserDownvoted = a.AnswerVotes.Any(pv => pv.Vote == Models.Vote.Downvote)
-            }).OrderByDescending(a => a.Points);
+            var answers = Context.Answers.Where(answer => answer.Problem.Id == problemId).Select(a => new
+                Answer
+                {
+                    Id = a.Id,
+                    ProblemId = a.ProblemId,
+                    Content = a.Content,
+                    AuthorId = a.AuthorId,
+                    Author = new Author
+                        {UserId = a.Author.UserId, Id = a.Author.Id, Name = a.Author.Name, Email = a.Author.Email},
+                    //Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
+                    //Author = new { p.Author.Name, p.Author.UserId, p.Author.Email, p.Author.Id },
+                    Points = a.AnswerVotes.Count(pv => pv.Vote == Models.Vote.Upvote) -
+                             a.AnswerVotes.Count(pv => pv.Vote == Models.Vote.Downvote),
+                    UserUpvoted = a.AnswerVotes.Any(pv => pv.Vote == Models.Vote.Upvote),
+                    UserDownvoted = a.AnswerVotes.Any(pv => pv.Vote == Models.Vote.Downvote)
+                }).OrderByDescending(a => a.Points).ToArray().Select(a => a.Render());
 
             return StatusCode(200, answers.ToArray());
         }
@@ -46,25 +48,26 @@ namespace ResourceAPI.Controllers
         public ActionResult Get(int problemId, int answerId)
         {
             var result = Context.Answers.Select(a => new
-            {
-                a.Id,
-                a.ParentId,
-                a.IsApproved,
-                a.Content,
-                a.Points,
-                a.Edited,
-                a.Created,
-                a.AuthorId,
-                Author = new
+                Answer
                 {
-                    a.Author.Id,
-                    a.Author.Name,
-                    a.Author.UserId,
-                    a.Author.Email
-                }
-            }).FirstOrDefault(a => a.ParentId == problemId && a.Id == answerId);
+                    Id = a.Id,
+                    ProblemId = a.ProblemId,
+                    IsApproved = a.IsApproved,
+                    Content = a.Content,
+                    Points = a.Points,
+                    Edited = a.Edited,
+                    Created = a.Created,
+                    AuthorId = a.AuthorId,
+                    Author = new Author
+                    {
+                        Id = a.Author.Id,
+                        Name = a.Author.Name,
+                        UserId = a.Author.UserId,
+                        Email = a.Author.Email
+                    }
+                }).FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
             if (result == null) return StatusCode(404);
-            if (!(result.AuthorId > 0)) return StatusCode(200, result);
+            result = result.Render();
             return StatusCode(200, result);
         }
 
@@ -78,7 +81,7 @@ namespace ResourceAPI.Controllers
             //var userId = HttpContext.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
             //var author = Context.Authors.First(profile => profile.UserId == userId);
             var problem = Context.Problems.First(p => p.Id == problemId);
-            answer.Parent = problem;
+            answer.Problem = problem;
             answer.Author = author;
             problem.Answers.Add(answer);
             Context.Problems.Update(problem);
@@ -153,10 +156,10 @@ namespace ResourceAPI.Controllers
             var author = AuthorsController.GetAuthor(HttpContext, Context);
 
             var answer = Context.Answers.FirstOrDefault(a =>
-                a.Id == answerId && a.Parent.Id == problemId && a.AuthorId == author.Id);
+                a.Id == answerId && a.Problem.Id == problemId && a.AuthorId == author.Id);
             if (answer == null) return StatusCode(403);
             if (answer.IsApproved) return StatusCode(304);
-            foreach (var a in Context.Answers.Where(a => a.ParentId == problemId))
+            foreach (var a in Context.Answers.Where(a => a.ProblemId == problemId))
                 Context.Entry(a).CurrentValues["IsApproved"] = a.Id == answerId;
             Context.SaveChanges();
             return StatusCode(200);
@@ -169,7 +172,7 @@ namespace ResourceAPI.Controllers
         {
             var author = AuthorsController.GetAuthor(HttpContext, Context);
             var answer = Context.Answers.FirstOrDefault(a =>
-                a.Id == answerId && a.Parent.Id == problemId && a.AuthorId == author.Id);
+                a.Id == answerId && a.Problem.Id == problemId && a.AuthorId == author.Id);
             if (answer == null) return StatusCode(403);
             if (!answer.IsApproved) return StatusCode(304);
             Context.Entry(answer).CurrentValues["IsApproved"] = false;

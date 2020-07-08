@@ -8,7 +8,7 @@ import { AnswerService } from '../answer.service';
   styleUrls: ['./create.component.css'],
 })
 export class CreateComponent implements OnInit {
-  @Input() parentId: number;
+  @Input() problemId: number;
   @Output() close: EventEmitter<boolean> = new EventEmitter();
   answer = new Answer();
 
@@ -23,7 +23,7 @@ export class CreateComponent implements OnInit {
 
   submit() {
     this.answerService
-      .postAnswer(this.parentId, this.answer)
+      .postAnswer(this.problemId, this.answer)
       .subscribe((res) => {
         this.close.emit(true);
       });

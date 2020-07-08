@@ -30,7 +30,9 @@
 
                         ],
                         "scripts": [
-                            "./node_modules/quill/dist/quill.js"
+                            "./node_modules/quill/dist/quill.js",
+                            "./node_modules/turndown/dist/turndown.js",
+                            "./node_modules/marked/lib/marked.js"
                         ]
                     },
                     "configurations": {

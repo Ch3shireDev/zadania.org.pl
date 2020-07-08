@@ -12,7 +12,7 @@
 <h5>Zamieszczone rozwiązania:</h5>
 
 <ul *ngFor="let answer of author.answers">
-<li><a routerLink="/problems/{{answer.parentId}}">{{answer.parent.title}}</a></li>
+<li><a routerLink="/problems/{{answer.problemId}}">{{answer.parent.title}}</a></li>
 </ul>
 </div>
     <p><button (click)="goBack()">Wróć</button></p>

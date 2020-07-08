@@ -10,7 +10,7 @@ import { ShowState } from '../show-state';
 })
 export class BrowseComponent implements OnInit {
   @Input() answers: Answer[];
-  @Input() parentId: number;
+  @Input() problemId: number;
 
   @Input() isCreate: boolean;
   @Output() isCreateChange = new EventEmitter<boolean>();
@@ -24,7 +24,7 @@ export class BrowseComponent implements OnInit {
   ngOnInit(): void { }
 
   onDelete(event) {
-    this.answerService.getAnswers(this.parentId).subscribe((answers) => {
+    this.answerService.getAnswers(this.problemId).subscribe((answers) => {
       this.answers = answers;
     });
   }

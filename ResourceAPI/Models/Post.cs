@@ -9,15 +9,13 @@ namespace ResourceAPI.Models
     {
         public int Id { get; set; }
 
-        [StringLength(1024 * 64)]
+
+        [NotMapped] public string ContentHtml { get; set; }
+
+        [StringLength(8000)]
         [Column("Content")]
         public string Content { get; set; }
-
-        //[NotMapped]
-        public string ContentRaw { get; set; }
-
-        public ICollection<Comment> Comments { get; set; }
-        public int Points { get; set; }
+        [NotMapped] public int Points { get; set; }
         [NotMapped] public Vote UserVote { get; set; }
         [NotMapped] public bool UserUpvoted { get; set; }
         [NotMapped] public bool UserDownvoted { get; set; }

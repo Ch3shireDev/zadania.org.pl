@@ -2,7 +2,7 @@
     <h3>{{ problem.title }} </h3>
 </div>
 <div *ngIf="showContent">
-<div [innerHTML]="problem.content | safeHtml" class="problem-preview"></div>
+<div [innerHTML]="problem.contentHtml | safeHtml" class="problem-preview"></div>
 
 <div class="preview-footer-container" *ngIf="showDetails">
 <div class="problem-preview-points" (click)="$event.stopPropagation()">

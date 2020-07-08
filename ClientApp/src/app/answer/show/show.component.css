@@ -4,9 +4,6 @@ p {
     max-width: 100%;
 }
 
-.approved-answer {
-    background: rgb(153, 255, 153);
-}
 
 .answer-container {
     padding-top: 0.5rem;

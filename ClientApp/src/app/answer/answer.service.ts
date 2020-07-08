@@ -11,60 +11,60 @@ export class AnswerService {
 
   constructor(private http: HttpClient) { }
 
-  getAnswers(parentId: number): Observable<Answer[]> {
-    return this.http.get<Answer[]>(`${this.url}/problems/${parentId}/answers`);
+  getAnswers(problemId: number): Observable<Answer[]> {
+    return this.http.get<Answer[]>(`${this.url}/problems/${problemId}/answers`);
   }
 
-  getAnswer(parentId: number, answerId: number) {
+  getAnswer(problemId: number, answerId: number) {
     return this.http.get<Answer>(
-      `${this.url}/problems/${parentId}/answers/${answerId}`
+      `${this.url}/problems/${problemId}/answers/${answerId}`
     );
   }
 
-  postAnswer(parentId: number, answer: {}) {
-    return this.http.post(`${this.url}/problems/${parentId}/answers`, answer);
+  postAnswer(problemId: number, answer: {}) {
+    return this.http.post(`${this.url}/problems/${problemId}/answers`, answer);
   }
 
-  putAnswer(parentId: number, answerId: number, answer: {}) {
+  putAnswer(problemId: number, answerId: number, answer: {}) {
     return this.http.put(
-      `${this.url}/problems/${parentId}/answers/${answerId}`,
+      `${this.url}/problems/${problemId}/answers/${answerId}`,
       answer
     );
   }
 
-  deleteAnswer(parentId: number, answerId: number) {
+  deleteAnswer(problemId: number, answerId: number) {
     return this.http.delete(
-      `${this.url}/problems/${parentId}/answers/${answerId}`
+      `${this.url}/problems/${problemId}/answers/${answerId}`
     );
   }
 
   upvoteAnswer(answer: Answer) {
-    const parentId = answer.parentId;
+    const problemId = answer.problemId;
     const answerId = answer.id;
     return this.http.post(
-      `${this.url}/problems/${parentId}/answers/${answerId}/upvote`,
+      `${this.url}/problems/${problemId}/answers/${answerId}/upvote`,
       {}
     );
   }
 
   downvoteAnswer(answer: Answer) {
-    const parentId = answer.parentId;
+    const problemId = answer.problemId;
     const answerId = answer.id;
     return this.http.post(
-      `${this.url}/problems/${parentId}/answers/${answerId}/downvote`,
+      `${this.url}/problems/${problemId}/answers/${answerId}/downvote`,
       {}
     );
   }
 
   approveAnswer(answer: Answer): Observable<any> {
     const answerId = answer.id;
-    const problemId = answer.parentId;
+    const problemId = answer.problemId;
     return this.http.post(`${this.url}/problems/${problemId}/answers/${answerId}/approve`, {});
   }
 
   disapproveAnswer(answer: Answer): Observable<any> {
     const answerId = answer.id;
-    const problemId = answer.parentId;
+    const problemId = answer.problemId;
     return this.http.post(`${this.url}/problems/${problemId}/answers/${answerId}/disapprove`, {});
   }
 }

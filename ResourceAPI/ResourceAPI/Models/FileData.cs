@@ -63,7 +63,7 @@ namespace ResourceAPI.Models
             {
                 FileBytes = File.ReadAllBytes(Path.Combine(SqlContext.FileDirectory, FileDir, FileName));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // 
             }

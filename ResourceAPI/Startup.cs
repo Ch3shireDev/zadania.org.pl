@@ -57,7 +57,7 @@ namespace ResourceAPI
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<SqlContext>();
 #if DEBUG
-                context.Database.EnsureDeleted();
+                //context.Database.EnsureDeleted();
 #endif
                 context.Database.EnsureCreated();
             }

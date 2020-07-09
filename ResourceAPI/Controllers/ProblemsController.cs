@@ -105,6 +105,7 @@ namespace ResourceAPI.Controllers
                         Content = p.Content,
                         Created = p.Created,
                         Edited = p.Edited,
+                        FileData = p.FileData,
                         Author = new Author
                             {Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id},
                         Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -

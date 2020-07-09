@@ -43,3 +43,12 @@ nav {
         display: none;
     }
 }
+
+
+.header-title a{
+  font-weight: 700;
+}
+
+.active-link{
+  font-weight: 700 !important;
+}

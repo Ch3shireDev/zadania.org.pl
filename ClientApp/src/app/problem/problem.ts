@@ -10,6 +10,7 @@ export class Problem {
   public points: number;
   public created: Date;
   public edited: Date;
+  public isAnswered: boolean;
 
   public answers: Answer[];
   public author: Author;

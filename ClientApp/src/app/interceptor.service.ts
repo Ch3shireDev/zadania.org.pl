@@ -23,7 +23,6 @@ export class InterceptorService implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     this.auth.userProfile$.subscribe((profile) => {
       this.profile = profile;
-      console.log(profile);
     });
 
     return this.auth.getTokenSilently$().pipe(

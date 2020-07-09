@@ -12,15 +12,17 @@ import { Location } from '@angular/common';
 export class DeleteComponent implements OnInit {
   id: number;
   problem: Problem;
+  problemLink: string;
 
   constructor(
     private problemService: ProblemService,
     private activatedRoute: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.params.id;
+    this.problemLink = `/api/v1/problems/${this.id}`;
     this.problemService.getProblem(this.id).subscribe((problem) => {
       this.problem = problem;
     });

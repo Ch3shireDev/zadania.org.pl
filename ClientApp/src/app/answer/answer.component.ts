@@ -26,7 +26,6 @@ export class AnswerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.answers);
   }
 
   addAnswer() {

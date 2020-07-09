@@ -6,19 +6,26 @@ import { environment } from 'src/environments/environment';
 
 
 export class BrowseResult {
-  public pageNum: number;
+  public page: number;
   public totalPages: number;
   public problems: Problem[];
+  public problemLinks: string[];
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProblemService {
-  url = `${environment.url}/api/v1`;
 
-  constructor(private http: HttpClient) { }
+  host = environment.url;
+  url = `${this.host}/api/v1`;
 
+  constructor(private http: HttpClient) {
+  }
+
+  getProblemByLink(problemLink: string): Observable<Problem> {
+    return this.http.get<Problem>(`${this.host}${problemLink}`);
+  }
 
   downvoteProblem(problem: Problem) {
     const id = problem.id;
@@ -39,7 +46,6 @@ export class ProblemService {
   }
 
   postProblem(problem: Problem) {
-    // console.log(this.url);
     return this.http.post(`${this.url}/problems`, problem);
   }
 
@@ -51,12 +57,12 @@ export class ProblemService {
     return this.http.delete(`${this.url}/problems/${id}`);
   }
 
-  searchProblems(query: string): Observable<Problem[]> {
+  searchProblems(query: string): Observable<BrowseResult> {
     if (query === null || query === undefined) { return null; }
-    return this.http.get<Problem[]>(`${this.url}/problems/search?query=${query}`);
+    return this.http.get<BrowseResult>(`${this.url}/problems?query=${query}`);
   }
 
-  getProblemsByTag(tag: string): Observable<Problem[]> {
-    return this.http.get<Problem[]>(`${this.url}/problems/search?tag=${tag}`);
+  getProblemsByTag(tag: string): Observable<BrowseResult> {
+    return this.http.get<BrowseResult>(`${this.url}/problems?tag=${tag}`);
   }
 }

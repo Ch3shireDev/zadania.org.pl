@@ -3,17 +3,15 @@
     <button (click)="search()">Wyślij</button>
 </div>
 <div *ngIf="totalPages !==null && totalPages>0" class="browse-nav">
-    <div><button (click)="previousPage()" [disabled]="pageNum<2">Poprzednia</button></div>
-    <div>Strona {{pageNum}} z {{totalPages}}</div>
-    <div><button (click)="nextPage()" [disabled]="pageNum>=totalPages">Następna</button></div>
+    <div><button (click)="previousPage()" [disabled]="page<2">Poprzednia</button></div>
+    <div>Strona {{page}} z {{totalPages}}</div>
+    <div><button (click)="nextPage()" [disabled]="page>=totalPages">Następna</button></div>
 </div>
-<div *ngFor="let problem of problems" class="container">
-    <div class="problem-container-link" routerLink="/problems/{{problem.id}}" [class.bg-approved]="problem.isAnswered">
-        <app-preview [problem]="problem"></app-preview>
-    </div>
+<div *ngFor="let problemLink of problemLinks" class="container">
+    <app-preview [problemLink]="problemLink"></app-preview>
 </div>
 <div *ngIf="totalPages !==null && totalPages>0" class="browse-nav">
-    <div><button (click)="previousPage()" [disabled]="pageNum<2">Poprzednia</button></div>
-    <div>Strona {{pageNum}} z {{totalPages}}</div>
-    <div><button (click)="nextPage()" [disabled]="pageNum>=totalPages">Następna</button></div>
+    <div><button (click)="previousPage()" [disabled]="page<2">Poprzednia</button></div>
+    <div>Strona {{page}} z {{totalPages}}</div>
+    <div><button (click)="nextPage()" [disabled]="page>=totalPages">Następna</button></div>
 </div>

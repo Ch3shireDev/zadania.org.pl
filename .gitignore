@@ -1,6 +1,6 @@
-ResourceAPI/.vs/*
-ResourceAPI/bin/**
-ResourceAPI/obj/**
+ResourceAPI/ResourceAPI/.vs/*
+ResourceAPI/ResourceAPI/bin/**
+ResourceAPI/ResourceAPI/obj/**
 ClientApp/node_modules/**
 *.exe
 *.pdb
@@ -10,10 +10,10 @@ ClientApp/node_modules/**
 */**/bin/Release
 */**/obj/Debug
 */**/obj/Release
-ResourceAPI/obj/ResourceAPI.csproj*
+ResourceAPI/ResourceAPI/obj/ResourceAPI.csproj*
 package-lock.json
 zadania.info
-ResourceAPI/sqlite.db
+ResourceAPI/ResourceAPI/sqlite.db
 sqlite.db
 appsettings.json
 ResourceAPI/appsettings.json
@@ -23,3 +23,5 @@ __pycache__/**
 images/**
 ResourceAPI/ResourceAPITests/obj/**
 ResourceAPI/ResourceAPITests/bin/**
+**/**/obj/**
+**/**/bin/**

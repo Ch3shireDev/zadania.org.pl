@@ -43,9 +43,13 @@ namespace ResourceAPI.Controllers
         public ActionResult Get()
         {
             var author = GetAuthor(HttpContext, Context);
-            author.Problems = null;
-            author.Answers = null;
-            author.VotedProblems = null;
+            if (author != null)
+            {
+                author.Problems = null;
+                author.Answers = null;
+                author.VotedProblems = null;
+            }
+
             return StatusCode(200, author);
         }
 

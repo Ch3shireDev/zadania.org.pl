@@ -9,14 +9,20 @@ import { Router } from '@angular/router';
   styleUrls: ['./preview.component.css']
 })
 export class PreviewComponent implements OnInit {
-  @Input() problem: Problem;
+  @Input() id: string;
+  problem: Problem;
+  @Input() problemLink: string;
   @Input() showControls = true;
   @Input() showDetails = true;
   @Input() showContent = true;
 
   constructor(private problemService: ProblemService, public authService: AuthService, public router: Router) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (this.problemLink === undefined) { return; }
+    // this.problemService.getProblem(this.id).subscribe(problem => { this.problem = problem; });
+    this.problemService.getProblemByLink(this.problemLink).subscribe(problem => { this.problem = problem; });
+  }
 
   getAuthor(event) {
     event.stopPropagation();

@@ -36,17 +36,6 @@ input:focus{
     box-shadow: 0 0 6px #888;
 }
 
-.problem-container-link {
-    padding: 0.5rem 1rem;
-    border: 1px solid #888;
-    border-radius: 3px;
-}
-
-.problem-container-link:hover {
-    box-shadow: 0 0 10px #444;
-    cursor: pointer;
-}
-
 .browse-nav {
     display: flex;
 }

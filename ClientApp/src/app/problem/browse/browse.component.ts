@@ -12,9 +12,10 @@ export class BrowseComponent implements OnInit, AfterViewInit {
   searchQuery: string;
   lastSearchQuery: string;
 
-  pageNum: number;
+  page: number;
   totalPages: number;
   tags: string;
+  problemLinks: string[];
 
   @ViewChild('searchInput') private searchInputElement: ElementRef;
 
@@ -30,13 +31,12 @@ export class BrowseComponent implements OnInit, AfterViewInit {
     this.searchInputElement.nativeElement.focus();
   }
 
-  getAllProblems(params=null) {
-    // console.log('xxx');
-    // console.log(params);
+  getAllProblems(params = null) {
     this.problemService.getProblems(params).subscribe((res) => {
-      this.pageNum = res.pageNum;
+      this.page = res.page;
       this.totalPages = res.totalPages;
       this.problems = res.problems;
+      this.problemLinks = res.problemLinks;
     });
   }
 
@@ -45,26 +45,25 @@ export class BrowseComponent implements OnInit, AfterViewInit {
       this.getAllProblems();
       return;
     }
-    if (this.searchQuery === this.lastSearchQuery) { return; }
+    // if (this.searchQuery === this.lastSearchQuery) { return; }
     const searchQuery = this.searchQuery.trim();
-    this.problemService.searchProblems(searchQuery).subscribe((problems) => {
-      this.problems = problems;
-      this.lastSearchQuery = searchQuery;
+    this.router.navigate([], { relativeTo: this.activatedRoute, queryParams: { query: searchQuery }, queryParamsHandling: 'merge' });
+    this.problemService.getProblems().subscribe((problems) => {
+      this.problemLinks = problems.problemLinks;
     });
   }
 
   previousPage() {
-    this.setPage(this.pageNum - 1);
+    this.setPage(this.page - 1);
   }
 
   nextPage() {
-    this.setPage(this.pageNum + 1);
+    this.setPage(this.page + 1);
   }
 
   setPage(page) {
     const tags = this.activatedRoute.snapshot.queryParams.tags;
     const queryParams = { tags, page };
-    // console.log(queryParams);
     this.router.navigate(['/problems/browse'], { queryParams });
   }
 }

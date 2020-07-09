@@ -12,150 +12,70 @@ namespace ResourceAPI.Controllers
     [Route("api/v1/[controller]")]
     public class ProblemsController : ControllerBase
     {
-        private readonly ILogger<ProblemsController> _logger;
+        private ILogger<ProblemsController> Logger { get; }
 
         public ProblemsController(ILogger<ProblemsController> logger, SqlContext context)
         {
-            _logger = logger;
+            Logger = logger;
             Context = context;
         }
 
         private SqlContext Context { get; }
 
         [HttpGet]
-        public ActionResult Browse([FromQuery] string tags = null, [FromQuery] int page = 1)
+        public ActionResult Browse(
+            [FromQuery] string tags = null, 
+            [FromQuery] int page = 1, 
+            [FromQuery] string query=null,
+            [FromQuery] bool newest=false,
+            [FromQuery] bool highest=false
+            )
         {
             var tag = tags;
             var problemsQuery = Context.Problems.AsQueryable();
 
             if (tags != null)
                 problemsQuery = problemsQuery
-                    .Where(p => p.ProblemTags.Select(pt => pt.Tag.Url)
-                        .Any(t => t == tag));
+                    .Where(p => p.ProblemTags.Select(pt => pt.Tag.Url).Any(t => t == tag));
 
-            var resultQuery = problemsQuery
-                .Include(p => p.Author)
-                .Select(p => new Problem
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        ContentHtml = p.ContentHtml,
-                        Created = p.Created,
-                        Content = p.Content,
-                        Edited = p.Edited,
-                        Author = new Author
-                        {
-                            Name = p.Author.Name,
-                            UserId = p.Author.UserId,
-                            Email = p.Author.Email,
-                            Id = p.Author.Id
-                        },
-                        Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
-                                 p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
-                        Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                        UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                        UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
-                        IsAnswered = p.Answers.Any(a => a.IsApproved),
-                        FileData = p.FileData
-                    }
-                ).AsQueryable();
+            if (query != null) problemsQuery = problemsQuery.Where(p => p.Content.Contains(query) || p.ProblemTags.Any(pt=>pt.Tag.Name.Contains(query)));
+            
 
+            var resultQuery = problemsQuery.AsQueryable();
 
-            var newest = resultQuery
-                //.OrderByDescending(r => r.Points)
-                .OrderByDescending(p => p.Created)
-                .AsQueryable();
+            var linksQuery = resultQuery;
 
-            //var points = resultQuery.OrderByDescending(r => r.Points).AsQueryable();
+            if (newest)
+            {
+                linksQuery= linksQuery
+                    .OrderByDescending(p => p.Created)
+                    .AsQueryable();
+            }
 
+            if (highest)
+            {
+                linksQuery = linksQuery.OrderByDescending(p => p.Points).AsQueryable();
+            }
 
             var num = resultQuery.Count();
 
             var lastRecordIndex = page * 10;
             var firstRecordIndex = lastRecordIndex - 10;
 
-            var subQuery = newest;
+            var subQuery = linksQuery;
 
             if (firstRecordIndex < num) subQuery = subQuery.Skip(firstRecordIndex);
             if (lastRecordIndex < num) subQuery = subQuery.Take(10);
 
-            var problems = subQuery.ToList().Select(p => p.Render()).ToList();
 
             return StatusCode(200, new
             {
-                pageNum = page,
+                page,
                 totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1,
-                problems
+                problemLinks = subQuery.ToList().Select(p => $"/api/v1/problems/{p.Id}")
             });
         }
 
-        [HttpGet]
-        [Route("search")]
-        public ActionResult Search(string query)
-        {
-            if (string.IsNullOrWhiteSpace(query)) return StatusCode(204);
-            if (!Context.Problems.Any()) return StatusCode(204);
-
-            var problems = Context.Problems
-                    .Include(p => p.Author)
-                    .Select(p => new Problem
-                        {
-                            Id = p.Id,
-                            Title = p.Title,
-                            Content = p.Content,
-                            Created = p.Created,
-                            Edited = p.Edited,
-                            FileData = p.FileData,
-                            Author = new Author
-                            {
-                                Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id
-                            },
-                            Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
-                                     p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
-                            Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                            UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                            UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
-                            IsAnswered = p.Answers.Any(a => a.IsApproved)
-                        }
-                    )
-                    .Where(problem => problem.Content.ToLowerInvariant().Contains(query.ToLowerInvariant()))
-                    .OrderByDescending(problem => problem.Id)
-                    .ToArray()
-                    .Select(p => p.Render())
-                ;
-
-            return StatusCode(200, problems);
-        }
-
-        //[HttpGet]
-        public ActionResult Get([FromQuery] int from, [FromQuery] int num)
-        {
-            if (!Context.Problems.Any()) return StatusCode(204);
-            var max = Context.Problems.Select(problem => problem.Id).Max();
-            var problems = Context.Problems
-                .Include(p => p.ProblemTags)
-                .Where(problem => problem.Id > max - num)
-                .Select(p =>
-                    new Problem
-                    {
-                        Id = p.Id,
-                        ContentHtml = p.ContentHtml,
-                        Content = p.Content,
-                        Title = p.Title,
-                        Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                        IsAnswered = p.Answers.Any(a => a.IsApproved)
-                    }
-                )
-                .ToArray()
-                .Reverse()
-                .Select(p => p.Render())
-                .ToArray();
-
-            //var pcs = Context.ProblemTags.ToArray();
-            //var tags = Context.Tags.ToArray();
-
-            return StatusCode(200, problems);
-        }
 
         [HttpGet]
         [Route("{id:int}")]
@@ -192,6 +112,8 @@ namespace ResourceAPI.Controllers
                 .First(p => p.Id == id);
 
             problem.Author = problem.Author.Serializable();
+            problem.IsAnswered = Context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
+
             return StatusCode(200, problem.Render());
         }
 

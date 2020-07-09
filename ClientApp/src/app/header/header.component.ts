@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
+import { Route, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -8,9 +9,18 @@ import { AuthService } from '../auth.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(public auth: AuthService) {}
+  isNewest = false;
+  isHighest = false;
+
+  constructor(public auth: AuthService, public route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const newest = params.newest === 'true';
+      const highest = params.highest === 'true';
+      this.isHighest = highest;
+      this.isNewest = newest;
+    });
   }
 
 }

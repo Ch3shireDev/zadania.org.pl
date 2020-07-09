@@ -25,10 +25,10 @@ except:
     exit()
 
 try:
-    if os.path.isdir('./ResourceAPI/bin/Release'):
-        shutil.rmtree('./ResourceAPI/bin/Release')
+    if os.path.isdir('./ResourceAPI/ResourceAPI/bin/Release'):
+        shutil.rmtree('./ResourceAPI/ResourceAPI/bin/Release')
     os.system('dotnet publish ./ResourceAPI --configuration Release')
-    shutil.move('./ResourceAPI/bin/Release/netcoreapp3.1/publish', 'build')
+    shutil.move('./ResourceAPI/ResourceAPI/bin/Release/netcoreapp3.1/publish', 'build')
 except Exception as e:
     print(f'Error compiling ASP.NET project: {e}. Aborting...')
     exit()

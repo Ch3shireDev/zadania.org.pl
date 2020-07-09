@@ -20,3 +20,6 @@ ResourceAPI/appsettings.json
 config.py
 *zip
 __pycache__/**
+images/**
+ResourceAPI/ResourceAPITests/obj/**
+ResourceAPI/ResourceAPITests/bin/**

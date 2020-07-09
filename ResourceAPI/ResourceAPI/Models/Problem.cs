@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
@@ -6,7 +7,9 @@ namespace ResourceAPI.Models
 {
     public class Problem : Post
     {
+        [StringLength(64)]
         public string Title { get; set; }
+        [StringLength(64)]
         public string Source { get; set; }
         public IList<Answer> Answers { get; set; } = new List<Answer>();
 

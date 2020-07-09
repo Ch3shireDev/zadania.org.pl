@@ -218,6 +218,15 @@ namespace ResourceAPI.Controllers
 
             Context.SaveChanges();
 
+            answer.Points = Context.AnswerVotes
+                .Where(av => av.AnswerId == answer.Id)
+                .Select(av => av.Vote == Models.Vote.Upvote ? 1 : av.Vote == Models.Vote.Downvote ? -1 : 0)
+                .Sum();
+
+            Context.Answers.Update(answer);
+
+            Context.SaveChanges();
+
             return StatusCode(200, answerVote.Vote);
         }
     }

@@ -15,8 +15,7 @@ namespace ResourceAPI.Models
         [StringLength(8000)]
         [Column("Content")]
         public string Content { get; set; }
-
-        [NotMapped] public int Points { get; set; }
+        public int Points { get; set; }
         [NotMapped] public Vote UserVote { get; set; }
         [NotMapped] public bool UserUpvoted { get; set; }
         [NotMapped] public bool UserDownvoted { get; set; }

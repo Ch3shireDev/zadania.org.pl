@@ -97,29 +97,32 @@ namespace ResourceAPI.Controllers
             if (!Context.Problems.Any()) return StatusCode(204);
 
             var problems = Context.Problems
-                .Include(p => p.Author)
-                .Select(p => new Problem
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        Content = p.Content,
-                        Created = p.Created,
-                        Edited = p.Edited,
-                        FileData = p.FileData,
-                        Author = new Author
-                            {Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id},
-                        Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
-                                 p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
-                        Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                        UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                        UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
-                        IsAnswered = p.Answers.Any(a => a.IsApproved)
-                    }
-                )
-                .Where(problem => problem.Content.Contains(query))
-                .OrderByDescending(problem => problem.Id)
-                .ToArray()
-                .Select(p => p.Render());
+                    .Include(p => p.Author)
+                    .Select(p => new Problem
+                        {
+                            Id = p.Id,
+                            Title = p.Title,
+                            Content = p.Content,
+                            Created = p.Created,
+                            Edited = p.Edited,
+                            FileData = p.FileData,
+                            Author = new Author
+                            {
+                                Name = p.Author.Name, UserId = p.Author.UserId, Email = p.Author.Email, Id = p.Author.Id
+                            },
+                            Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
+                                     p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
+                            Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
+                            UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
+                            UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote),
+                            IsAnswered = p.Answers.Any(a => a.IsApproved)
+                        }
+                    )
+                    .Where(problem => problem.Content.ToLowerInvariant().Contains(query.ToLowerInvariant()))
+                    .OrderByDescending(problem => problem.Id)
+                    .ToArray()
+                    .Select(p => p.Render())
+                ;
 
             return StatusCode(200, problems);
         }
@@ -160,11 +163,7 @@ namespace ResourceAPI.Controllers
         {
             if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
             var problem = Context.Problems
-                .Include(p => p.ProblemTags)
                 .Include(p => p.Answers)
-                .ThenInclude(a => a.FileData)
-                .Include(p => p.Answers)
-                .ThenInclude(a => a.Author)
                 .Select(p => new Problem
                 {
                     Id = p.Id,
@@ -173,28 +172,26 @@ namespace ResourceAPI.Controllers
                     Content = p.Content,
                     AuthorId = p.AuthorId,
                     Author = p.Author,
-                    Answers = p.Answers,
+                    Answers = p.Answers.Select(a => new Answer
+                    {
+                        Id = a.Id,
+                        Content = a.Content,
+                        AuthorId = a.AuthorId,
+                        FileData = a.FileData,
+                        Author = new Author {Name = a.Author.Name, Email = a.Author.Email, Id = a.Author.Id},
+                        Points = a.Points
+                    }).ToList(),
                     Created = p.Created,
                     Edited = p.Edited,
                     FileData = p.FileData,
-                    Tags = p.ProblemTags.Select(pt => pt.Tag).ToArray(),
-                    Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
-                             p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
+                    Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}).ToArray(),
+                    Points = p.Points,
                     UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
                     UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
                 })
                 .First(p => p.Id == id);
 
             problem.Author = problem.Author.Serializable();
-            foreach (var answer in problem.Answers)
-            {
-                answer.Author.Answers = null;
-                answer.Author.Problems = null;
-                answer.Problem = null;
-            }
-
-            foreach (var tag in problem.Tags) tag.ProblemTags = null;
-
             return StatusCode(200, problem.Render());
         }
 
@@ -293,6 +290,14 @@ namespace ResourceAPI.Controllers
                 problemVote.Vote = problemVote.Vote == vote ? Vote.None : vote;
                 Context.ProblemVotes.Update(problemVote);
             }
+
+            Context.SaveChanges();
+
+            problem.Points = Context.ProblemVotes.Where(pv => pv.ProblemId == problem.Id)
+                .Select(pv => pv.Vote == Vote.Upvote ? 1 : pv.Vote == Vote.Downvote ? -1 : 0)
+                .Sum();
+
+            Context.Problems.Update(problem);
 
             Context.SaveChanges();
 

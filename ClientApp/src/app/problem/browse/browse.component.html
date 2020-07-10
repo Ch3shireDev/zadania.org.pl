@@ -7,11 +7,11 @@
     <div>Strona {{page}} z {{totalPages}}</div>
     <div><button (click)="nextPage()" [disabled]="page>=totalPages">Następna</button></div>
 </div>
-<div *ngFor="let problemLink of problemLinks" class="container">
+<div *ngFor="let problemLink of problemLinks">
     <app-preview [problemLink]="problemLink"></app-preview>
 </div>
-<div *ngIf="totalPages !==null && totalPages>0" class="browse-nav">
+<!-- <div *ngIf="totalPages !==null && totalPages>0" class="browse-nav">
     <div><button (click)="previousPage()" [disabled]="page<2">Poprzednia</button></div>
     <div>Strona {{page}} z {{totalPages}}</div>
     <div><button (click)="nextPage()" [disabled]="page>=totalPages">Następna</button></div>
-</div>
+</div> -->

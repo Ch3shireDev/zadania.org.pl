@@ -26,9 +26,9 @@ namespace ResourceAPI
 
         public static string ConnectionString { get; set; }
         public static string FileDirectory { get; set; } = "../../images";
-        public DbSet<MultipleChoiceTest> MultipleChoiceTests { get; set; }
-        public DbSet<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
-        public DbSet<MultipleChoiceAnswer> MultipleChoiceAnswers { get; set; }
+        //public DbSet<MultipleChoiceTest> MultipleChoiceTests { get; set; }
+        //public DbSet<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
+        //public DbSet<MultipleChoiceAnswer> MultipleChoiceAnswers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

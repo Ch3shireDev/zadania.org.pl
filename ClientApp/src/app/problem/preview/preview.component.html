@@ -1,4 +1,4 @@
-<div *ngIf="problem !== null && problem !== undefined">
+<div *ngIf="problem !== undefined" class="container">
 <div class="problem-container-link" routerLink="/problems/{{problem.id}}" [class.bg-approved]="problem.isAnswered">
 <div>
     <h3>{{ problem.title }} </h3>

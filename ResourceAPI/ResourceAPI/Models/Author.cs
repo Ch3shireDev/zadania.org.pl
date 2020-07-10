@@ -4,13 +4,6 @@ using System.Linq;
 
 namespace ResourceAPI.Models
 {
-    public enum Vote
-    {
-        None,
-        Downvote,
-        Upvote
-    }
-
     public class Author
     {
         public int Id { get; set; }
@@ -52,12 +45,5 @@ namespace ResourceAPI.Models
             VotedProblems = null;
             return this;
         }
-    }
-
-    public class VoteElement
-    {
-        public int Id { get; set; }
-        public int ElementId { get; set; }
-        public Vote Vote { get; set; }
     }
 }

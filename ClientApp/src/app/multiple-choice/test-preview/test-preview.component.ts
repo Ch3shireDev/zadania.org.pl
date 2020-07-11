@@ -15,7 +15,7 @@ export class TestPreviewComponent implements OnInit {
   constructor(private multipleChoiceService: MultipleChoiceService) { }
 
   ngOnInit(): void {
-    this.multipleChoiceService.getTest(this.link).subscribe(test => { this.test = test;});
+    this.multipleChoiceService.getTest(this.link).subscribe(test => { this.test = test; });
   }
 
 }

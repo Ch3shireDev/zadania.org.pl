@@ -53,6 +53,7 @@ export class TestShowComponent implements OnInit {
 
   setPoints(event, i) {
     this.points[i] = event;
+    console.log(this.points);
   }
 
   setAnswer(event, i) {

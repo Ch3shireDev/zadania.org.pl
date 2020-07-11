@@ -1,4 +1,4 @@
-ResourceAPI/ResourceAPI/.vs/*
+ResourceAPI/ResourceAPI/.vs/**
 ResourceAPI/ResourceAPI/bin/**
 ResourceAPI/ResourceAPI/obj/**
 ClientApp/node_modules/**
@@ -25,3 +25,4 @@ ResourceAPI/ResourceAPITests/obj/**
 ResourceAPI/ResourceAPITests/bin/**
 **/**/obj/**
 **/**/bin/**
+ResourceAPI/.vs/**

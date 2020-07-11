@@ -25,22 +25,18 @@ export class QuestionShowComponent implements OnInit {
   }
 
   setAnswer(event, i) {
-    this.answersList[i] = event;
-    let wrong = false;
-    let correct = false;
-    this.answersList.forEach(x => {
-      if (x === false) { wrong = true; }
-      if (x === true) { correct = true; }
-    });
-    if (wrong) {
+
+    if (event === false) {
       this.answerChange.emit(i);
       this.pointsChange.emit(-1); return;
     }
-    if (correct) {
+    if (event === true) {
       this.answerChange.emit(i);
       this.pointsChange.emit(1); return;
     }
-    this.pointsChange.emit(0);
-    this.answerChange.emit(null);
+    if (event === null) {
+      this.pointsChange.emit(0);
+      this.answerChange.emit(null);
+    }
   }
 }

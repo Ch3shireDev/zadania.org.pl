@@ -14,6 +14,7 @@ export class AnswerShowComponent implements OnInit {
   @Input() checked = false;
   @Input() readOnly = false;
   @Output() setAnswer: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @ViewChild('inputAnswer') input;
 
   public id: string;
 
@@ -25,14 +26,16 @@ export class AnswerShowComponent implements OnInit {
   }
 
   checkAnswer() {
+    this.answer.isChecked = this.input.nativeElement.checked;
+
     if (this.answer.isChecked) {
       this.answer.isChecked = false;
-      // this.input.nativeElement.checked = false;
+      this.input.nativeElement.checked = false;
       this.setAnswer.emit(null);
       return;
     }
     this.answer.isChecked = true;
-    // this.input.nativeElement.checked = true;
+    this.input.nativeElement.checked = true;
     if (this.answer.isCorrect) {
       this.setAnswer.emit(true);
       return;

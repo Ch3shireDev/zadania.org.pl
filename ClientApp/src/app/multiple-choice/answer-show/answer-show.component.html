@@ -1,7 +1,7 @@
 <div *ngIf="answer" >
   <div *ngIf="!readOnly" class="answer-container">
   <div class="answer-checkbox">
-    <input type="radio" name="answer" (click)="checkAnswer()" [checked]="answer.isChecked" />
+    <input type="radio" name="answer" (click)="checkAnswer()" #inputAnswer />
   </div>
   <div class="answer-content" (click)="checkAnswer()">
     <label [innerHTML]="answer.contentHtml"></label>

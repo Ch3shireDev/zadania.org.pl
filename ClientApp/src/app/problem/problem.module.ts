@@ -10,7 +10,7 @@ import { BrowseComponent } from './browse/browse.component';
 import { FormsModule } from '@angular/forms';
 import { ShowDetailsComponent } from './show-details/show-details.component';
 import { RouterModule } from '@angular/router';
-import { AnswerModule } from '../answer/answer.module';
+import { AnswerModule } from './answer/answer.module';
 import { PointsComponent } from './points/points.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MarkdownModule } from 'ngx-markdown';

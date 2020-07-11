@@ -1,4 +1,4 @@
-import { Answer } from '../answer/answer';
+import { Answer } from './answer/answer';
 import { Author } from '../author/author';
 
 export class Problem {

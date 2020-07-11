@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Answer } from './answer';
 import { AnswerService } from './answer.service';
 import { ShowState } from './show-state';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../auth.service';
 import { Location } from '@angular/common';
 
 @Component({

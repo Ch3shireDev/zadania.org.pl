@@ -1,15 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core'
-import { Answer } from '../answer'
+import { Component, OnInit, Input } from '@angular/core';
+import { Answer } from '../answer';
 
 @Component({
-  selector: 'app-editor',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css'],
+  selector: 'app-answer-editor',
+  templateUrl: './answer-editor.component.html',
+  styleUrls: ['./answer-editor.component.css'],
 })
-export class EditorComponent implements OnInit {
-  @Input() answer: Answer
+export class AnswerEditorComponent implements OnInit {
+  @Input() answer: Answer;
 
-  editorStyle = { height: '300px' }
+  editorStyle = { height: '300px' };
 
   editorConfig = {
     toolbar: [
@@ -28,9 +28,9 @@ export class EditorComponent implements OnInit {
       ['clean'], // remove formatting button
       ['link'], // link
     ],
-  }
+  };
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 }

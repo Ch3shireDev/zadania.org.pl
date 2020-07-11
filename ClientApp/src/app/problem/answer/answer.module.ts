@@ -1,29 +1,29 @@
-import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { AnswerComponent } from './answer.component'
-import { CreateComponent } from './create/create.component'
-import { BrowseComponent } from './browse/browse.component'
-import { EditComponent } from './edit/edit.component'
-import { EditorComponent } from './editor/editor.component'
-import { DeleteComponent } from './delete/delete.component'
-import { ShowComponent } from './show/show.component'
-import { FormsModule } from '@angular/forms'
-import { RouterModule } from '@angular/router'
-import { PointsComponent } from './points/points.component'
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
-import { SafeHtmlPipe } from './safe-html.pipe'
-import { QuillModule } from 'ngx-quill'
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AnswerComponent } from './answer.component';
+import { AnswerCreateComponent } from './answer-create/answer-create.component';
+import { AnswersBrowseComponent } from './answers-browse/answers-browse.component';
+import { AnswerEditComponent } from './answer-edit/answer-edit.component';
+import { AnswerEditorComponent } from './answer-editor/answer-editor.component';
+import { AnswerDeleteComponent } from './answer-delete/answer-delete.component';
+import { AnswerShowComponent } from './answer-show/answer-show.component';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { AnswerPointsComponent } from './answer-points/answer-points.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SafeHtmlPipe } from './safe-html.pipe';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
     AnswerComponent,
-    CreateComponent,
-    BrowseComponent,
-    EditComponent,
-    EditorComponent,
-    DeleteComponent,
-    ShowComponent,
-    PointsComponent,
+    AnswerCreateComponent,
+    AnswersBrowseComponent,
+    AnswerEditComponent,
+    AnswerEditorComponent,
+    AnswerDeleteComponent,
+    AnswerShowComponent,
+    AnswerPointsComponent,
     SafeHtmlPipe,
   ],
   imports: [
@@ -33,6 +33,6 @@ import { QuillModule } from 'ngx-quill'
     FontAwesomeModule,
     QuillModule.forRoot(),
   ],
-  exports: [AnswerComponent, SafeHtmlPipe],
+  exports: [AnswerComponent, SafeHtmlPipe, AnswersBrowseComponent],
 })
-export class AnswerModule {}
+export class AnswerModule { }

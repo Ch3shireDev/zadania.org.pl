@@ -11,9 +11,10 @@ import { Location } from '@angular/common';
   styleUrls: ['./answer.component.css'],
 })
 export class AnswerComponent implements OnInit {
-  @Input() answers: Answer[];
+  answers: Answer[];
   @Input() problemId: number;
   @Input() isCreate: boolean;
+  @Input() answerLinks: string[];
   state = ShowState.Show;
 
   public ShowStates = ShowState;

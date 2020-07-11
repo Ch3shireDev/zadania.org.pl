@@ -6,7 +6,7 @@ using ResourceAPI.Models;
 
 namespace ResourceAPI.Controllers
 {
-    class Element
+    internal class Element
     {
         public Element(Match match, string path)
         {
@@ -27,8 +27,8 @@ namespace ResourceAPI.Controllers
             {
                 var tags = tagMatches.Groups[1].Value.Split(";").Select(tag => tag.Trim())
                     .Where(tag => !string.IsNullOrWhiteSpace(tag))
-                    .Select(tag => new Tag { Name = tag.Replace("...", "") })
-                    .Select(tag => new Tag { Name = tag.Name, Url = tag.GenerateUrl() });
+                    .Select(tag => new Tag {Name = tag.Replace("...", "")})
+                    .Select(tag => new Tag {Name = tag.Name, Url = tag.GenerateUrl()});
 
                 var dict = new Dictionary<string, Tag>();
                 foreach (var tag in tags)

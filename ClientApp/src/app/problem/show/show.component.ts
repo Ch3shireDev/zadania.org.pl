@@ -3,16 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { ProblemService } from '../problem.service';
 import { Problem } from '../problem';
 import { Location } from '@angular/common';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeHtml } from '@angular/platform-browser';
 import { AuthService } from 'src/app/auth.service';
 
 
 @Component({
-  selector: 'app-show-details',
-  templateUrl: './show-details.component.html',
-  styleUrls: ['./show-details.component.css'],
+  selector: 'app-show',
+  templateUrl: './show.component.html',
+  styleUrls: ['./show.component.css'],
 })
-export class ShowDetailsComponent implements OnInit {
+export class ShowComponent implements OnInit {
   id: number;
   public problem: Problem;
   sanitized: SafeHtml;
@@ -20,14 +20,12 @@ export class ShowDetailsComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private problemService: ProblemService,
-    private location: Location,
     public authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.params.id;
     this.reload();
-
   }
 
   goBack() {
@@ -77,7 +75,7 @@ export class ShowDetailsComponent implements OnInit {
           this.isAuthor = false;
         }
         else {
-          this.isAuthor = problem.author.userId === profile.sub;
+          this.isAuthor = problem.authorId === profile.sub;
         }
       });
     });

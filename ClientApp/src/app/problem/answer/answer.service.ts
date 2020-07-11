@@ -7,9 +7,15 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AnswerService {
+
+  host = environment.url;
   url = `${environment.url}/api/v1`;
 
   constructor(private http: HttpClient) { }
+
+  getAnswerFromLink(link: string): Observable<Answer> {
+    return this.http.get<Answer>(`${this.host}${link}`);
+  }
 
   getAnswers(problemId: number): Observable<Answer[]> {
     return this.http.get<Answer[]>(`${this.url}/problems/${problemId}/answers`);

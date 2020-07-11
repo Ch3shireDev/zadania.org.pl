@@ -133,6 +133,5 @@ namespace ResourceAPI.Controllers
 
             foreach (var element in elements) yield return element;
         }
-
     }
 }

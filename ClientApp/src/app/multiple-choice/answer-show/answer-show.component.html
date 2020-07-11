@@ -1,21 +1,23 @@
-<div *ngIf="answer" >
+<div *ngIf="answer">
   <div *ngIf="!readOnly" class="answer-container">
-  <div class="answer-checkbox">
-    <input type="radio" name="answer" (click)="checkAnswer()" #inputAnswer />
+    <div class="answer-checkbox">
+      <input type="radio" name="answer" (click)="checkAnswer()" #inputAnswer />
+    </div>
+    <div class="answer-content" (click)="checkAnswer()">
+      <label [innerHTML]="answer.contentHtml"></label>
+    </div>
   </div>
-  <div class="answer-content" (click)="checkAnswer()">
-    <label [innerHTML]="answer.contentHtml"></label>
-  </div>
+  <div *ngIf="readOnly" class="answer-container">
+    <div class="answer-checkbox" *ngIf="readOnly">
+      <input type="radio" name="answer-{{ id }}" [checked]="checked" disabled />
+    </div>
 
-</div>
-<div *ngIf="readOnly" class="answer-container">
-  <div class="answer-checkbox" *ngIf="readOnly">
-    <input type="radio" name="answer-{{id}}" [checked]="checked"  disabled/>
+    <div class="answer-content">
+      <label
+        [innerHTML]="answer.contentHtml"
+        [class.checked-correct]="answer.isCorrect"
+        [class.checked-incorrect]="checked && !answer.isCorrect"
+      ></label>
+    </div>
   </div>
-
-  <div class="answer-content">
-    <label [innerHTML]="answer.contentHtml" [class.checked-correct]="answer.isCorrect" [class.checked-incorrect]="checked && !answer.isCorrect"></label>
-  </div>
-
-</div>
 </div>

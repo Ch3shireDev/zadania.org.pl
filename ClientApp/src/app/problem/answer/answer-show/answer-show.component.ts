@@ -2,19 +2,18 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Answer } from '../answer';
 import { AnswerService } from '../answer.service';
 import { ShowState } from '../show-state';
-import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
 
 @Component({
-  selector: 'app-show',
-  templateUrl: './show.component.html',
-  styleUrls: ['./show.component.css'],
+  selector: 'app-answer-show',
+  templateUrl: './answer-show.component.html',
+  styleUrls: ['./answer-show.component.css'],
 })
-export class ShowComponent implements OnInit {
-  @Input() answer: Answer;
+export class AnswerShowComponent implements OnInit {
+  public answer: Answer;
   @Input() problemId: number;
-
+  @Input() link: string;
 
   @Input() isCreate: boolean;
   @Output() isCreateChange = new EventEmitter<boolean>();
@@ -29,6 +28,9 @@ export class ShowComponent implements OnInit {
   constructor(private answerService: AnswerService, private router: Router, public authService: AuthService) { }
 
   ngOnInit(): void {
+    this.answerService.getAnswerFromLink(this.link).subscribe(answer => { this.answer = answer; });
+
+
     this.authService.userProfile$.subscribe(profile => {
       if (profile !== null) {
         this.sub = profile.sub;

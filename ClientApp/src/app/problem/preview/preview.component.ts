@@ -20,13 +20,12 @@ export class PreviewComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.problemLink === undefined) { return; }
-    // this.problemService.getProblem(this.id).subscribe(problem => { this.problem = problem; });
     this.problemService.getProblemByLink(this.problemLink).subscribe(problem => { this.problem = problem; });
   }
 
   getAuthor(event) {
     event.stopPropagation();
-    this.router.navigateByUrl(`/authors/${this.problem.author.id}`);
+    this.router.navigateByUrl(`/authors/${this.problem.authorId}`);
   }
 
   upvote(event) {

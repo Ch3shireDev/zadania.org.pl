@@ -6,15 +6,15 @@ import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./points.component.css'],
 })
 export class PointsComponent implements OnInit {
-  @Input() element: { points; userVote };
+  @Input() element: { points; userVote; };
   @Output() upvote: EventEmitter<boolean> = new EventEmitter();
   @Output() downvote: EventEmitter<boolean> = new EventEmitter();
 
   faAngleUp = faAngleUp;
   faAngleDown = faAngleDown;
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onUpvote() {
     this.upvote.emit();

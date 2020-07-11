@@ -3,19 +3,19 @@ import { Answer } from '../answer';
 import { AnswerService } from '../answer.service';
 
 @Component({
-  selector: 'app-create',
-  templateUrl: './create.component.html',
-  styleUrls: ['./create.component.css'],
+  selector: 'app-answer-create',
+  templateUrl: './answer-create.component.html',
+  styleUrls: ['./answer-create.component.css'],
 })
-export class CreateComponent implements OnInit {
+export class AnswerCreateComponent implements OnInit {
   @Input() problemId: number;
   @Output() close: EventEmitter<boolean> = new EventEmitter();
   answer = new Answer();
 
 
-  constructor(private answerService: AnswerService) {}
+  constructor(private answerService: AnswerService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onClose() {
     this.close.emit(false);

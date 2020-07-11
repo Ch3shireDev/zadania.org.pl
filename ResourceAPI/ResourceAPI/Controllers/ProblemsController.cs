@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
 
@@ -12,24 +11,24 @@ namespace ResourceAPI.Controllers
     [Route("api/v1/[controller]")]
     public class ProblemsController : ControllerBase
     {
-        private ILogger<ProblemsController> Logger { get; }
-
         public ProblemsController(ILogger<ProblemsController> logger, SqlContext context)
         {
             Logger = logger;
             Context = context;
         }
 
+        private ILogger<ProblemsController> Logger { get; }
+
         private SqlContext Context { get; }
 
         [HttpGet]
         public ActionResult Browse(
-            [FromQuery] string tags = null, 
-            [FromQuery] int page = 1, 
-            [FromQuery] string query=null,
-            [FromQuery] bool newest=false,
-            [FromQuery] bool highest=false
-            )
+            [FromQuery] string tags = null,
+            [FromQuery] int page = 1,
+            [FromQuery] string query = null,
+            [FromQuery] bool newest = false,
+            [FromQuery] bool highest = false
+        )
         {
             var tag = tags;
             var problemsQuery = Context.Problems.AsQueryable();
@@ -38,24 +37,21 @@ namespace ResourceAPI.Controllers
                 problemsQuery = problemsQuery
                     .Where(p => p.ProblemTags.Select(pt => pt.Tag.Url).Any(t => t == tag));
 
-            if (query != null) problemsQuery = problemsQuery.Where(p => p.Content.Contains(query) || p.ProblemTags.Any(pt=>pt.Tag.Name.Contains(query)));
-            
+            if (query != null)
+                problemsQuery = problemsQuery.Where(p =>
+                    p.Content.Contains(query) || p.ProblemTags.Any(pt => pt.Tag.Name.Contains(query)));
+
 
             var resultQuery = problemsQuery.AsQueryable();
 
             var linksQuery = resultQuery;
 
             if (newest)
-            {
-                linksQuery= linksQuery
+                linksQuery = linksQuery
                     .OrderByDescending(p => p.Created)
                     .AsQueryable();
-            }
 
-            if (highest)
-            {
-                linksQuery = linksQuery.OrderByDescending(p => p.Points).AsQueryable();
-            }
+            if (highest) linksQuery = linksQuery.OrderByDescending(p => p.Points).AsQueryable();
 
             var num = resultQuery.Count();
 
@@ -83,24 +79,14 @@ namespace ResourceAPI.Controllers
         {
             if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
             var problem = Context.Problems
-                .Include(p => p.Answers)
                 .Select(p => new Problem
                 {
                     Id = p.Id,
                     Title = p.Title,
-                    ContentHtml = p.ContentHtml,
                     Content = p.Content,
                     AuthorId = p.AuthorId,
-                    Author = p.Author,
-                    Answers = p.Answers.Select(a => new Answer
-                    {
-                        Id = a.Id,
-                        Content = a.Content,
-                        AuthorId = a.AuthorId,
-                        FileData = a.FileData,
-                        Author = new Author {Name = a.Author.Name, Email = a.Author.Email, Id = a.Author.Id},
-                        Points = a.Points
-                    }).ToList(),
+                    AuthorName = p.Author.Name,
+                    AnswerLinks = p.Answers.Select(a => $"/api/v1/problems/{id}/answers/{a.Id}"),
                     Created = p.Created,
                     Edited = p.Edited,
                     FileData = p.FileData,
@@ -111,7 +97,7 @@ namespace ResourceAPI.Controllers
                 })
                 .First(p => p.Id == id);
 
-            problem.Author = problem.Author.Serializable();
+            //problem.Author = problem.Author.Serializable();
             problem.IsAnswered = Context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
 
             return StatusCode(200, problem.Render());

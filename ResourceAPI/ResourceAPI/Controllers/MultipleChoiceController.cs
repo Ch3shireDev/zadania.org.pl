@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
@@ -52,7 +51,7 @@ namespace ResourceAPI.Controllers
                 Id = t.Id,
                 AuthorId = t.AuthorId,
                 Content = t.Content,
-                Title=t.Title,
+                Title = t.Title,
                 QuestionLinks = t.Questions.Select(q => $"/api/v1/multiple-choice/{testId}/questions/{q.Id}")
             }).FirstOrDefault(t => t.Id == testId);
             if (test == null) return StatusCode(404);
@@ -96,7 +95,8 @@ namespace ResourceAPI.Controllers
                     TestId = testId,
                     Content = q.Content,
                     Solution = q.Solution,
-                    AnswerLinks = q.Answers.Select(a => $"/api/v1/multiple-choice/{testId}/questions/{questionId}/answers/{a.Id}")
+                    AnswerLinks = q.Answers.Select(a =>
+                        $"/api/v1/multiple-choice/{testId}/questions/{questionId}/answers/{a.Id}")
                 })
                 .FirstOrDefault(q => q.TestId == testId && q.Id == questionId);
             if (question == null) return StatusCode(404);
@@ -131,12 +131,12 @@ namespace ResourceAPI.Controllers
         {
             var answer = Context.MultipleChoiceAnswers.Select(a => new MultipleChoiceAnswer
             {
-                Id=a.Id,
+                Id = a.Id,
                 QuestionId = a.QuestionId,
                 TestId = a.Question.TestId,
                 Content = a.Content,
                 IsCorrect = a.IsCorrect
-            }).FirstOrDefault(a=>a.Id==answerId && a.QuestionId == questionId && a.TestId==testId);
+            }).FirstOrDefault(a => a.Id == answerId && a.QuestionId == questionId && a.TestId == testId);
             if (answer == null) return StatusCode(404);
             answer.Render();
             return StatusCode(200, answer);

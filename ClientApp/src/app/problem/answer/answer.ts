@@ -1,4 +1,3 @@
-import { Author } from '../../author/author';
 
 export class Answer {
   public id: number;
@@ -6,7 +5,9 @@ export class Answer {
   public content: string;
   public contentHtml: string;
   public points: number;
-  public author: Author;
+  public authorId: number;
+  public authorName: string;
+  public userId: string;
   public isApproved: boolean;
   public userUpvoted: boolean;
   public userDownvoted: boolean;

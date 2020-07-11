@@ -1,13 +1,16 @@
 <div>
-    <h5>Usuń zadanie</h5>
-    <p>Czy usunąć następujące zadanie:</p>
+  <h5>Usuń zadanie</h5>
+  <p>Czy usunąć następujące zadanie:</p>
 
-    <div>
-        <app-preview [problemLink]="problemLink" [showControls]="false"></app-preview>
-    </div>
+  <div>
+    <app-preview
+      [problemLink]="problemLink"
+      [showControls]="false"
+    ></app-preview>
+  </div>
 
-    <div>
-        <button (click)="confirmDelete()">Usuń</button>
-        <button (click)="goBack()">Wróć</button>
-    </div>
+  <div>
+    <button (click)="confirmDelete()">Usuń</button>
+    <button (click)="goBack()">Wróć</button>
+  </div>
 </div>

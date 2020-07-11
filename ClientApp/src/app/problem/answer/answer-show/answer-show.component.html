@@ -1,0 +1,69 @@
+<div *ngIf="answer !== undefined">
+  <div *ngIf="state === showState.Show">
+    <div [class.bg-approved]="answer.isApproved" class="answer-container">
+      <h3 *ngIf="answer.isApproved">Zatwierdzona odpowiedź</h3>
+      <h4 *ngIf="!answer.isApproved">Odpowiedź</h4>
+      <div [innerHtml]="answer.contentHtml | safeHtml"></div>
+
+      <div class="preview-footer-container">
+        <div class="problem-preview-points" (click)="$event.stopPropagation()">
+          <small>
+            <b>Punkty:</b>
+            {{ answer.points }}
+          </small>
+          <div class="points-container" *ngIf="authService.loggedIn">
+            <button
+              class="button-vote"
+              (click)="downvote($event)"
+              [class.downvote]="answer.userDownvoted"
+            >
+              -
+            </button>
+            <button
+              class="button-vote"
+              (click)="upvote($event)"
+              [class.upvote]="answer.userUpvoted"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <div class="problem-author">
+          <small>
+            <b>Autor:</b>
+            {{ answer.authorName }}
+          </small>
+        </div>
+      </div>
+
+      <div *ngIf="answer.userId === sub">
+        <button (click)="onEdit()">Edytuj</button>
+        <button (click)="onDelete()">Usuń</button>
+      </div>
+
+      <div *ngIf="sub !== undefined && answer.userId === sub">
+        <button (click)="approveAnswer()" *ngIf="!answer.isApproved">
+          Zatwierdź odpowiedź
+        </button>
+        <button (click)="disapproveAnswer()" *ngIf="answer.isApproved">
+          Unieważnij odpowiedź
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="state === showState.Edit">
+    <app-answer-edit
+      [answer]="answer"
+      [problemId]="problemId"
+      (close)="onEditClose($event)"
+    ></app-answer-edit>
+  </div>
+  <div *ngIf="state === showState.Delete">
+    <app-answer-delete
+      [answer]="answer"
+      [problemId]="problemId"
+      (close)="onDeleteClose($event)"
+    ></app-answer-delete>
+  </div>
+</div>

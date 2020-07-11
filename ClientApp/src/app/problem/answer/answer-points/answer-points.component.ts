@@ -2,20 +2,20 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-points',
-  templateUrl: './points.component.html',
-  styleUrls: ['./points.component.css'],
+  selector: 'app-answer-points',
+  templateUrl: './answer-points.component.html',
+  styleUrls: ['./answer-points.component.css'],
 })
-export class PointsComponent implements OnInit {
+export class AnswerPointsComponent implements OnInit {
   @Input() element;
   faAngleUp = faAngleUp;
   faAngleDown = faAngleDown;
   @Output() upvote: EventEmitter<boolean> = new EventEmitter();
   @Output() downvote: EventEmitter<boolean> = new EventEmitter();
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onUpvote() {
     this.upvote.emit();

@@ -1,38 +1,53 @@
 <div *ngIf="problem !== undefined" class="container">
-<div class="problem-container-link" routerLink="/problems/{{problem.id}}" [class.bg-approved]="problem.isAnswered">
-<div>
-    <h3>{{ problem.title }} </h3>
-</div>
-<div *ngIf="showContent">
-<div [innerHTML]="problem.contentHtml | safeHtml" class="problem-preview"></div>
+  <div
+    class="problem-container-link"
+    routerLink="/problems/{{ problem.id }}"
+    [class.bg-approved]="problem.isAnswered"
+  >
+    <div>
+      <h3>{{ problem.title }}</h3>
+    </div>
+    <div *ngIf="showContent">
+      <div
+        [innerHTML]="problem.contentHtml | safeHtml"
+        class="problem-preview"
+      ></div>
 
-<div class="preview-footer-container" *ngIf="showDetails">
-<div class="problem-preview-points" (click)="$event.stopPropagation()">
-  <small><b>Punkty: </b>{{problem.points}}</small>
-  <div class="points-container" *ngIf="authService.loggedIn">
-  <button class="button-vote" (click)="downvote($event)" [class.downvote]="problem.userDownvoted">-</button>
-  <button class="button-vote" (click)="upvote($event)" [class.upvote]="problem.userUpvoted">+</button>
+      <div class="preview-footer-container" *ngIf="showDetails">
+        <div class="problem-preview-points" (click)="$event.stopPropagation()">
+          <small>
+            <b>Punkty:</b>
+            {{ problem.points }}
+          </small>
+          <div class="points-container" *ngIf="authService.loggedIn">
+            <button
+              class="button-vote"
+              (click)="downvote($event)"
+              [class.downvote]="problem.userDownvoted"
+            >
+              -
+            </button>
+            <button
+              class="button-vote"
+              (click)="upvote($event)"
+              [class.upvote]="problem.userUpvoted"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <div class="problem-author" (click)="getAuthor($event)">
+          <small>
+            <b>Autor:</b>
+            {{ problem.authorName }}
+          </small>
+        </div>
+      </div>
+      <div class="problem-tags">
+        <div *ngFor="let tag of problem.tags" class="tag-element">
+          {{ tag.name }}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-<div class="problem-author" (click)="getAuthor($event)">
-  <!-- <small>{{ problem.created | date }}</small> -->
-  <small *ngIf="problem.author"><b>Autor:</b> {{ problem.author.name }}</small>
-</div>
-</div>
-<div class="problem-tags">
-    <div *ngFor="let tag of problem.tags" class="tag-element">{{tag.name}}</div>
-</div>
-</div>
-<!--
-<div *ngIf="showControls">
-    <button routerLink="/problems/{{ problem.id }}">
-    Wyświetl
-  </button>
-    <button routerLink="/problems/{{ problem.id }}/edit">
-    Edytuj
-  </button>
-    <button routerLink="/problems/{{ problem.id }}/delete">
-    Usuń
-  </button>
-</div> -->
-</div></div>

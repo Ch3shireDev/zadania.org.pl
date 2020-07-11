@@ -1,0 +1,13 @@
+<div>
+  <div *ngFor="let link of answerLinks">
+    <div class="container">
+      <app-answer-show
+        [link]="link"
+        [problemId]="problemId"
+        (delete)="onDelete($event)"
+        (stateChange)="changeState($event)"
+        (reloadChange)="onReload($event)"
+      ></app-answer-show>
+    </div>
+  </div>
+</div>

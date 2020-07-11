@@ -15,7 +15,7 @@ export class BrowseComponent implements OnInit {
   ngOnInit(): void {
     this.multipleChoiceService.getTests().subscribe(tests => {
       this.links = tests['multipleChoiceTestLinks'];
-    })
+    });
   }
 
 }

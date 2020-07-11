@@ -1,17 +1,26 @@
 <div class="search-container">
-    <input [(ngModel)]="searchQuery" type="text" placeholder="Wyszukaj zadania..." name="search" (keyup.enter)="search()" #searchInput autofocus/>
-    <button (click)="search()">Wyślij</button>
+  <input
+    [(ngModel)]="searchQuery"
+    type="text"
+    placeholder="Wyszukaj zadania..."
+    name="search"
+    (keyup.enter)="search()"
+    #searchInput
+    autofocus
+  />
+  <button (click)="search()">Wyślij</button>
 </div>
-<div *ngIf="totalPages !==null && totalPages>0" class="browse-nav">
-    <div><button (click)="previousPage()" [disabled]="page<2">Poprzednia</button></div>
-    <div>Strona {{page}} z {{totalPages}}</div>
-    <div><button (click)="nextPage()" [disabled]="page>=totalPages">Następna</button></div>
+<div *ngIf="totalPages !== null && totalPages > 0" class="browse-nav">
+  <div>
+    <button (click)="previousPage()" [disabled]="page < 2">Poprzednia</button>
+  </div>
+  <div>Strona {{ page }} z {{ totalPages }}</div>
+  <div>
+    <button (click)="nextPage()" [disabled]="page >= totalPages">
+      Następna
+    </button>
+  </div>
 </div>
 <div *ngFor="let problemLink of problemLinks">
-    <app-preview [problemLink]="problemLink"></app-preview>
+  <app-preview [problemLink]="problemLink"></app-preview>
 </div>
-<!-- <div *ngIf="totalPages !==null && totalPages>0" class="browse-nav">
-    <div><button (click)="previousPage()" [disabled]="page<2">Poprzednia</button></div>
-    <div>Strona {{page}} z {{totalPages}}</div>
-    <div><button (click)="nextPage()" [disabled]="page>=totalPages">Następna</button></div>
-</div> -->

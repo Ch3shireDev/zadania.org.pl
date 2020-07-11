@@ -4,12 +4,14 @@ import { AnswerService } from '../answer.service';
 import { ShowState } from '../show-state';
 
 @Component({
-  selector: 'app-browse',
-  templateUrl: './browse.component.html',
-  styleUrls: ['./browse.component.css'],
+  selector: 'app-answers-browse',
+  templateUrl: './answers-browse.component.html',
+  styleUrls: ['./answers-browse.component.css'],
 })
-export class BrowseComponent implements OnInit {
-  @Input() answers: Answer[];
+export class AnswersBrowseComponent implements OnInit {
+
+  @Input() answerLinks: string[];
+  @Input() answers: Answer[] = [];
   @Input() problemId: number;
 
   @Input() isCreate: boolean;
@@ -21,7 +23,9 @@ export class BrowseComponent implements OnInit {
 
   constructor(private answerService: AnswerService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    console.log(this.answerLinks);
+  }
 
   onDelete(event) {
     this.answerService.getAnswers(this.problemId).subscribe((answers) => {

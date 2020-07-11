@@ -1,0 +1,66 @@
+<div *ngIf="problem">
+  <h1>{{ problem.title }}</h1>
+  <div [innerHtml]="problem.contentHtml | safeHtml"></div>
+
+  <div class="preview-footer-container">
+    <div class="problem-preview-points" (click)="$event.stopPropagation()">
+      <small>
+        <b>Punkty:</b>
+        {{ problem.points }}
+      </small>
+      <div class="points-container" *ngIf="authService.loggedIn">
+        <button
+          class="button-vote"
+          (click)="downvote($event)"
+          [class.downvote]="problem.userDownvoted"
+        >
+          -
+        </button>
+        <button
+          class="button-vote"
+          (click)="upvote($event)"
+          [class.upvote]="problem.userUpvoted"
+        >
+          +
+        </button>
+      </div>
+    </div>
+    <div class="problem-author">
+      <small>
+        <b>Autor:</b>
+        {{ problem.authorName }}
+      </small>
+    </div>
+  </div>
+
+  <div class="problem-tags">
+    <div
+      *ngFor="let tag of problem.tags"
+      class="tag-element clickable"
+      routerLink="/problems/browse"
+      [queryParams]="{ tags: tag.url }"
+    >
+      {{ tag.name }}
+    </div>
+  </div>
+  <div class="preview-points-container">
+    <p>
+      <small>Utworzono: {{ problem.created | date }}</small>
+    </p>
+    <p *ngIf="problem.edited && problem.edited.getFullYear() > 2000">
+      <small>Edytowano: {{ problem.edited | date }}</small>
+    </p>
+  </div>
+  <div>
+    <div *ngIf="isAuthor">
+      <button routerLink="edit">Edytuj</button>
+      <button routerLink="delete">Usuń</button>
+    </div>
+    <button (click)="goBack()">Wróć</button>
+    <app-answer
+      [problemId]="problem.id"
+      [answerLinks]="problem.answerLinks"
+    ></app-answer>
+    <!-- <app-answers-browse [answerLinks]="problem.answerLinks"></app-answers-browse> -->
+  </div>
+</div>

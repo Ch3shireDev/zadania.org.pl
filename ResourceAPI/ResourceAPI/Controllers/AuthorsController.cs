@@ -57,50 +57,16 @@ namespace ResourceAPI.Controllers
         [Route("{id}")]
         public ActionResult Get(int id)
         {
-            if (!Context.Authors.Any(p => p.Id == id)) return StatusCode(404);
-
-            var problems = Context.Problems
-                .Where(p => p.Author.Id == id)
-                .Select(p => new
-                    {
-                        p.Id,
-                        p.Title,
-                        Content = p.ContentHtml,
-                        Points = p.ProblemVotes.Count(pv => pv.Vote == Vote.Upvote) -
-                                 p.ProblemVotes.Count(pv => pv.Vote == Vote.Downvote),
-                        p.Created
-                    }
-                )
-                .OrderByDescending(p => p.Created)
-                .Take(10)
-                .ToList();
-
-            var answers = Context.Answers
-                .Where(a => a.Author.Id == id)
-                .Select(a => new
+            var author = Context.Authors.Select(a => new Author
                 {
-                    ParentId = a.ProblemId,
-                    Parent = new {a.Problem.Title},
-                    a.Created
+                    Id = a.Id,
+                    Name = a.Name,
+                    UserId = a.UserId,
+                    Email = a.Email
                 })
-                .OrderByDescending(p => p.Created)
-                .Take(10)
-                .ToList();
-
-            var profile = Context.Authors
-                .Select(a => new
-                    {
-                        a.Id,
-                        a.UserId,
-                        a.Name,
-                        a.Email,
-                        Problems = problems,
-                        Answers = answers
-                    }
-                )
-                .First(p => p.Id == id);
-
-            return StatusCode(200, profile);
+                .FirstOrDefault(a => a.Id == id);
+            if (author == null) return StatusCode(404);
+            return StatusCode(200, author);
         }
 
         public static Author GetAuthor(HttpContext httpContext, SqlContext context)

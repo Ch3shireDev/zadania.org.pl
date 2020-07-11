@@ -32,7 +32,7 @@ namespace ResourceAPI.Models
         {
             var dir = SqlContext.FileDirectory;
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-            var subdir = Directory.GetDirectories(dir).LastOrDefault()?.Replace("/","\\").Split('\\').Last();
+            var subdir = Directory.GetDirectories(dir).LastOrDefault()?.Replace("/", "\\").Split('\\').Last();
             if (subdir == null)
             {
                 subdir = "000";

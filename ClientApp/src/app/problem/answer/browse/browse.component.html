@@ -1,7 +1,0 @@
-<div>
-    <div *ngFor="let answer of answers">
-        <div class="container">
-            <app-show [answer]="answer" [problemId]="problemId" (delete)="onDelete($event)" (stateChange)="changeState($event)" (reloadChange)="onReload($event)"></app-show>
-        </div>
-    </div>
-</div>

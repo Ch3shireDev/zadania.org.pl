@@ -13,9 +13,13 @@ export class Problem {
   public isAnswered: boolean;
 
   public answers: Answer[];
+  public answerLinks: string[];
   public author: Author;
   public tags = [];
 
   public userUpvoted: boolean;
   public userDownvoted: boolean;
+
+  public authorId: number;
+  public authorName: string;
 }

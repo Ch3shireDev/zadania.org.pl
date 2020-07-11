@@ -15,12 +15,14 @@ import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 
 import { QuillModule } from 'ngx-quill';
-import { TagsComponent } from './tags/tags.component';
+// import { TagsComponent } from './tags/tags.component';
+
+import { TagsModule } from './tags/tags.module';
 
 import { MultipleChoiceModule } from './multiple-choice/multiple-choice.module';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, FooterComponent, HeaderComponent, TagsComponent],
+  declarations: [AppComponent, HomeComponent, FooterComponent, HeaderComponent],
   imports: [
     AuthorModule,
     FormsModule,
@@ -31,6 +33,7 @@ import { MultipleChoiceModule } from './multiple-choice/multiple-choice.module';
     AppRoutingModule,
     RouterModule,
     FontAwesomeModule,
+    TagsModule,
     QuillModule.forRoot()
   ],
   providers: [],

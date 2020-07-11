@@ -1,18 +1,17 @@
-.answer-container{
-  display:flex;
+.answer-container {
+  display: flex;
 }
 
-.answer-checkbox{
+.answer-checkbox {
   flex-shrink: 1;
-  padding:0 1rem;
+  padding: 0 1rem;
 }
 
-.answer-checkbox input{
-  top:6px;
+.answer-checkbox input {
+  top: 6px;
   position: relative;
 }
 
-.answer-content{
-  flex-grow:1;
+.answer-content {
+  flex-grow: 1;
 }
-

@@ -1,57 +1,56 @@
 :host {
-    width: 100%;
+  width: 100%;
 }
 
 .search-container {
-    border: 1px solid #bbb;
-    width: 100%;
-    margin: 2rem 0;
-    display: flex;
+  border: 1px solid #bbb;
+  width: 100%;
+  margin: 2rem 0;
+  display: flex;
 }
 
-input[type=text] {
-    padding: 6px 16px;
-    font-size: 17px;
-    border: none;
-    color: #666;
-    flex-grow: 1;
+input[type="text"] {
+  padding: 6px 16px;
+  font-size: 17px;
+  border: none;
+  color: #666;
+  flex-grow: 1;
 }
 
-input:focus{
-  border:none;
+input:focus {
+  border: none;
 }
 
 .search-container button {
-    float: right;
-    background: #ddd;
-    padding: 6px 2rem;
-    font-size: 17px;
-    border: none;
-    margin: 0;
-    cursor: pointer;
-    color: #444;
+  float: right;
+  background: #ddd;
+  padding: 6px 2rem;
+  font-size: 17px;
+  border: none;
+  margin: 0;
+  cursor: pointer;
+  color: #444;
 }
 
 .search-container:hover {
-    box-shadow: 0 0 6px #888;
+  box-shadow: 0 0 6px #888;
 }
 
 .browse-nav {
-    display: flex;
+  display: flex;
 }
 
 .browse-nav div {
-    flex-grow: 1;
-    text-align: center;
-    user-select: none;
+  flex-grow: 1;
+  text-align: center;
+  user-select: none;
 }
 
 button:disabled {
-    color: #888;
-    border-color: #bbb;
-    pointer-events: none;
+  color: #888;
+  border-color: #bbb;
+  pointer-events: none;
 }
-
 
 /*
 .browse-nav div a {
@@ -61,7 +60,6 @@ button:disabled {
     border-radius: 5px;
     padding: 0.2rem 1rem;
 } */
-
 
 /* button .muted {
     background: #ddd;

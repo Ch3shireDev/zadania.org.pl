@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ResourceAPI.Models
 {
@@ -10,6 +11,8 @@ namespace ResourceAPI.Models
         public ICollection<Comment> Comments { get; set; }
 
         public ICollection<AnswerVote> AnswerVotes { get; set; }
+        [NotMapped] public string AuthorName { get; set; }
+        [NotMapped] public string UserId { get; set; }
 
         public Answer Serializable(int depth = 0)
         {

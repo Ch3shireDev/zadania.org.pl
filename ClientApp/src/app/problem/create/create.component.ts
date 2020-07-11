@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Problem } from '../problem';
 import { Location } from '@angular/common';
 import { ProblemService } from '../problem.service';
-import { MarkdownComponent } from 'ngx-markdown';
-
-// declare var TurndownService: any;
 
 @Component({
   selector: 'app-create',
@@ -26,7 +23,7 @@ export class CreateComponent implements OnInit {
   submit() {
     this.errorMessage = null;
     const t = new TurndownService();
-    this.problem.content =  t.turndown(this.problem.contentHtml);
+    this.problem.content = t.turndown(this.problem.contentHtml);
 
     this.problemService.postProblem(this.problem).subscribe((res) => {
       this.goBack();

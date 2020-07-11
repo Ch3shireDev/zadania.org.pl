@@ -3,18 +3,18 @@ import { Answer } from '../answer';
 import { AnswerService } from '../answer.service';
 
 @Component({
-  selector: 'app-edit',
-  templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.css'],
+  selector: 'app-answer-edit',
+  templateUrl: './answer-edit.component.html',
+  styleUrls: ['./answer-edit.component.css'],
 })
-export class EditComponent implements OnInit {
+export class AnswerEditComponent implements OnInit {
   @Input() answer: Answer;
   @Input() problemId: number;
   @Output() close: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private answerService: AnswerService) {}
+  constructor(private answerService: AnswerService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   submit() {
     this.answerService

@@ -16,7 +16,7 @@ export class AuthorComponent implements OnInit {
     private authorService: AuthorService,
     private activatedRoute: ActivatedRoute,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.params.id;

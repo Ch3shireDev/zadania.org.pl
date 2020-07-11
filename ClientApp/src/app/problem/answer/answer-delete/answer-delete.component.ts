@@ -3,11 +3,11 @@ import { Answer } from '../answer';
 import { AnswerService } from '../answer.service';
 
 @Component({
-  selector: 'app-delete',
-  templateUrl: './delete.component.html',
-  styleUrls: ['./delete.component.css'],
+  selector: 'app-answer-delete',
+  templateUrl: './answer-delete.component.html',
+  styleUrls: ['./answer-delete.component.css'],
 })
-export class DeleteComponent implements OnInit {
+export class AnswerDeleteComponent implements OnInit {
   @Input() answer: Answer;
   @Input() problemId: number;
   @Output() closeChange: EventEmitter<boolean> = new EventEmitter();

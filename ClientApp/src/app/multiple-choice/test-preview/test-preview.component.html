@@ -1,0 +1,6 @@
+<div *ngIf="test" class="content container-link" routerLink="/multiple-choice/{{test.id}}">
+  <h3>{{test.title}}</h3>
+  <div [innerHTML]="test.contentHtml">
+
+  </div>
+</div>

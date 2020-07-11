@@ -10,11 +10,9 @@ namespace ResourceAPI.Models
         public int Id { get; set; }
 
 
-        [NotMapped] public string ContentHtml { get; set; }
-
         [StringLength(8000)]
-        [Column("Content")]
-        public string Content { get; set; }
+        [Column("Content")] public string Content { get; set; }
+        [NotMapped] public string ContentHtml { get; set; }
         public int Points { get; set; }
         [NotMapped] public Vote UserVote { get; set; }
         [NotMapped] public bool UserUpvoted { get; set; }
@@ -25,5 +23,10 @@ namespace ResourceAPI.Models
         public DateTime Edited { get; set; }
 
         public ICollection<FileData> FileData { get; set; }
+
+        public void Render()
+        {
+            ContentHtml = SqlContext.Render(Content, FileData);
+        }
     }
 }

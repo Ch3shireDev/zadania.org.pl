@@ -2,8 +2,9 @@
 {
     public class MultipleChoiceAnswer : Post
     {
-        public bool IsCorrectAnswer { get; set; }
+        public bool IsCorrect { get; set; }
         public MultipleChoiceQuestion Question { get; set; }
         public int QuestionId { get; set; }
+        public int TestId { get; set; }
     }
 }

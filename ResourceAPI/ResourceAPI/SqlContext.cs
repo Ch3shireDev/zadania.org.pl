@@ -105,9 +105,7 @@ namespace ResourceAPI
             foreach (var tag in problem.Tags)
             {
                 tag.Url = tag.GenerateUrl();
-                var existing = Tags.Find(tag.Url);
-                if (existing == null) existing = tag;
-
+                var existing = Tags.Find(tag.Url) ?? tag;
                 var problemTag = new ProblemTag {Tag = existing, TagUrl = tag.Url};
                 problem.ProblemTags.Add(problemTag);
             }

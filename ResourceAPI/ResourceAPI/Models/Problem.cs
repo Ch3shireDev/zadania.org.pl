@@ -43,7 +43,7 @@ namespace ResourceAPI.Models
             return this;
         }
 
-        public Problem Render()
+        public new Problem Render()
         {
             ContentHtml = SqlContext.Render(Content, FileData);
             if (Answers != null)

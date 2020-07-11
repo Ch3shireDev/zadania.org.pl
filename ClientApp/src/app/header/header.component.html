@@ -7,6 +7,7 @@
         <li *ngIf="isNewest"> <a routerLink="/problems" [queryParams]="{newest:false}" queryParamsHandling="merge" class="active-link">Najnowsze</a></li>
         <li *ngIf="!isHighest"> <a routerLink="/problems" [queryParams]="{highest:true, newest:false}" queryParamsHandling="merge" routerLinkActive="active">Najwyżej oceniane</a></li>
         <li *ngIf="isHighest"> <a routerLink="/problems" [queryParams]="{highest:false}" queryParamsHandling="merge" routerLinkActive="active" class="active-link">Najwyżej oceniane</a></li>
+        <li><a routerLink="/multiple-choice">Testy wielokrotnego wyboru</a></li>
         <li *ngIf="auth.loggedIn"><a routerLink="/problems/create" routerLinkActive="active">Zadaj nowe pytanie</a></li>
         <li *ngIf="!auth.loggedIn"><a (click)="auth.login('/problems/create')" class="clickable">Zadaj nowe pytanie (wymaga logowania)</a></li>
     </ul>

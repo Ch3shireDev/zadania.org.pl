@@ -16,7 +16,7 @@ html {
   height: 100%;
   display: flex;
   flex-direction: 1;
-  background-image: url('/assets/wallpaper.png');
+  background-image: url("/assets/wallpaper.png");
   background-attachment: fixed;
   background-size: cover;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
@@ -89,8 +89,8 @@ img {
   border: 1px solid #444;
   padding: 0.2rem 1rem;
   font-weight: 600;
-  margin-right:3px;
-  margin-top:5px;
+  margin-right: 3px;
+  margin-top: 5px;
 }
 
 .tag-element:hover {
@@ -152,7 +152,7 @@ select:focus {
 
 .problem-preview-points small,
 .problem-author small {
-  top:0px;
+  top: 0px;
   /* position: relative; */
 }
 
@@ -172,4 +172,31 @@ select:focus {
 
 .bg-approved {
   background: #ffebcb;
+}
+
+.container-link {
+  padding: 0.5rem 1rem;
+  border: 1px solid #888;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+}
+
+.container-link:hover {
+  box-shadow: 0 0 10px #444;
+  cursor: pointer;
+}
+
+.checked-correct p {
+  color: green;
+}
+
+.checked-incorrect p {
+  color: red;
+}
+
+.border-container {
+  padding: 0.5rem 1rem;
+  border: 1px solid #888;
+  border-radius: 3px;
+  margin-bottom: 1rem;
 }

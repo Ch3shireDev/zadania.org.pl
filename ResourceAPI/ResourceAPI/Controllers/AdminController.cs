@@ -23,10 +23,31 @@ namespace ResourceAPI.Controllers
 
         private ILogger<ProblemsController> Logger { get; }
         private SqlContext Context { get; }
-#if DEBUG
+
+        [HttpPost]
+        [Route("upload/eko2")]
+        public ActionResult PostEconomy()
+        {
+            var lines = System.IO.File.ReadAllLines("../../../WIT-Zajecia/semestr-2/Ekonomia 2/egzamin-1.md");
+            var mdElement = new MdElement(lines);
+
+            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var test = new MultipleChoiceTest
+            {
+                Title = mdElement.Title,
+                Content = mdElement.Content,
+                Author = author,
+                Questions = mdElement.Children[0].Children.Select(c => c.ToQuestion(author)).ToList()
+            };
+
+            Context.MultipleChoiceTests.Add(test);
+            Context.SaveChanges();
+
+            return StatusCode(200);
+        }
+
         [HttpPost]
         [Route("upload")]
-#endif
         public ActionResult PostFiles([FromQuery] string all = null)
         {
             var curr = Directory.GetCurrentDirectory();
@@ -76,10 +97,8 @@ namespace ResourceAPI.Controllers
         }
 
 
-#if DEBUG
         [Route("upload2")]
         [HttpPost]
-#endif
         public void LoadMd()
         {
             var author = Context.Authors.FirstOrDefault(a => a.Name == "Igor Nowicki");
@@ -115,83 +134,5 @@ namespace ResourceAPI.Controllers
             foreach (var element in elements) yield return element;
         }
 
-
-        private class Element
-        {
-            public Element(Match match, string path)
-            {
-                ContentProblem = match.Groups[1].Value;
-                ContentSolution = match.Groups[2].Value;
-
-                var dir = Path.GetDirectoryName(path);
-
-                ImagesProblem = Regex.Matches(ContentProblem, @"!\[\w*\]\((.*?)\)", RegexOptions.Multiline)
-                    .Select(m => new FileData(m.Groups[1].Value, dir)).ToList();
-
-                ImagesSolution = Regex.Matches(ContentSolution, @"!\[\w*\]\((.*?)\)", RegexOptions.Multiline)
-                    .Select(m => new FileData(m.Groups[1].Value, dir)).ToList();
-
-                var tagMatches = Regex.Match(ContentProblem, @"Tagi: (.*)");
-
-                if (tagMatches.Success)
-                {
-                    var tags = tagMatches.Groups[1].Value.Split(";").Select(tag => tag.Trim())
-                        .Where(tag => !string.IsNullOrWhiteSpace(tag))
-                        .Select(tag => new Tag {Name = tag.Replace("...", "")})
-                        .Select(tag => new Tag {Name = tag.Name, Url = tag.GenerateUrl()});
-
-                    var dict = new Dictionary<string, Tag>();
-                    foreach (var tag in tags)
-                    {
-                        if (dict.ContainsKey(tag.Url)) continue;
-                        dict.Add(tag.Url, tag);
-                    }
-
-                    Tags = dict.Select(p => p.Value).ToList();
-
-                    ContentProblem = ContentProblem.Replace(tagMatches.Value, "").Trim();
-                }
-
-                ContentProblem = ContentProblem.Replace("\r", "");
-                ContentSolution = ContentSolution.Replace("\r", "");
-
-                ContentProblem = Regex.Replace(ContentProblem, @"\(\./images/\d+/(\d+.gif)\)", @"($1)");
-                ContentSolution = Regex.Replace(ContentSolution, @"\(\./images/\d+/(\d+.gif)\)", @"($1)");
-            }
-
-            public string ContentProblem { get; }
-            public string ContentSolution { get; }
-
-            public IEnumerable<Tag> Tags { get; }
-            public ICollection<FileData> ImagesProblem { get; }
-            public ICollection<FileData> ImagesSolution { get; }
-
-            public Problem GetProblem()
-            {
-                var problem = new Problem
-                {
-                    Content = ContentProblem,
-                    Tags = Tags,
-                    FileData = ImagesProblem
-                };
-
-                if (!string.IsNullOrWhiteSpace(ContentSolution))
-                    problem.Answers = new[]
-                    {
-                        new Answer
-                        {
-                            Content = ContentSolution,
-                            FileData = ImagesSolution,
-                            IsApproved = true
-                        }
-                    };
-
-
-                if (string.IsNullOrWhiteSpace(problem.Title) && problem.Tags != null && problem.Tags.Any())
-                    problem.Title = problem.Tags.Last().Name;
-
-                return problem;
-            }
-        }
     }
 }

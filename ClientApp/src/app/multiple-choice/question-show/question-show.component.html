@@ -1,0 +1,6 @@
+<div *ngIf="question" class="content question-content">
+  <div [innerHTML]="question.contentHtml"></div>
+  <div *ngFor="let link of question.answerLinks; index as i">
+    <app-answer-show [link]="link" (setAnswer)="setAnswer($event, i)"></app-answer-show>
+  </div>
+</div>

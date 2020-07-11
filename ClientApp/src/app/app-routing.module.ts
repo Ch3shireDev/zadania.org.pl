@@ -4,12 +4,14 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './interceptor.service';
 import { HomeComponent } from './home/home.component';
 import { problemRoutes } from './problem/problem-routing.module';
+import {multipleChoiceRoutes } from './multiple-choice/multiple-choice-routing.module';
 import { AuthorComponent } from './author/author.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'problems' },
   { path: 'home', component: HomeComponent },
   { path: 'problems', children: problemRoutes },
+  { path: 'multiple-choice', children: multipleChoiceRoutes },
   { path: 'authors/self', component: AuthorComponent },
   { path: 'authors/:id', component: AuthorComponent },
 ];

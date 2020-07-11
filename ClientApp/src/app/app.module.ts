@@ -16,12 +16,16 @@ import { HeaderComponent } from './header/header.component';
 
 import { QuillModule } from 'ngx-quill';
 import { TagsComponent } from './tags/tags.component';
+
+import { MultipleChoiceModule } from './multiple-choice/multiple-choice.module';
+
 @NgModule({
   declarations: [AppComponent, HomeComponent, FooterComponent, HeaderComponent, TagsComponent],
   imports: [
     AuthorModule,
     FormsModule,
     ProblemModule,
+    MultipleChoiceModule,
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,

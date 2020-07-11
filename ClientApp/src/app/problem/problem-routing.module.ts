@@ -14,16 +14,3 @@ export const problemRoutes: Routes = [
   { path: ':id/delete', component: DeleteComponent },
   { path: ':id', component: ShowDetailsComponent },
 ];
-
-// @NgModule({
-//   imports: [RouterModule.forRoot(problemRoutes)],
-//   exports: [RouterModule],
-//   // providers: [
-//   //   {
-//   //     provide: HTTP_INTERCEPTORS,
-//   //     useClass: InterceptorService,
-//   //     multi: true,
-//   //   },
-//   // ],
-// })
-// export class ProblemRoutingModule {}

@@ -17,7 +17,7 @@ namespace ResourceAPI.Models
             return this;
         }
 
-        public Answer Render()
+        public new Answer Render()
         {
             ContentHtml = SqlContext.Render(Content, FileData);
             return this;

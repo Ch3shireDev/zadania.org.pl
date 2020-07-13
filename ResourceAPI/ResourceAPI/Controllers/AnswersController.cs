@@ -23,12 +23,13 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult Get(int problemId)
         {
-            var answers = Context.Answers.Where(answer => answer.Problem.Id == problemId).Select(a => new
-                    Answer
-            {
-                Id = a.Id,
-                Points = a.Points
-            }).OrderByDescending(a => a.Points).ToArray()
+            var answers = Context.Answers
+                .Where(answer => answer.Problem.Id == problemId)
+                .Select(a => new Answer
+                {
+                    Id = a.Id,
+                    Points = a.Points
+                }).OrderByDescending(a => a.Points).ToArray()
                 .Select(a => $"/api/v1/problems/{problemId}/answers/{a.Id}");
 
             return StatusCode(200, answers.ToArray());
@@ -40,19 +41,19 @@ namespace ResourceAPI.Controllers
         {
             var result = Context.Answers.Select(a => new
                 Answer
-            {
-                Id = a.Id,
-                ProblemId = a.ProblemId,
-                IsApproved = a.IsApproved,
-                Content = a.Content,
-                Points = a.Points,
-                Edited = a.Edited,
-                Created = a.Created,
-                AuthorId = a.AuthorId,
-                AuthorName = a.Author.Name,
-                UserId = a.Author.UserId,
-                FileData = a.FileData
-            }).FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
+                {
+                    Id = a.Id,
+                    ProblemId = a.ProblemId,
+                    IsApproved = a.IsApproved,
+                    Content = a.Content,
+                    Points = a.Points,
+                    Edited = a.Edited,
+                    Created = a.Created,
+                    AuthorId = a.AuthorId,
+                    AuthorName = a.Author.Name,
+                    UserId = a.Author.UserId,
+                    FileData = a.FileData
+                }).FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
             if (result == null) return StatusCode(404);
             return StatusCode(200, result.Render());
         }
@@ -122,7 +123,7 @@ namespace ResourceAPI.Controllers
             if (vote == Models.Vote.Downvote) answer.Points--;
             Context.Answers.Update(answer);
             Context.SaveChanges();
-            return StatusCode(200, new { success = true, points = answer.Points });
+            return StatusCode(200, new {success = true, points = answer.Points});
         }
 
         [HttpGet]
@@ -131,7 +132,7 @@ namespace ResourceAPI.Controllers
         {
             var answer = Context.Answers.FirstOrDefault(a => a.Id == answerId && a.ProblemId == problemId);
             if (answer == null) return StatusCode(400);
-            return StatusCode(200, new { points = answer.Points });
+            return StatusCode(200, new {points = answer.Points});
         }
 
         [HttpPost]
@@ -193,7 +194,7 @@ namespace ResourceAPI.Controllers
             var answerVote = Context.AnswerVotes.FirstOrDefault(pv => pv.AuthorId == author.Id && pv.AnswerId == id);
             if (answerVote == null)
             {
-                answerVote = new AnswerVote { Author = author, Answer = answer };
+                answerVote = new AnswerVote {Author = author, Answer = answer};
                 Context.AnswerVotes.Add(answerVote);
             }
             else

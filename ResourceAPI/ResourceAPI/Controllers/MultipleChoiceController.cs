@@ -31,17 +31,6 @@ namespace ResourceAPI.Controllers
             });
         }
 
-        //[HttpPost]
-        //[Authorize]
-        //public ActionResult Post(MultipleChoiceTest multipleChoiceTest)
-        //{
-        //    multipleChoiceTest.Id = 0;
-        //    Context.MultipleChoiceTests.Add(multipleChoiceTest);
-        //    Context.SaveChanges();
-        //    return StatusCode(201);
-        //}
-
-
         [Route("{testId:int}")]
         [HttpGet]
         public ActionResult GetTest(int testId)

@@ -19,7 +19,7 @@ namespace ResourceAPI.Models
         [NotMapped] public Vote UserVote { get; set; }
         [NotMapped] public bool UserUpvoted { get; set; }
         [NotMapped] public bool UserDownvoted { get; set; }
-        public int? AuthorId { get; set; }
+        public int AuthorId { get; set; }
         public Author Author { get; set; }
         public DateTime Created { get; set; }
         public DateTime Edited { get; set; }

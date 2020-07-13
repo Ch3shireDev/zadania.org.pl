@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
+using ResourceAPI.Services;
 
 namespace ResourceAPI.Controllers
 {
@@ -11,15 +12,19 @@ namespace ResourceAPI.Controllers
     [Route("api/v1/[controller]")]
     public class ProblemsController : ControllerBase
     {
-        public ProblemsController(ILogger<ProblemsController> logger, SqlContext context)
+        public ProblemsController(ILogger<ProblemsController> logger, SqlContext context,
+            IProblemService problemProblemService)
         {
             Logger = logger;
             Context = context;
+            ProblemService = problemProblemService;
         }
 
         private ILogger<ProblemsController> Logger { get; }
 
         private SqlContext Context { get; }
+
+        private IProblemService ProblemService { get; }
 
         [HttpGet]
         public ActionResult Browse(
@@ -64,7 +69,7 @@ namespace ResourceAPI.Controllers
             if (lastRecordIndex < num) subQuery = subQuery.Take(10);
 
 
-            return StatusCode(200, new
+            return new OkObjectResult(new
             {
                 page,
                 totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1,
@@ -77,30 +82,9 @@ namespace ResourceAPI.Controllers
         [Route("{id:int}")]
         public ActionResult Get(int id)
         {
-            if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
-            var problem = Context.Problems
-                .Select(p => new Problem
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    Content = p.Content,
-                    AuthorId = p.AuthorId,
-                    AuthorName = p.Author.Name,
-                    AnswerLinks = p.Answers.Select(a => $"/api/v1/problems/{id}/answers/{a.Id}"),
-                    Created = p.Created,
-                    Edited = p.Edited,
-                    FileData = p.FileData,
-                    Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}).ToArray(),
-                    Points = p.Points,
-                    UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                    UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
-                })
-                .First(p => p.Id == id);
-
-            //problem.Author = problem.Author.Serializable();
-            problem.IsAnswered = Context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
-
-            return StatusCode(200, problem.Render());
+            var problem = ProblemService.GetById(id);
+            if (problem == null) return StatusCode(404);
+            return StatusCode(200, problem);
         }
 
         [HttpPost]

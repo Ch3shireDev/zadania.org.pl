@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
+using ResourceAPI.Services;
 
 namespace ResourceAPI.Controllers
 {
@@ -12,13 +13,15 @@ namespace ResourceAPI.Controllers
     {
         private readonly ILogger<ProblemsController> _logger;
 
-        public AnswersController(ILogger<ProblemsController> logger, SqlContext context)
+        public AnswersController(ILogger<ProblemsController> logger, SqlContext context, IProblemService problemService)
         {
             _logger = logger;
             Context = context;
+            ProblemService = problemService;
         }
 
         private SqlContext Context { get; }
+        private IProblemService ProblemService { get; }
 
         [HttpGet]
         public ActionResult Get(int problemId)
@@ -39,23 +42,9 @@ namespace ResourceAPI.Controllers
         [Route("{answerId}")]
         public ActionResult Get(int problemId, int answerId)
         {
-            var result = Context.Answers.Select(a => new
-                Answer
-                {
-                    Id = a.Id,
-                    ProblemId = a.ProblemId,
-                    IsApproved = a.IsApproved,
-                    Content = a.Content,
-                    Points = a.Points,
-                    Edited = a.Edited,
-                    Created = a.Created,
-                    AuthorId = a.AuthorId,
-                    AuthorName = a.Author.Name,
-                    UserId = a.Author.UserId,
-                    FileData = a.FileData
-                }).FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
-            if (result == null) return StatusCode(404);
-            return StatusCode(200, result.Render());
+            var answer = ProblemService.GetAnswerById(problemId, answerId);
+            if (answer == null) return new NotFoundResult();
+            return new OkObjectResult(answer);
         }
 
         [HttpPost]

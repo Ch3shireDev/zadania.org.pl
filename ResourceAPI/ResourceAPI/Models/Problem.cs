@@ -25,10 +25,7 @@ namespace ResourceAPI.Models
         public new Problem Render()
         {
             ContentHtml = SqlContext.Render(Content, FileData);
-            if (Answers != null)
-                foreach (var answer in Answers)
-                    answer.Render();
-
+            FileData = null;
             return this;
         }
     }

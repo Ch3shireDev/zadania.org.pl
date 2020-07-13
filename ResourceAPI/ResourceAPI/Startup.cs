@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ResourceAPI.Services;
 
 namespace ResourceAPI
 {
@@ -28,6 +29,9 @@ namespace ResourceAPI
                 //options.UseMySQL(Configuration.GetConnectionString("Local"));
             });
 
+
+            //services.AddSingleton<ProblemService>();
+            services.AddScoped<IProblemService, ProblemService>();
 
             services.AddControllers();
             services.AddAuthentication(options =>

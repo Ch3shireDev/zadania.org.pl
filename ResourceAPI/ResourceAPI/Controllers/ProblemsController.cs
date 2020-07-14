@@ -29,7 +29,7 @@ namespace ResourceAPI.Controllers
         private IProblemService ProblemService { get; }
 
         [HttpGet]
-        public async Task<ActionResult> Browse(
+        public async Task<OkObjectResult> Browse(
             [FromQuery] string tags = null,
             [FromQuery] int page = 1,
             [FromQuery] string query = null,

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
 using ResourceAPI.Services;
@@ -27,7 +29,7 @@ namespace ResourceAPI.Controllers
         private IProblemService ProblemService { get; }
 
         [HttpGet]
-        public ActionResult Browse(
+        public async Task<ActionResult> Browse(
             [FromQuery] string tags = null,
             [FromQuery] int page = 1,
             [FromQuery] string query = null,
@@ -73,7 +75,7 @@ namespace ResourceAPI.Controllers
             {
                 page,
                 totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1,
-                problemLinks = subQuery.ToList().Select(p => $"/api/v1/problems/{p.Id}")
+                problemLinks = await subQuery.Select(p => $"/api/v1/problems/{p.Id}").ToListAsync()
             });
         }
 

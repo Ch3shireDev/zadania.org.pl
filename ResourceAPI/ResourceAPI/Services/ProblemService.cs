@@ -20,9 +20,7 @@ namespace ResourceAPI.Services
 
         public Problem GetById(int id)
         {
-            if (!Context.Problems.Any(p => p.Id == id)) return null;
-            var problem = Context.Problems
-                .Select(p => new Problem
+            var problem = Context.Problems.Select(p => new Problem
                 {
                     Id = p.Id,
                     Title = p.Title,
@@ -38,7 +36,9 @@ namespace ResourceAPI.Services
                     UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
                     UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
                 })
-                .First(p => p.Id == id);
+                .FirstOrDefault(p => p.Id == id);
+
+            if (problem == null) return null;
 
             //problem.Author = problem.Author.Serializable();
             problem.IsAnswered = Context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);

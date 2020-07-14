@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "ResourceAPITests": {
+      "commandName": "Project"
+    }
+  }
+}

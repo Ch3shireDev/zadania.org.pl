@@ -27,3 +27,4 @@ ResourceAPI/ResourceAPITests/bin/**
 **/**/bin/**
 ResourceAPI/.vs/**
 old/**
+/ResourceAPI/ResourceAPIBenchmark/appsettings.Development.json

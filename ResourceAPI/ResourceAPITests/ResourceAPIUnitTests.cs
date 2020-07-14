@@ -48,23 +48,23 @@ namespace ResourceApiTests
 
         private readonly ITestOutputHelper _testOutputHelper;
 
-        [Fact]
-        public void GetProblems()
-        {
-            if (!(Controller.Browse() is OkObjectResult problems)) return;
-            var value = problems.Value;
-            var list = value?.GetType().GetProperty("problemLinks")?.GetValue(value, null) as IEnumerable<string>;
-            foreach (var link in list)
-            {
-                var problemId = Convert.ToInt32(link.Split('/').Last());
-                var problem = ProblemService.GetById(problemId);
-                foreach (var answerLink in problem.AnswerLinks)
-                {
-                    var answerId = Convert.ToInt32(answerLink.Split('/').Last());
-                    var answer = ProblemService.GetAnswerById(problemId, answerId);
-                }
-            }
-        }
+        //[Fact]
+        //public void GetProblems()
+        //{
+        //    if (!(Controller.Browse() is OkObjectResult problems)) return;
+        //    var value = problems.Value;
+        //    var list = value?.GetType().GetProperty("problemLinks")?.GetValue(value, null) as IEnumerable<string>;
+        //    foreach (var link in list)
+        //    {
+        //        var problemId = Convert.ToInt32(link.Split('/').Last());
+        //        var problem = ProblemService.GetById(problemId);
+        //        foreach (var answerLink in problem.AnswerLinks)
+        //        {
+        //            var answerId = Convert.ToInt32(answerLink.Split('/').Last());
+        //            var answer = ProblemService.GetAnswerById(problemId, answerId);
+        //        }
+        //    }
+        //}
         //[Theory]
         //[InlineData(1, 2, 3)]
         //[InlineData(-4, -6, -10)]
@@ -86,12 +86,12 @@ namespace ResourceApiTests
         //    Assert.Equal(4, 2 + 2);
         //}
 
-        [Fact]
-        public void TestProblemRequest()
-        {
-            for (var i = 1; i < 200; i++)
-                //Controller.Get(i).ExecuteResult(new ActionContext());
-                ProblemService.GetById(i);
-        }
+        //[Fact]
+        //public void TestProblemRequest()
+        //{
+        //    for (var i = 1; i < 200; i++)
+        //        //Controller.Get(i).ExecuteResult(new ActionContext());
+        //        ProblemService.GetById(i);
+        //}
     }
 }

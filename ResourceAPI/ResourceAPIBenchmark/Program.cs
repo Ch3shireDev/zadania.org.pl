@@ -23,12 +23,6 @@ namespace ResourceAPIBenchmark
 
     public class ResourceBenchmark
     {
-        private const int N = 10000;
-        private readonly byte[] data;
-
-        private readonly SHA256 sha256 = SHA256.Create();
-        private readonly MD5 md5 = MD5.Create();
-
         public ResourceBenchmark()
         
         {
@@ -54,25 +48,26 @@ namespace ResourceAPIBenchmark
         }
 
 
-        [Benchmark] public void GetProblem()
+        [Benchmark]
+        public void GetProblem()
         {
-            for(int i=1;i<10;i++)
-             ProblemService.GetById(i);
+            for (int i = 1; i < 10000; i++)
+                ProblemService.GetById(i);
         }
 
-        [Benchmark] public void GetProblemStandard()
-        {
-            for (int id = 1; id < 10; id++)
-            {
-                var problem = Context.Problems
-                    .Select(p => new Problem
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        Content = p.Content,
-                     })
-                    .FirstOrDefault(p => p.Id == id);
-            }
-        }
+        //[Benchmark] public void GetProblemStandard()
+        //{
+        //    for (int id = 1; id < 10; id++)
+        //    {
+        //        var problem = Context.Problems
+        //            .Select(p => new Problem
+        //            {
+        //                Id = p.Id,
+        //                Title = p.Title,
+        //                Content = p.Content,
+        //             })
+        //            .FirstOrDefault(p => p.Id == id);
+        //    }
+        //}
     }
 }

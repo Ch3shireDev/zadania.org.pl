@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using ResourceAPI.Models;
 
 namespace ResourceAPI.Services
@@ -18,8 +19,13 @@ namespace ResourceAPI.Services
 
         public SqlContext Context { get; set; }
 
+        private static Dictionary<int, Problem> ProblemsDictionary { get; } = new Dictionary<int, Problem>();
+        private static Dictionary<int, Answer> AnswersDictionary { get; } = new Dictionary<int, Answer>();
+
         public Problem GetById(int id)
         {
+            if (ProblemsDictionary.ContainsKey(id)) return ProblemsDictionary[id];
+
             var problem = Context.Problems.Select(p => new Problem
                 {
                     Id = p.Id,
@@ -39,16 +45,23 @@ namespace ResourceAPI.Services
                 .FirstOrDefault(p => p.Id == id);
 
             if (problem == null) return null;
-
-            //problem.Author = problem.Author.Serializable();
+            
             problem.IsAnswered = Context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
-
-            return problem.Render();
+            problem = problem.Render();
+            ProblemsDictionary.Add(id, problem);
+            return problem;
         }
 
         public Answer GetAnswerById(int problemId, int answerId)
         {
-            var result = Context.Answers.Select(a => new
+            if (AnswersDictionary.ContainsKey(answerId))
+            {
+                var answerDict = AnswersDictionary[answerId];
+                if (answerDict.ProblemId != problemId) return null;
+                return answerDict;
+            }
+
+            var answer = Context.Answers.Select(a => new
                 Answer
                 {
                     Id = a.Id,
@@ -63,7 +76,10 @@ namespace ResourceAPI.Services
                     UserId = a.Author.UserId,
                     FileData = a.FileData
                 }).FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
-            return result?.Render();
+            if (answer == null) return null;
+            answer = answer.Render();
+            AnswersDictionary.Add(answerId, answer);
+            return answer;
         }
     }
 }

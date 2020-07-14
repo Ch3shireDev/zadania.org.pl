@@ -9,7 +9,6 @@ namespace ResourceAPI.Models
     {
         public int Id { get; set; }
 
-
         [StringLength(8000)]
         [Column("Content")]
         public string Content { get; set; }

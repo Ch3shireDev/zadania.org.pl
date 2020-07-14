@@ -2,6 +2,7 @@
 export class Answer {
   public id: number;
   public problemId: number;
+  public url: string;
   public content: string;
   public contentHtml: string;
   public points: number;

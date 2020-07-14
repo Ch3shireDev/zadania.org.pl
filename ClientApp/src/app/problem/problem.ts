@@ -3,6 +3,7 @@ import { Author } from '../author/author';
 
 export class Problem {
   public id: number;
+  public url: string;
   public title: string;
   public content: string;
   public contentHtml: string;
@@ -13,7 +14,6 @@ export class Problem {
   public isAnswered: boolean;
 
   public answers: Answer[];
-  public answerLinks: string[];
   public author: Author;
   public tags = [];
 

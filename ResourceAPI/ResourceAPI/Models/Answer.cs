@@ -6,6 +6,7 @@ namespace ResourceAPI.Models
     public class Answer : Post
     {
         public Problem Problem { get; set; }
+        [NotMapped] public string Url => $"/api/v1/problems/{ProblemId}/answers/{Id}";
         public int ProblemId { get; set; }
         public bool IsApproved { get; set; }
         public ICollection<Comment> Comments { get; set; }

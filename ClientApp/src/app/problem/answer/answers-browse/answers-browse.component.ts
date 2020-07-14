@@ -10,7 +10,6 @@ import { ShowState } from '../show-state';
 })
 export class AnswersBrowseComponent implements OnInit {
 
-  @Input() answerLinks: string[];
   @Input() answers: Answer[] = [];
   @Input() problemId: number;
 
@@ -24,7 +23,6 @@ export class AnswersBrowseComponent implements OnInit {
   constructor(private answerService: AnswerService) { }
 
   ngOnInit(): void {
-    console.log(this.answerLinks);
   }
 
   onDelete(event) {

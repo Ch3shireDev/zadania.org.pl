@@ -27,13 +27,15 @@ namespace ResourceAPI.Controllers
         public ActionResult Get(int problemId)
         {
             var answers = Context.Answers
-                .Where(answer => answer.Problem.Id == problemId)
                 .Select(a => new Answer
                 {
                     Id = a.Id,
-                    Points = a.Points
-                }).OrderByDescending(a => a.Points).ToArray()
-                .Select(a => $"/api/v1/problems/{problemId}/answers/{a.Id}");
+                    ProblemId = a.ProblemId
+                })
+                .Where(answer => answer.ProblemId == problemId)
+                .ToArray()
+                .OrderByDescending(a => a.Points)
+                .ToArray();
 
             return StatusCode(200, answers.ToArray());
         }
@@ -53,15 +55,16 @@ namespace ResourceAPI.Controllers
         {
             if (!Context.Problems.Any(p => p.Id == problemId)) return StatusCode(404);
             var author = AuthorsController.GetAuthor(HttpContext, Context);
-            if (author == null) return StatusCode(403);
-            var problem = Context.Problems.First(p => p.Id == problemId);
+            if (author == null) return Unauthorized();
+            var problem = Context.Problems.FirstOrDefault(p => p.Id == problemId);
+            if (problem == null) return NotFound();
             answer.Problem = problem;
             answer.ProblemId = problemId;
             answer.Author = author;
             answer.AuthorId = author.Id;
             Context.Answers.Add(answer);
             Context.SaveChanges();
-            return StatusCode(201);
+            return Ok();
         }
 
         [HttpPut]

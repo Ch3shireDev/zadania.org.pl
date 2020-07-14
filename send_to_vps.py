@@ -7,6 +7,7 @@ import paramiko
 import glob
 from config import server, username, password
 
+
 try:
     if os.path.exists('build'):
         shutil.rmtree('build')
@@ -24,6 +25,7 @@ except:
     print('Error compiling Angular project. Aborting...')
     exit()
 
+
 try:
     if os.path.isdir('./ResourceAPI/ResourceAPI/bin/Release'):
         shutil.rmtree('./ResourceAPI/ResourceAPI/bin/Release')
@@ -32,6 +34,8 @@ try:
 except Exception as e:
     print(f'Error compiling ASP.NET project: {e}. Aborting...')
     exit()
+
+print("Creating archive directory.")
 
 try:
     now = datetime.now()
@@ -45,8 +49,10 @@ except Exception as e:
     exit()
 
 try:
+    print("Connecting to ftp.")
     srv = pysftp.Connection(host="zadania.org.pl", username=username,
                             password=password)
+    print("Sending file to ftp.")
     srv.put(fname)
     srv.close()
 except Exception as e:

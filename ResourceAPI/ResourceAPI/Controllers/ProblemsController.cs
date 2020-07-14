@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
 using ResourceAPI.Services;
@@ -29,7 +27,7 @@ namespace ResourceAPI.Controllers
         private IProblemService ProblemService { get; }
 
         [HttpGet]
-        public async Task<OkObjectResult> Browse(
+        public OkObjectResult Browse(
             [FromQuery] string tags = null,
             [FromQuery] int page = 1,
             [FromQuery] string query = null,
@@ -38,7 +36,7 @@ namespace ResourceAPI.Controllers
         )
         {
             var tag = tags;
-            var problemsQuery = Context.Problems.AsQueryable();
+            var problemsQuery = Context.Problems.Take(10);
 
             if (tags != null)
                 problemsQuery = problemsQuery
@@ -70,12 +68,14 @@ namespace ResourceAPI.Controllers
             if (firstRecordIndex < num) subQuery = subQuery.Skip(firstRecordIndex);
             if (lastRecordIndex < num) subQuery = subQuery.Take(10);
 
+            var problems = problemsQuery.Select(p => new Problem {Id = p.Id}).ToArray()
+                .Select(p => ProblemService.ProblemById(p.Id)).ToArray();
 
             return new OkObjectResult(new
             {
                 page,
                 totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1,
-                problemLinks = await subQuery.Select(p => $"/api/v1/problems/{p.Id}").ToListAsync()
+                problems
             });
         }
 
@@ -84,7 +84,7 @@ namespace ResourceAPI.Controllers
         [Route("{id:int}")]
         public ActionResult Get(int id)
         {
-            var problem = ProblemService.GetById(id);
+            var problem = ProblemService.ProblemWithAnswersById(id);
             if (problem == null) return StatusCode(404);
             return StatusCode(200, problem);
         }

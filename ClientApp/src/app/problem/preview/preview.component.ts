@@ -10,8 +10,7 @@ import { Router } from '@angular/router';
 })
 export class PreviewComponent implements OnInit {
   @Input() id: string;
-  problem: Problem;
-  @Input() problemLink: string;
+  @Input() problem: Problem;
   @Input() showControls = true;
   @Input() showDetails = true;
   @Input() showContent = true;
@@ -19,8 +18,11 @@ export class PreviewComponent implements OnInit {
   constructor(private problemService: ProblemService, public authService: AuthService, public router: Router) { }
 
   ngOnInit(): void {
-    if (this.problemLink === undefined) { return; }
-    this.problemService.getProblemByLink(this.problemLink).subscribe(problem => { this.problem = problem; });
+    if (this.problem.url === undefined) { return; }
+    if (this.problem.contentHtml !== null) { return; }
+    this.problemService.getProblemByLink(this.problem.url).subscribe(problem => {
+      this.problem = problem;
+    });
   }
 
   getAuthor(event) {

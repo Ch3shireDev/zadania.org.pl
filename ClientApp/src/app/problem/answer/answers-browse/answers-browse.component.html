@@ -1,8 +1,8 @@
 <div>
-  <div *ngFor="let link of answerLinks">
+  <div *ngFor="let answer of answers">
     <div class="container">
       <app-answer-show
-        [link]="link"
+        [answer]="answer"
         [problemId]="problemId"
         (delete)="onDelete($event)"
         (stateChange)="changeState($event)"

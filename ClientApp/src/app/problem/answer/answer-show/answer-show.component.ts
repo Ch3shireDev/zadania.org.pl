@@ -11,10 +11,18 @@ import { AuthService } from 'src/app/auth.service';
   styleUrls: ['./answer-show.component.css'],
 })
 export class AnswerShowComponent implements OnInit {
-  public answer: Answer;
-  @Input() problemId: number;
-  @Input() link: string;
+  @Input()
+  set answer(val: any) {
+    this._answer = val;
+    this.reload();
+  }
+  get answer() {
+    return this._answer;
+  }
 
+  _answer: Answer;
+
+  @Input() problemId: number;
   @Input() isCreate: boolean;
   @Output() isCreateChange = new EventEmitter<boolean>();
   @Output() reloadChange: EventEmitter<any> = new EventEmitter();
@@ -28,14 +36,19 @@ export class AnswerShowComponent implements OnInit {
   constructor(private answerService: AnswerService, private router: Router, public authService: AuthService) { }
 
   ngOnInit(): void {
-    this.answerService.getAnswerFromLink(this.link).subscribe(answer => { this.answer = answer; });
-
-
+    this.reload();
     this.authService.userProfile$.subscribe(profile => {
       if (profile !== null) {
         this.sub = profile.sub;
       }
     });
+  }
+
+  public reload() {
+    console.log(this.answer.url)
+    if (this.answer.url === undefined) { return; }
+    if (this.answer.contentHtml !== null) { return; }
+    this.answerService.getAnswerFromLink(this.answer.url).subscribe(answer => { this._answer = answer; });
   }
 
   onEdit() {
@@ -105,10 +118,10 @@ export class AnswerShowComponent implements OnInit {
   }
 
   reloadComponent() {
-    this.reloadChange.emit(true);
+    // this.reloadChange.emit(true);
     // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     // this.router.onSameUrlNavigation = 'reload';
-    // this.router.navigate([`/problems/${this.answer.problemId}`]);
+    this.router.navigate([`/problems/${this.answer.problemId}`]);
   }
 
 }

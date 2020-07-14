@@ -12,7 +12,8 @@ export class HeaderComponent implements OnInit {
   isNewest = false;
   isHighest = false;
 
-  constructor(public auth: AuthService, public route: ActivatedRoute) { }
+  constructor(public auth: AuthService,
+    public route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {

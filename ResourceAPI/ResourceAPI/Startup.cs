@@ -20,6 +20,7 @@ namespace ResourceAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCompression();
             services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
                 //options.UseSqlite("Filename=sqlite.db");
@@ -57,6 +58,7 @@ namespace ResourceAPI
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
+            app.UseResponseCompression();
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<SqlContext>();

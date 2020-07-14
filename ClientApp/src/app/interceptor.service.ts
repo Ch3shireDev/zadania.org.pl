@@ -13,7 +13,9 @@ import { mergeMap, catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class InterceptorService implements HttpInterceptor {
-  constructor(private auth: AuthService) { }
+  constructor(
+    private auth: AuthService
+    ) { }
 
   profile;
 

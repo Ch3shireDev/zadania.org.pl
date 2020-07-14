@@ -7,6 +7,7 @@ namespace ResourceAPI.Models
     public class Problem : Post
     {
         [StringLength(64)] public string Title { get; set; }
+        [NotMapped] public string Url => $"/api/v1/problems/{Id}";
 
         [StringLength(64)] public string Source { get; set; }
 
@@ -17,7 +18,8 @@ namespace ResourceAPI.Models
         public ICollection<ProblemTag> ProblemTags { get; set; }
 
         public ICollection<ProblemVote> ProblemVotes { get; set; }
-        [NotMapped] public IEnumerable<string> AnswerLinks { get; set; }
+
+        //[NotMapped] public IEnumerable<string> AnswerLinks { get; set; }
         [NotMapped] public bool IsAnswered { get; set; }
         public ICollection<Comment> Comments { get; set; }
         [NotMapped] public string AuthorName { get; set; }

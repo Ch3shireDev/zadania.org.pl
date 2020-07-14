@@ -15,7 +15,6 @@ export class BrowseComponent implements OnInit, AfterViewInit {
   page: number;
   totalPages: number;
   tags: string;
-  problemLinks: string[];
 
   @ViewChild('searchInput') private searchInputElement: ElementRef;
 
@@ -36,7 +35,6 @@ export class BrowseComponent implements OnInit, AfterViewInit {
       this.page = res.page;
       this.totalPages = res.totalPages;
       this.problems = res.problems;
-      this.problemLinks = res.problemLinks;
     });
   }
 
@@ -48,8 +46,8 @@ export class BrowseComponent implements OnInit, AfterViewInit {
     // if (this.searchQuery === this.lastSearchQuery) { return; }
     const searchQuery = this.searchQuery.trim();
     this.router.navigate([], { relativeTo: this.activatedRoute, queryParams: { query: searchQuery }, queryParamsHandling: 'merge' });
-    this.problemService.getProblems().subscribe((problems) => {
-      this.problemLinks = problems.problemLinks;
+    this.problemService.getProblems().subscribe((res) => {
+      this.problems = res.problems;
     });
   }
 

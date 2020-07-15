@@ -5,10 +5,10 @@
     <button (click)="startTest()">Rozpocznij</button>
   </div>
   <div *ngIf="step === 2">
-    <div *ngFor="let link of test.questionLinks; index as i">
+    <div *ngFor="let question of test.questions; index as i">
       <div *ngIf="i === currentIndex">
         <app-question-show
-          [link]="link"
+          [question]="question"
           (pointsChange)="setPoints($event, i)"
           (answerChange)="setAnswer($event, i)"
         ></app-question-show>
@@ -39,10 +39,10 @@
       <p style="font-weight: 700">Wynik: {{numPoints}} / {{maxIndex}}.</p>
       <p>Zdany egzamin jest od 7 punktów na 10.</p>
     </div>
-    <div *ngFor="let link of test.questionLinks; index as i">
-      <div class="border-container">
+    <div *ngFor="let question of test.questions; index as i">
+      <div class="border-container question-content">
         <h5>Zadanie {{i+1}}</h5>
-    <app-question-answered [link]="link" [answer]="answers[i]"></app-question-answered>
+    <app-question-answered [question]="question" [answered]="answers[i]"></app-question-answered>
     </div></div>
   </div>
 </div>

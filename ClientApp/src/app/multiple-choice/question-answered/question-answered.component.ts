@@ -9,15 +9,15 @@ import { MultipleChoiceService } from '../multiple-choice.service';
 })
 export class QuestionAnsweredComponent implements OnInit {
 
-  @Input() link: string;
-  @Input() answer: number;
+  @Input() answered: number;
 
+  @Input()
   public question: MultipleChoiceQuestion;
 
   constructor(private multipleChoiceService: MultipleChoiceService) { }
 
   ngOnInit(): void {
-    this.multipleChoiceService.getQuestion(this.link).subscribe(question => { this.question = question; });
+    this.multipleChoiceService.getQuestion(this.question.url).subscribe(question => { this.question = question; });
   }
 
 }

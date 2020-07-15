@@ -33,6 +33,7 @@ namespace ResourceAPI
 
             //services.AddSingleton<ProblemService>();
             services.AddScoped<IProblemService, ProblemService>();
+            services.AddScoped<IMultipleChoiceService, MultipleChoiceService>();
 
             services.AddControllers();
             services.AddAuthentication(options =>
@@ -69,6 +70,7 @@ namespace ResourceAPI
             }
 
             app.UseRouting();
+            app.UseResponseCaching();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());

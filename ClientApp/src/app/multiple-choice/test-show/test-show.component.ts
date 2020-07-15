@@ -28,7 +28,7 @@ export class TestShowComponent implements OnInit {
     this.multipleChoiceService.getTestById(this.id).subscribe(test => {
       this.test = test;
       this.currentIndex = 0;
-      this.maxIndex = test.questionLinks.length;
+      this.maxIndex = test.questions.length;
       this.points = new Array(this.maxIndex);
       this.answers = new Array(this.maxIndex);
     });

@@ -8,9 +8,7 @@ import { MultipleChoiceService } from '../multiple-choice.service';
   styleUrls: ['./answer-show.component.css']
 })
 export class AnswerShowComponent implements OnInit {
-
-  public answer: MultipleChoiceAnswer;
-  @Input() link: string;
+  @Input() answer: MultipleChoiceAnswer;
   @Input() checked = false;
   @Input() readOnly = false;
   @Output() setAnswer: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -21,8 +19,10 @@ export class AnswerShowComponent implements OnInit {
   constructor(private multipleChoiceService: MultipleChoiceService) { }
 
   ngOnInit(): void {
-    this.id = this.link.split('/')[6];
-    this.multipleChoiceService.getAnswer(this.link).subscribe(answer => { this.answer = answer; });
+    if (!this.answer) { return; }
+    if (!this.answer.content) { return; }
+    this.id = this.answer.url.split('/')[6];
+    this.multipleChoiceService.getAnswer(this.answer.url).subscribe(answer => { this.answer = answer; });
   }
 
   checkAnswer() {

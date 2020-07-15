@@ -3,4 +3,5 @@ export class MultipleChoiceAnswer {
   public contentHtml: string;
   public isCorrect: boolean;
   public isChecked = false;
+  public url: string;
 }

@@ -7,10 +7,13 @@ namespace ResourceAPI.Models
     {
         public List<MultipleChoiceAnswer> Answers { get; set; }
         public MultipleChoiceTest Test { get; set; }
+
         public int TestId { get; set; }
-        [NotMapped] public IEnumerable<string> AnswerLinks { get; set; }
+
+        //[NotMapped] public IEnumerable<string> AnswerLinks { get; set; }
         public string Solution { get; set; }
         [NotMapped] public string SolutionHtml { get; set; }
+        [NotMapped] public string Url => $"/api/v1/multiple-choice/{TestId}/questions/{Id}";
 
         public new void Render()
         {

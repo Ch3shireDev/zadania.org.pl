@@ -36,7 +36,7 @@ namespace ResourceAPI.Controllers
         )
         {
             var tag = tags;
-            var problemsQuery = Context.Problems.Take(10);
+            var problemsQuery = Context.Problems.AsQueryable();
 
             if (tags != null)
                 problemsQuery = problemsQuery
@@ -68,8 +68,9 @@ namespace ResourceAPI.Controllers
             if (firstRecordIndex < num) subQuery = subQuery.Skip(firstRecordIndex);
             if (lastRecordIndex < num) subQuery = subQuery.Take(10);
 
-            var problems = problemsQuery.Select(p => new Problem {Id = p.Id}).ToArray()
-                .Select(p => ProblemService.ProblemById(p.Id)).ToArray();
+            var problems = subQuery.Select(p => new Problem {Id = p.Id}).ToArray()
+                    .Select(p => ProblemService.ProblemById(p.Id)).ToArray()
+                ;
 
             return new OkObjectResult(new
             {

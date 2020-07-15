@@ -9,8 +9,7 @@ import { MultipleChoiceService } from '../multiple-choice.service';
 })
 export class QuestionShowComponent implements OnInit {
 
-  @Input() link: string;
-  public question: MultipleChoiceQuestion;
+  @Input() public question: MultipleChoiceQuestion;
   @Output() pointsChange: EventEmitter<number> = new EventEmitter<number>();
   answersList: boolean[];
   @Output() answerChange: EventEmitter<number> = new EventEmitter<number>();
@@ -18,9 +17,14 @@ export class QuestionShowComponent implements OnInit {
   constructor(private multipleChoiceService: MultipleChoiceService) { }
 
   ngOnInit(): void {
-    this.multipleChoiceService.getQuestion(this.link).subscribe(question => {
+    console.log(this.question);
+    if (this.question.content != null) {
+      this.answersList = new Array<boolean>(this.question.answers.length);
+      return;
+    }
+    this.multipleChoiceService.getQuestion(this.question.url).subscribe(question => {
       this.question = question;
-      this.answersList = new Array<boolean>(this.question.answerLinks.length);
+      this.answersList = new Array<boolean>(this.question.answers.length);
     });
   }
 

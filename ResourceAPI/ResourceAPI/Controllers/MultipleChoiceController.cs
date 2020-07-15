@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.Models;
+using ResourceAPI.Services;
 
 namespace ResourceAPI.Controllers
 {
@@ -9,15 +10,17 @@ namespace ResourceAPI.Controllers
     [ApiController]
     public class MultipleChoiceController : ControllerBase
     {
-        public MultipleChoiceController(ILogger<ProblemsController> logger, SqlContext context)
+        public MultipleChoiceController(ILogger<ProblemsController> logger, SqlContext context,
+            IMultipleChoiceService multipleChoiceService)
         {
             Logger = logger;
             Context = context;
+            MultipleChoiceService = multipleChoiceService;
         }
 
         private ILogger<ProblemsController> Logger { get; }
         private SqlContext Context { get; }
-
+        private IMultipleChoiceService MultipleChoiceService { get; }
 
         [HttpGet]
         public ActionResult Get()
@@ -35,16 +38,7 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult GetTest(int testId)
         {
-            var test = Context.MultipleChoiceTests.Select(t => new MultipleChoiceTest
-            {
-                Id = t.Id,
-                AuthorId = t.AuthorId,
-                Content = t.Content,
-                Title = t.Title,
-                QuestionLinks = t.Questions.Select(q => $"/api/v1/multiple-choice/{testId}/questions/{q.Id}")
-            }).FirstOrDefault(t => t.Id == testId);
-            if (test == null) return StatusCode(404);
-            test.Render();
+            var test = MultipleChoiceService.GetTestById(testId, true, true);
             return StatusCode(200, test);
         }
 
@@ -76,20 +70,8 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult GetQuestion(int testId, int questionId)
         {
-            var question = Context.MultipleChoiceQuestions
-                .Select(q => new MultipleChoiceQuestion
-                {
-                    Id = q.Id,
-                    AuthorId = q.AuthorId,
-                    TestId = testId,
-                    Content = q.Content,
-                    Solution = q.Solution,
-                    AnswerLinks = q.Answers.Select(a =>
-                        $"/api/v1/multiple-choice/{testId}/questions/{questionId}/answers/{a.Id}")
-                })
-                .FirstOrDefault(q => q.TestId == testId && q.Id == questionId);
+            var question = MultipleChoiceService.GetQuestionById(testId, questionId, true);
             if (question == null) return StatusCode(404);
-            question.Render();
             return StatusCode(200, question);
         }
 
@@ -118,16 +100,8 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult GetAnswer(int testId, int questionId, int answerId)
         {
-            var answer = Context.MultipleChoiceAnswers.Select(a => new MultipleChoiceAnswer
-            {
-                Id = a.Id,
-                QuestionId = a.QuestionId,
-                TestId = a.Question.TestId,
-                Content = a.Content,
-                IsCorrect = a.IsCorrect
-            }).FirstOrDefault(a => a.Id == answerId && a.QuestionId == questionId && a.TestId == testId);
+            var answer = MultipleChoiceService.GetAnswerById(testId, questionId, answerId);
             if (answer == null) return StatusCode(404);
-            answer.Render();
             return StatusCode(200, answer);
         }
 

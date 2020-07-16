@@ -23,8 +23,6 @@ namespace ResourceAPI
 
         public DbSet<ProblemVote> ProblemVotes { get; set; }
         public DbSet<AnswerVote> AnswerVotes { get; set; }
-
-        public static string ConnectionString { get; set; }
         public static string FileDirectory { get; set; } = "../../images";
         public DbSet<MultipleChoiceTest> MultipleChoiceTests { get; set; }
         public DbSet<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
@@ -87,7 +85,6 @@ namespace ResourceAPI
         {
             if (!withAnswers) problem.Answers = null;
             if (author == null) return false;
-
             problem.Created = DateTime.Now;
             problem.Author = author;
 

@@ -1,117 +1,66 @@
-using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using ResourceAPI;
-using ResourceAPI.Controllers;
-using ResourceAPI.Services;
+using ResourceAPI.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace ResourceApiTests
 {
-    public abstract class TestsBase : IDisposable
+    public class ResourceApiUnitTests
     {
-        protected TestsBase()
+        private HttpClient Client { get; } = new TestClientProvider().Client;
+
+        [Fact]
+        public async Task BrowseTest()
         {
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", true, true);
-
-            var configuration = builder.Build();
-
-
-            var options = new DbContextOptionsBuilder().UseMySQL(configuration.GetConnectionString("Default"));
-            Context = new SqlContext(options.Options);
-            ProblemService = new ProblemService(Context);
-            Controller = new ProblemsController(null, Context, ProblemService);
+            var response = await Client.GetAsync("/api/v1/problems/");
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        public ProblemsController Controller { get; }
-        private SqlContext Context { get; }
-        public ProblemService ProblemService { get; }
-
-        public void Dispose()
+        [Fact]
+        public async Task PostProblemTest()
         {
-            Context.Dispose();
+            var problem = new Problem
+            {
+                Title = "abc",
+                Content = "cde",
+                ContentHtml = "cde"
+            };
+
+            var jsonString = JsonSerializer.Serialize(problem);
+            HttpContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            var response = await Client.PostAsync("/api/v1/problems/", content);
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+            var response2 = await Client.GetAsync("/api/v1/problems/1");
+            var responseStr = await response2.Content.ReadAsStringAsync();
+
+            var problemResponse = JsonSerializer.Deserialize<Problem>(responseStr, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            Assert.Equal("abc", problemResponse.Title);
+            Assert.Equal("cde", problemResponse.Content);
         }
     }
 
-
-    public class ResourceApiUnitTests : TestsBase
+    public class TestClientProvider
     {
-        public ResourceApiUnitTests(ITestOutputHelper testOutputHelper)
+        public TestClientProvider()
         {
-            _testOutputHelper = testOutputHelper;
+            var builder = new WebHostBuilder().UseStartup<Startup>();
+            builder.UseEnvironment("tests");
+            var server = new TestServer(builder);
+            Client = server.CreateClient();
         }
 
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        [Fact]
-        public void GetProblems()
-        {
-            for (var i = 0; i < 100; i++)
-            {
-                var problems = Controller.Browse();
-            } //if (!(Controller.Browse() is OkObjectResult problems)) return;
-
-            //var value = problems.Value;
-            //var list = value?.GetType().GetProperty("problemLinks")?.GetValue(value, null) as IEnumerable<string>;
-            //foreach (var link in list)
-            //{
-            //    var problemId = Convert.ToInt32(link.Split('/').Last());
-            //    var problem = ProblemService.ProblemById(problemId);
-            //    foreach (var answerLink in problem.AnswerLinks)
-            //    {
-            //        var answerId = Convert.ToInt32(answerLink.Split('/').Last());
-            //        var answer = ProblemService.GetAnswerById(problemId, answerId);
-            //    }
-            //}
-        }
-
-        //[Fact]
-        //public void GetProblems()
-        //{
-        //    if (!(Controller.Browse() is OkObjectResult problems)) return;
-        //    var value = problems.Value;
-        //    var list = value?.GetType().GetProperty("problemLinks")?.GetValue(value, null) as IEnumerable<string>;
-        //    foreach (var link in list)
-        //    {
-        //        var problemId = Convert.ToInt32(link.Split('/').Last());
-        //        var problem = ProblemService.ProblemById(problemId);
-        //        foreach (var answerLink in problem.AnswerLinks)
-        //        {
-        //            var answerId = Convert.ToInt32(answerLink.Split('/').Last());
-        //            var answer = ProblemService.GetAnswerById(problemId, answerId);
-        //        }
-        //    }
-        //}
-
-        //[Theory]
-        //[InlineData(1, 2, 3)]
-        //[InlineData(-4, -6, -10)]
-        //[InlineData(-2, 2, 0)]
-        //public void ManySums(int a, int b, int c)
-        //{
-        //    Assert.Equal(c, Sum(a, b));
-        //}
-
-
-        //private int Sum(int a, int b)
-        //{
-        //    return 2 * a + (b - a);
-        //}
-
-        //[Fact]
-        //public void SingleSum()
-        //{
-        //    Assert.Equal(4, 2 + 2);
-        //}
-
-        //[Fact]
-        //public void TestProblemRequest()
-        //{
-        //    for (var i = 1; i < 200; i++)
-        //        //Controller.Get(i).ExecuteResult(new ActionContext());
-        //        ProblemService.ProblemById(i);
-        //}
+        public HttpClient Client { get; }
     }
 }

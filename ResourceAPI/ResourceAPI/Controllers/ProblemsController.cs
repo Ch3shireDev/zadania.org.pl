@@ -99,7 +99,8 @@ namespace ResourceAPI.Controllers
             var author = AuthorsController.GetAuthor(HttpContext, Context);
             if (author == null) return StatusCode(403);
             var result = Context.AddProblem(problem, author);
-            if (result) Context.SaveChanges();
+            if (!result) return StatusCode(403);
+            Context.SaveChanges();
             return StatusCode(201);
         }
 

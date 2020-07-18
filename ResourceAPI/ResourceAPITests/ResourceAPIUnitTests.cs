@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using ResourceAPI;
-using ResourceAPI.Models;
+using ResourceAPI.Models.Problem;
 using Xunit;
 
 namespace ResourceApiTests

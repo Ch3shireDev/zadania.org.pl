@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
 
-namespace ResourceAPI.Models
+namespace ResourceAPI.Models.Post
 {
     public class FileData
     {

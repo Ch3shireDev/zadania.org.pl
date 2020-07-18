@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
-namespace ResourceAPI.Models
+namespace ResourceAPI.Models.Problem
 {
     public class Tag
     {

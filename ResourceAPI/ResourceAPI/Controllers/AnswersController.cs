@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.Models;
-using ResourceAPI.Services;
+using ResourceAPI.ApiServices;
+using ResourceAPI.Enums;
+using ResourceAPI.Models.Problem;
 
 namespace ResourceAPI.Controllers
 {
@@ -11,13 +12,16 @@ namespace ResourceAPI.Controllers
     [ApiController]
     public class AnswersController : ControllerBase
     {
+        private readonly IAuthorService _authorService;
         private readonly ILogger<ProblemsController> _logger;
 
-        public AnswersController(ILogger<ProblemsController> logger, SqlContext context, IProblemService problemService)
+        public AnswersController(ILogger<ProblemsController> logger, SqlContext context, IProblemService problemService,
+            IAuthorService authorService)
         {
             _logger = logger;
             Context = context;
             ProblemService = problemService;
+            _authorService = authorService;
         }
 
         private SqlContext Context { get; }
@@ -54,7 +58,7 @@ namespace ResourceAPI.Controllers
         public ActionResult Post(int problemId, Answer answer)
         {
             if (!Context.Problems.Any(p => p.Id == problemId)) return StatusCode(404);
-            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var author = _authorService.GetAuthor(HttpContext);
             if (author == null) return Unauthorized();
             var problem = Context.Problems.FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return NotFound();
@@ -96,7 +100,7 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Upvote(int problemId, int answerId)
         {
-            return Vote(problemId, answerId, Models.Vote.Upvote);
+            return Vote(problemId, answerId, Enums.Vote.Upvote);
         }
 
         [HttpPut]
@@ -104,15 +108,15 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Downvote(int problemId, int answerId)
         {
-            return Vote(problemId, answerId, Models.Vote.Downvote);
+            return Vote(problemId, answerId, Enums.Vote.Downvote);
         }
 
         [NonAction]
         public ActionResult Vote(int problemId, int answerId, Vote vote)
         {
             var answer = Context.Answers.First(a => a.Id == answerId && a.ProblemId == problemId);
-            if (vote == Models.Vote.Upvote) answer.Points++;
-            if (vote == Models.Vote.Downvote) answer.Points--;
+            if (vote == Enums.Vote.Upvote) answer.Points++;
+            if (vote == Enums.Vote.Downvote) answer.Points--;
             Context.Answers.Update(answer);
             Context.SaveChanges();
             return StatusCode(200, new {success = true, points = answer.Points});
@@ -132,7 +136,7 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult ApproveAnswer(int problemId, int answerId)
         {
-            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var author = _authorService.GetAuthor(HttpContext);
 
             var answer = Context.Answers.FirstOrDefault(a =>
                 a.Id == answerId && a.Problem.Id == problemId && a.AuthorId == author.Id);
@@ -149,7 +153,7 @@ namespace ResourceAPI.Controllers
         [Route("{answerId}/disapprove")]
         public ActionResult DisapproveAnswer(int problemId, int answerId)
         {
-            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var author = _authorService.GetAuthor(HttpContext);
             var answer = Context.Answers.FirstOrDefault(a =>
                 a.Id == answerId && a.Problem.Id == problemId && a.AuthorId == author.Id);
             if (answer == null) return StatusCode(403);
@@ -166,7 +170,7 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult UpvoteAnswer(int id)
         {
-            return VoteAnswer(id, Models.Vote.Upvote);
+            return VoteAnswer(id, Enums.Vote.Upvote);
         }
 
         [HttpPost]
@@ -174,14 +178,14 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult DownvoteAnswer(int id)
         {
-            return VoteAnswer(id, Models.Vote.Downvote);
+            return VoteAnswer(id, Enums.Vote.Downvote);
         }
 
         public ActionResult VoteAnswer(int id, Vote vote)
         {
             var answer = Context.Answers.FirstOrDefault(p => p.Id == id);
             if (answer == null) return StatusCode(403);
-            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var author = _authorService.GetAuthor(HttpContext);
             if (author == null) return StatusCode(403);
             var answerVote = Context.AnswerVotes.FirstOrDefault(pv => pv.AuthorId == author.Id && pv.AnswerId == id);
             if (answerVote == null)
@@ -191,7 +195,7 @@ namespace ResourceAPI.Controllers
             }
             else
             {
-                answerVote.Vote = answerVote.Vote == vote ? Models.Vote.None : vote;
+                answerVote.Vote = answerVote.Vote == vote ? Enums.Vote.None : vote;
                 Context.AnswerVotes.Update(answerVote);
             }
 
@@ -199,7 +203,7 @@ namespace ResourceAPI.Controllers
 
             answer.Points = Context.AnswerVotes
                 .Where(av => av.AnswerId == answer.Id)
-                .Select(av => av.Vote == Models.Vote.Upvote ? 1 : av.Vote == Models.Vote.Downvote ? -1 : 0)
+                .Select(av => av.Vote == Enums.Vote.Upvote ? 1 : av.Vote == Enums.Vote.Downvote ? -1 : 0)
                 .Sum();
 
             Context.Answers.Update(answer);

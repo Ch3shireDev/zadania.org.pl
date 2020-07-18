@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using ResourceAPI.Models.Post;
 
-namespace ResourceAPI.Models
+namespace ResourceAPI.Models.Problem
 {
-    public class Answer : Post
+    public class Answer : Post.Post
     {
         public Problem Problem { get; set; }
         [NotMapped] public string Url => $"/api/v1/problems/{ProblemId}/answers/{Id}";

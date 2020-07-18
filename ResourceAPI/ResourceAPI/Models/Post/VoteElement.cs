@@ -1,4 +1,6 @@
-﻿namespace ResourceAPI.Models
+﻿using ResourceAPI.Enums;
+
+namespace ResourceAPI.Models.Post
 {
     public class VoteElement
     {

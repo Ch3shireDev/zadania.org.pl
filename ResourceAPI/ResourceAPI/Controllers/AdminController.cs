@@ -5,7 +5,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.Models;
+using ResourceAPI.ApiServices;
+using ResourceAPI.Models.MultipleChoice;
+using ResourceAPI.Models.Post;
+using ResourceAPI.Models.Problem;
+using ResourceAPI.Tools;
 
 namespace ResourceAPI.Controllers
 {
@@ -15,14 +19,20 @@ namespace ResourceAPI.Controllers
 #endif
     public class AdminController : ControllerBase
     {
-        public AdminController(ILogger<ProblemsController> logger, SqlContext context)
+        private readonly IAuthorService _authorService;
+
+        public AdminController(ILogger<ProblemsController> logger, SqlContext context, IProblemService problemService,
+            IAuthorService authorService)
         {
             Logger = logger;
             Context = context;
+            ProblemService = problemService;
+            _authorService = authorService;
         }
 
         private ILogger<ProblemsController> Logger { get; }
         private SqlContext Context { get; }
+        private IProblemService ProblemService { get; }
 
         [HttpPost]
         [Route("upload/eko2")]
@@ -31,7 +41,7 @@ namespace ResourceAPI.Controllers
             var lines = System.IO.File.ReadAllLines("../../../WIT-Zajecia/semestr-2/Ekonomia 2/egzamin-1.md");
             var mdElement = new MdElement(lines);
 
-            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var author = _authorService.GetAuthor(HttpContext);
             var test = new MultipleChoiceTest
             {
                 Title = mdElement.Title,
@@ -67,7 +77,7 @@ namespace ResourceAPI.Controllers
             var i = 0;
             foreach (var problem in problems)
             {
-                Context.AddProblem(problem, author, true);
+                ProblemService.AddProblem(problem, author, true);
                 i++;
                 if (i % 100 == 0)
                 {
@@ -108,7 +118,7 @@ namespace ResourceAPI.Controllers
             {
                 problem.Title = $"Zadanie {n++}";
                 problem.Tags = new List<Tag> {new Tag {Name = "OAK"}, new Tag {Name = "Informatyka"}};
-                Context.AddProblem(problem, author, true);
+                ProblemService.AddProblem(problem, author, true);
             }
 
             Context.SaveChanges();

@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ResourceAPI.Services;
+using ResourceAPI.ApiServices;
 
 namespace ResourceAPI
 {
@@ -35,7 +33,7 @@ namespace ResourceAPI
             });
 
 
-            //services.AddSingleton<ProblemService>();
+            services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IMultipleChoiceService, MultipleChoiceService>();
 
@@ -83,17 +81,6 @@ namespace ResourceAPI
             app.UseAuthorization();
             app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-        }
-    }
-
-    public class AllowAnonymous : IAuthorizationHandler
-    {
-        public Task HandleAsync(AuthorizationHandlerContext context)
-        {
-            foreach (var requirement in context.PendingRequirements.ToList())
-                context.Succeed(requirement); //Simply pass all requirements
-
-            return Task.CompletedTask;
         }
     }
 }

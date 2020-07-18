@@ -1,4 +1,4 @@
-﻿namespace ResourceAPI.Models
+﻿namespace ResourceAPI.Enums
 {
     public enum Vote
     {

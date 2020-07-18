@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using ResourceAPI.Models;
+using ResourceAPI.Models.MultipleChoice;
+using ResourceAPI.Models.Post;
 
-namespace ResourceAPI.Controllers
+namespace ResourceAPI.Tools
 {
     public class MdElement
     {

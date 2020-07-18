@@ -1,4 +1,4 @@
-﻿namespace ResourceAPI.Models
+﻿namespace ResourceAPI.Models.Post
 {
     public class Comment : Post
     {

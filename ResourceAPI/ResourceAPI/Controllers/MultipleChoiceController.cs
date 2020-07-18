@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.Models;
-using ResourceAPI.Services;
+using ResourceAPI.ApiServices;
+using ResourceAPI.Models.MultipleChoice;
 
 namespace ResourceAPI.Controllers
 {

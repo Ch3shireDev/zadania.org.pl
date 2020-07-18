@@ -1,4 +1,7 @@
-﻿namespace ResourceAPI.Models
+﻿using ResourceAPI.Enums;
+using ResourceAPI.Models.Post;
+
+namespace ResourceAPI.Models.Problem
 {
     public class AnswerVote
     {

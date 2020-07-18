@@ -3,8 +3,9 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.Models;
-using ResourceAPI.Services;
+using ResourceAPI.ApiServices;
+using ResourceAPI.Enums;
+using ResourceAPI.Models.Problem;
 
 namespace ResourceAPI.Controllers
 {
@@ -12,12 +13,15 @@ namespace ResourceAPI.Controllers
     [Route("api/v1/[controller]")]
     public class ProblemsController : ControllerBase
     {
+        private readonly IAuthorService _authorService;
+
         public ProblemsController(ILogger<ProblemsController> logger, SqlContext context,
-            IProblemService problemProblemService)
+            IProblemService problemProblemService, IAuthorService authorService)
         {
             Logger = logger;
             Context = context;
             ProblemService = problemProblemService;
+            _authorService = authorService;
         }
 
         private ILogger<ProblemsController> Logger { get; }
@@ -35,47 +39,12 @@ namespace ResourceAPI.Controllers
             [FromQuery] bool highest = false
         )
         {
-            var tag = tags;
-            var problemsQuery = Context.Problems.AsQueryable();
-
-            if (tags != null)
-                problemsQuery = problemsQuery
-                    .Where(p => p.ProblemTags.Select(pt => pt.Tag.Url).Any(t => t == tag));
-
-            if (query != null)
-                problemsQuery = problemsQuery.Where(p =>
-                    p.Content.Contains(query) || p.ProblemTags.Any(pt => pt.Tag.Name.Contains(query)));
-
-
-            var resultQuery = problemsQuery.AsQueryable();
-
-            var linksQuery = resultQuery;
-
-            if (newest)
-                linksQuery = linksQuery
-                    .OrderByDescending(p => p.Created)
-                    .AsQueryable();
-
-            if (highest) linksQuery = linksQuery.OrderByDescending(p => p.Points).AsQueryable();
-
-            var num = resultQuery.Count();
-
-            var lastRecordIndex = page * 10;
-            var firstRecordIndex = lastRecordIndex - 10;
-
-            var subQuery = linksQuery;
-
-            if (firstRecordIndex < num) subQuery = subQuery.Skip(firstRecordIndex);
-            if (lastRecordIndex < num) subQuery = subQuery.Take(10);
-
-            var problems = subQuery.Select(p => new Problem {Id = p.Id}).ToArray()
-                    .Select(p => ProblemService.ProblemById(p.Id)).ToArray()
-                ;
+            var problems = ProblemService.BrowseProblems(tags, query, newest, highest, page, out var totalPages);
 
             return new OkObjectResult(new
             {
                 page,
-                totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1,
+                totalPages,
                 problems
             });
         }
@@ -96,9 +65,10 @@ namespace ResourceAPI.Controllers
         {
             if (problem.ContentHtml == null) return StatusCode(400);
             if (problem.ContentHtml.Length > 1024 * 1024) return StatusCode(413);
-            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var author = _authorService.GetAuthor(HttpContext);
             if (author == null) return StatusCode(403);
-            var result = Context.AddProblem(problem, author);
+            var result = ProblemService.AddProblem(problem, author);
+            //var result = Context.AddProblem(problem, author);
             if (!result) return StatusCode(403);
             Context.SaveChanges();
             return StatusCode(201);
@@ -173,7 +143,7 @@ namespace ResourceAPI.Controllers
         {
             var problem = Context.Problems.FirstOrDefault(p => p.Id == id);
             if (problem == null) return StatusCode(403);
-            var author = AuthorsController.GetAuthor(HttpContext, Context);
+            var author = _authorService.GetAuthor(HttpContext);
             if (author == null) return StatusCode(403);
             var problemVote = Context.ProblemVotes.FirstOrDefault(pv => pv.AuthorId == author.Id && pv.ProblemId == id);
             if (problemVote == null)

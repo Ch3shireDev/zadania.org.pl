@@ -1,4 +1,4 @@
-﻿namespace ResourceAPI.Controllers
+﻿namespace ResourceAPI.Tools
 {
     public class UserData
     {

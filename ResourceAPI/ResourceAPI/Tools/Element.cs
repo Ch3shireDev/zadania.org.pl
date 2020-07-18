@@ -2,9 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ResourceAPI.Models;
+using ResourceAPI.Models.Post;
+using ResourceAPI.Models.Problem;
 
-namespace ResourceAPI.Controllers
+namespace ResourceAPI.Tools
 {
     internal class Element
     {

@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using ResourceAPI.Models;
+using ResourceAPI.ApiServices;
+using ResourceAPI.Models.Post;
 
 namespace ResourceAPI.Controllers
 {
@@ -12,12 +10,14 @@ namespace ResourceAPI.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
+        private readonly IAuthorService _authorService;
         private readonly ILogger<ProblemsController> _logger;
 
-        public AuthorsController(ILogger<ProblemsController> logger, SqlContext context)
+        public AuthorsController(ILogger<ProblemsController> logger, SqlContext context, IAuthorService authorService)
         {
             _logger = logger;
             Context = context;
+            _authorService = authorService;
         }
 
         private SqlContext Context { get; }
@@ -42,7 +42,7 @@ namespace ResourceAPI.Controllers
         //[Authorize]
         public ActionResult Get()
         {
-            var author = GetAuthor(HttpContext, Context);
+            var author = _authorService.GetAuthor(HttpContext);
             if (author != null)
             {
                 author.Problems = null;
@@ -67,31 +67,6 @@ namespace ResourceAPI.Controllers
                 .FirstOrDefault(a => a.Id == id);
             if (author == null) return StatusCode(404);
             return StatusCode(200, author);
-        }
-
-        public static Author GetAuthor(HttpContext httpContext, SqlContext context)
-        {
-#if DEBUG
-            if (!context.Authors.Any()) context.Authors.Add(new Author {Name = "dummy", UserId = "dummy"});
-            context.SaveChanges();
-            return context.Authors.First();
-#endif
-
-            var httpContextUser = httpContext.User;
-            var idClaim = httpContextUser.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
-            if (idClaim == null) return null;
-            var nameIdentifier = idClaim.Value;
-
-            if (!context.Authors.Any(profile => profile.UserId == nameIdentifier))
-            {
-                var profileData = httpContext.Request.Headers["profile"][0];
-                var profile = JsonConvert.DeserializeObject<UserData>(profileData);
-                var newProfile = new Author {UserId = nameIdentifier, Name = profile.Name, Email = profile.Email};
-                context.Authors.Add(newProfile);
-                context.SaveChanges();
-            }
-
-            return context.Authors.First(profile => profile.UserId == nameIdentifier);
         }
     }
 }

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using ResourceAPI.Models;
+using ResourceAPI.Models.Exercise;
+using ResourceAPI.Models.MultipleChoice;
+using ResourceAPI.Models.Post;
+using ResourceAPI.Models.Problem;
 
 namespace ResourceAPI
 {
@@ -81,50 +84,6 @@ namespace ResourceAPI
             return content;
         }
 
-        public bool AddProblem(Problem problem, Author author = null, bool withAnswers = false)
-        {
-            if (!withAnswers) problem.Answers = null;
-            if (author == null) return false;
-            problem.Created = DateTime.Now;
-            problem.Author = author;
-
-            if (problem.FileData != null)
-                foreach (var file in problem.FileData)
-                {
-                    file.Save();
-                    var regex = @"!\[\]\(" + file.OldFileName + @"\)";
-                    problem.Content = Regex.Replace(problem.Content, regex, $"![]({file.FileName})");
-                }
-
-            problem.ProblemTags ??= new List<ProblemTag>();
-            problem.Tags ??= new List<Tag>();
-
-            foreach (var tag in problem.Tags)
-            {
-                tag.Url = tag.GenerateUrl();
-                var existing = Tags.Find(tag.Url) ?? tag;
-                var problemTag = new ProblemTag {Tag = existing, TagUrl = tag.Url};
-                problem.ProblemTags.Add(problemTag);
-            }
-
-            if (problem.Answers != null)
-                foreach (var answer in problem.Answers)
-                {
-                    if (answer.FileData == null) continue;
-                    foreach (var file in answer.FileData)
-                    {
-                        file.Save();
-                        var regex = @"!\[\]\(" + file.OldFileName + @"\)";
-                        answer.Content = Regex.Replace(answer.Content, regex, $"![]({file.FileName})");
-                    }
-
-                    answer.Author = author;
-                }
-
-            problem.Tags = null;
-            Problems.Add(problem);
-            return true;
-        }
 
         public IEnumerable<ProblemTag> RefreshTags(Problem problem)
         {

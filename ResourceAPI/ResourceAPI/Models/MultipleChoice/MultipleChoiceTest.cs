@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ResourceAPI.Models
+namespace ResourceAPI.Models.MultipleChoice
 {
-    public class MultipleChoiceTest : Post
+    public class MultipleChoiceTest : Post.Post
     {
         public string Title { get; set; }
         public List<MultipleChoiceQuestion> Questions { get; set; }

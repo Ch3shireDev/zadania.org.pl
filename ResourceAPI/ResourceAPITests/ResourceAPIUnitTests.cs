@@ -9,7 +9,7 @@ using ResourceAPI;
 using ResourceAPI.Models.Problem;
 using Xunit;
 
-namespace ResourceApiTests
+namespace ResourceAPITests
 {
     public class ResourceApiUnitTests
     {

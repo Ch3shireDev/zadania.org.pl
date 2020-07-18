@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Enums;
 using ResourceAPI.Models.Problem;
 
@@ -68,7 +68,7 @@ namespace ResourceAPI.Controllers
             var author = _authorService.GetAuthor(HttpContext);
             if (author == null) return StatusCode(403);
             var result = ProblemService.AddProblem(problem, author);
-            //var result = Context.AddProblem(problem, author);
+            //var result = _context.AddProblem(problem, author);
             if (!result) return StatusCode(403);
             Context.SaveChanges();
             return StatusCode(201);

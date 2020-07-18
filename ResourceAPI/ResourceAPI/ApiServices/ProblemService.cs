@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Enums;
 using ResourceAPI.Models.Post;
 using ResourceAPI.Models.Problem;
@@ -10,17 +11,16 @@ namespace ResourceAPI.ApiServices
 {
     public class ProblemService : IProblemService
     {
+        private readonly SqlContext _context;
+
         public ProblemService(SqlContext context)
         {
-            Context = context;
+            _context = context;
         }
-
-        public SqlContext Context { get; set; }
-
 
         public Problem ProblemById(int id)
         {
-            var problem = Context.Problems.Select(p => new Problem
+            var problem = _context.Problems.Select(p => new Problem
                 {
                     Id = p.Id,
                     Title = p.Title,
@@ -38,7 +38,7 @@ namespace ResourceAPI.ApiServices
                 .FirstOrDefault(p => p.Id == id);
             if (problem == null) return null;
 
-            problem.IsAnswered = Context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
+            problem.IsAnswered = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
             problem = problem.Render();
             problem.Content = null;
             return problem;
@@ -47,7 +47,7 @@ namespace ResourceAPI.ApiServices
 
         public Answer GetAnswerById(int problemId, int answerId)
         {
-            var answer = Context.Answers.Select(a => new
+            var answer = _context.Answers.Select(a => new
                 Answer
                 {
                     Id = a.Id,
@@ -70,7 +70,7 @@ namespace ResourceAPI.ApiServices
         public Problem ProblemWithAnswersById(int id)
         {
             var
-                problem = Context.Problems.Select(p => new Problem
+                problem = _context.Problems.Select(p => new Problem
                     {
                         Id = p.Id,
                         Title = p.Title,
@@ -89,7 +89,7 @@ namespace ResourceAPI.ApiServices
                     .FirstOrDefault(p => p.Id == id);
             if (problem == null) return null;
 
-            problem.IsAnswered = Context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
+            problem.IsAnswered = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
             problem = problem.Render();
 
 
@@ -117,7 +117,7 @@ namespace ResourceAPI.ApiServices
             foreach (var tag in problem.Tags)
             {
                 tag.Url = tag.GenerateUrl();
-                var existing = Context.Tags.Find(tag.Url) ?? tag;
+                var existing = _context.Tags.Find(tag.Url) ?? tag;
                 var problemTag = new ProblemTag {Tag = existing, TagUrl = tag.Url};
                 problem.ProblemTags.Add(problemTag);
             }
@@ -137,7 +137,7 @@ namespace ResourceAPI.ApiServices
                 }
 
             problem.Tags = null;
-            Context.Problems.Add(problem);
+            _context.Problems.Add(problem);
             return true;
         }
 
@@ -145,7 +145,7 @@ namespace ResourceAPI.ApiServices
             out int totalPages)
         {
             var tag = tags;
-            var problemsQuery = Context.Problems.AsQueryable();
+            var problemsQuery = _context.Problems.AsQueryable();
 
             if (tags != null)
                 problemsQuery = problemsQuery
@@ -184,6 +184,18 @@ namespace ResourceAPI.ApiServices
             totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1;
 
             return problems;
+        }
+
+
+        public IEnumerable<ProblemTag> RefreshTags(Problem problem)
+        {
+            if (problem.Tags == null) yield break;
+            foreach (var tag in problem.Tags)
+            {
+                tag.Url = tag.GenerateUrl();
+                var existing = _context.Tags.Find(tag.Url) ?? tag;
+                yield return new ProblemTag {Problem = problem, Tag = existing, TagUrl = tag.Url};
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.MultipleChoice;
 using ResourceAPI.Models.Post;
 using ResourceAPI.Models.Problem;
@@ -20,19 +20,19 @@ namespace ResourceAPI.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAuthorService _authorService;
+        private readonly SqlContext _context;
+        private readonly IProblemService _problemService;
+
+        private ILogger<ProblemsController> _logger;
 
         public AdminController(ILogger<ProblemsController> logger, SqlContext context, IProblemService problemService,
             IAuthorService authorService)
         {
-            Logger = logger;
-            Context = context;
-            ProblemService = problemService;
+            _logger = logger;
+            _context = context;
+            _problemService = problemService;
             _authorService = authorService;
         }
-
-        private ILogger<ProblemsController> Logger { get; }
-        private SqlContext Context { get; }
-        private IProblemService ProblemService { get; }
 
         [HttpPost]
         [Route("upload/eko2")]
@@ -50,8 +50,8 @@ namespace ResourceAPI.Controllers
                 Questions = mdElement.Children[0].Children.Select(c => c.ToQuestion(author)).ToList()
             };
 
-            Context.MultipleChoiceTests.Add(test);
-            Context.SaveChanges();
+            _context.MultipleChoiceTests.Add(test);
+            _context.SaveChanges();
 
             return StatusCode(200);
         }
@@ -63,12 +63,12 @@ namespace ResourceAPI.Controllers
             var curr = Directory.GetCurrentDirectory();
             var filePath = Path.Join(curr, "../zadania.info/exercises.md");
 
-            var author = Context.Authors.FirstOrDefault(auth => auth.Name == "zadania.info");
+            var author = _context.Authors.FirstOrDefault(auth => auth.Name == "zadania.info");
             if (author == null)
             {
                 author = new Author {Name = "zadania.info"};
-                Context.Authors.Add(author);
-                Context.SaveChanges();
+                _context.Authors.Add(author);
+                _context.SaveChanges();
             }
 
             var text = System.IO.File.ReadAllText(filePath);
@@ -77,18 +77,18 @@ namespace ResourceAPI.Controllers
             var i = 0;
             foreach (var problem in problems)
             {
-                ProblemService.AddProblem(problem, author, true);
+                _problemService.AddProblem(problem, author, true);
                 i++;
                 if (i % 100 == 0)
                 {
-                    Context.SaveChanges();
+                    _context.SaveChanges();
                     Console.WriteLine(i);
                 }
 
                 //if (i > 100) break;
             }
 
-            Context.SaveChanges();
+            _context.SaveChanges();
             return StatusCode(200);
         }
 
@@ -96,13 +96,13 @@ namespace ResourceAPI.Controllers
         [Route("cleanTags")]
         public ActionResult CleanTags()
         {
-            var pt = Context.ProblemTags.Where(pt => pt.Problem == null || pt.Tag == null);
-            Context.ProblemTags.RemoveRange(pt);
-            Context.SaveChanges();
+            var pt = _context.ProblemTags.Where(pt => pt.Problem == null || pt.Tag == null);
+            _context.ProblemTags.RemoveRange(pt);
+            _context.SaveChanges();
 
-            var tags = Context.Tags.Where(t => t.ProblemTags.Count == 0);
-            Context.Tags.RemoveRange(tags);
-            Context.SaveChanges();
+            var tags = _context.Tags.Where(t => t.ProblemTags.Count == 0);
+            _context.Tags.RemoveRange(tags);
+            _context.SaveChanges();
             return StatusCode(200);
         }
 
@@ -111,17 +111,17 @@ namespace ResourceAPI.Controllers
         [HttpPost]
         public void LoadMd()
         {
-            var author = Context.Authors.FirstOrDefault(a => a.Name == "Igor Nowicki");
+            var author = _context.Authors.FirstOrDefault(a => a.Name == "Igor Nowicki");
             var problems = GetProblemsFromDirectory("../../WIT-Zajecia/semestr-2/OAK");
             var n = 1;
             foreach (var problem in problems)
             {
                 problem.Title = $"Zadanie {n++}";
                 problem.Tags = new List<Tag> {new Tag {Name = "OAK"}, new Tag {Name = "Informatyka"}};
-                ProblemService.AddProblem(problem, author, true);
+                _problemService.AddProblem(problem, author, true);
             }
 
-            Context.SaveChanges();
+            _context.SaveChanges();
         }
 
         private IEnumerable<Problem> GetProblemsFromDirectory(string dir)

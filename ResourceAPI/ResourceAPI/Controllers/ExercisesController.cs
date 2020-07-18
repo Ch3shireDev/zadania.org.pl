@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ResourceAPI.ApiServices;
 
 namespace ResourceAPI.Controllers
 {
@@ -7,14 +8,21 @@ namespace ResourceAPI.Controllers
     [ApiController]
     public class ExercisesController : ControllerBase
     {
-        private readonly ILogger<ProblemsController> _logger;
+        private readonly IExerciseService _exerciseService;
+        private readonly ILogger<ExercisesController> _logger;
 
-        public ExercisesController(ILogger<ProblemsController> logger, SqlContext context)
+        public ExercisesController(ILogger<ExercisesController> logger,
+            IExerciseService exerciseService)
         {
             _logger = logger;
-            Context = context;
+            _exerciseService = exerciseService;
         }
 
-        private SqlContext Context { get; }
+        [HttpGet]
+        public ActionResult GetExercises()
+        {
+            var exercises = _exerciseService.Browse();
+            return StatusCode(200, exercises);
+        }
     }
 }

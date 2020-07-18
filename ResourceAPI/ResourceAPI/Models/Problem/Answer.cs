@@ -24,7 +24,7 @@ namespace ResourceAPI.Models.Problem
 
         public new Answer Render()
         {
-            ContentHtml = SqlContext.Render(Content, FileData);
+            ContentHtml = Tools.Tools.Render(Content, FileData);
             return this;
         }
     }

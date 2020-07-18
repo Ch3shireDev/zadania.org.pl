@@ -17,8 +17,8 @@ namespace ResourceAPI.Models.MultipleChoice
 
         public new void Render()
         {
-            ContentHtml = SqlContext.Render(Content, FileData);
-            SolutionHtml = SqlContext.Render(Solution, FileData);
+            ContentHtml = Tools.Tools.Render(Content, FileData);
+            SolutionHtml = Tools.Tools.Render(Solution, FileData);
         }
     }
 }

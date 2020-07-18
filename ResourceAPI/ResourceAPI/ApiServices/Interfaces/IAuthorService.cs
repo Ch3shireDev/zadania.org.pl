@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using ResourceAPI.Models.Post;
 
-namespace ResourceAPI.ApiServices
+namespace ResourceAPI.ApiServices.Interfaces
 {
     public interface IAuthorService
     {

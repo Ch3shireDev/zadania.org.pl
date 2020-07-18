@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Controllers;
 
 namespace ResourceAPIBenchmark

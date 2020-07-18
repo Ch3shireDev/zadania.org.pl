@@ -1,6 +1,6 @@
 ﻿using ResourceAPI.Models.MultipleChoice;
 
-namespace ResourceAPI.ApiServices
+namespace ResourceAPI.ApiServices.Interfaces
 {
     public interface IMultipleChoiceService
     {

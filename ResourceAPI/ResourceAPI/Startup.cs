@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI
 {
@@ -36,6 +37,7 @@ namespace ResourceAPI
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IMultipleChoiceService, MultipleChoiceService>();
+            services.AddScoped<IExerciseService, ExerciseService>();
 
             services.AddControllers();
 

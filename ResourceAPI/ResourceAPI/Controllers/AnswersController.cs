@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Enums;
 using ResourceAPI.Models.Problem;
 

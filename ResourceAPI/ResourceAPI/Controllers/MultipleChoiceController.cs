@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.MultipleChoice;
 
 namespace ResourceAPI.Controllers
@@ -48,9 +48,9 @@ namespace ResourceAPI.Controllers
         //public ActionResult PutTest(int testId, MultipleChoiceTest multipleChoiceTest)
         //{
         //    multipleChoiceTest.Id = testId;
-        //    var entity = Context.Find<MultipleChoiceTest>(testId);
-        //    Context.Entry(entity).CurrentValues.SetValues(multipleChoiceTest);
-        //    Context.SaveChanges();
+        //    var entity = _context.Find<MultipleChoiceTest>(testId);
+        //    _context.Entry(entity).CurrentValues.SetValues(multipleChoiceTest);
+        //    _context.SaveChanges();
         //    return StatusCode(201);
         //}
 
@@ -59,10 +59,10 @@ namespace ResourceAPI.Controllers
         //[Authorize]
         //public ActionResult DeleteTest(int testId)
         //{
-        //    var entity = Context.MultipleChoiceTests.FirstOrDefault(t => t.Id == testId);
+        //    var entity = _context.MultipleChoiceTests.FirstOrDefault(t => t.Id == testId);
         //    if (entity == null) return StatusCode(404);
-        //    Context.MultipleChoiceTests.Remove(entity);
-        //    Context.SaveChanges();
+        //    _context.MultipleChoiceTests.Remove(entity);
+        //    _context.SaveChanges();
         //    return StatusCode(200);
         //}
 

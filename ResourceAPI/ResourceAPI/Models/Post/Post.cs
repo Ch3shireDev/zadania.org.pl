@@ -28,7 +28,7 @@ namespace ResourceAPI.Models.Post
 
         public void Render()
         {
-            ContentHtml = SqlContext.Render(Content, FileData);
+            ContentHtml = Tools.Tools.Render(Content, FileData);
         }
     }
 }

@@ -2,7 +2,7 @@
 using ResourceAPI.Models.Post;
 using ResourceAPI.Models.Problem;
 
-namespace ResourceAPI.ApiServices
+namespace ResourceAPI.ApiServices.Interfaces
 {
     public interface IProblemService
     {

@@ -1,7 +1,8 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.Post;
 
 namespace ResourceAPI.Controllers
@@ -22,24 +23,10 @@ namespace ResourceAPI.Controllers
 
         private SqlContext Context { get; }
 
-        //[HttpPost]
-        //[Route("register")]
-        //[Authorize]
-        //public ActionResult Register(UserData user)
-        //{
-        //    var idClaim = HttpContext.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier);
-        //    var nameIdentifier = idClaim.Value;
-
-        //    if (Context.Authors.Any(profile => profile.UserId == nameIdentifier)) return StatusCode(200);
-        //    var newProfile = new Author {UserId = nameIdentifier, Name = user.Name, Email = user.Email};
-        //    Context.Authors.Add(newProfile);
-        //    Context.SaveChanges();
-        //    return StatusCode(201);
-        //}
 
         [HttpGet]
         [Route("self")]
-        //[Authorize]
+        [Authorize]
         public ActionResult Get()
         {
             var author = _authorService.GetAuthor(HttpContext);

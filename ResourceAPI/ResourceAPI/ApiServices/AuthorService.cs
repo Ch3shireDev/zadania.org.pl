@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.Post;
 using ResourceAPI.Tools;
 

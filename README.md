@@ -1,6 +1,6 @@
 # Zadania.org.pl
 
-![](./data/02.png)
+![](./data/03.png)
 
 ## Krótki opis
 

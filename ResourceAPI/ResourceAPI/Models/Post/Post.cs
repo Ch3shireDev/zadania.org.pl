@@ -26,6 +26,9 @@ namespace ResourceAPI.Models.Post
 
         public ICollection<FileData> FileData { get; set; }
 
+        public Category.Category Parent { get; set; }
+        public int ParentId { get; set; }
+
         public void Render()
         {
             ContentHtml = Tools.Tools.Render(Content, FileData);

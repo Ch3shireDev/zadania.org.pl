@@ -38,6 +38,7 @@ namespace ResourceAPI
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IMultipleChoiceService, MultipleChoiceService>();
             services.AddScoped<IExerciseService, ExerciseService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddControllers();
 

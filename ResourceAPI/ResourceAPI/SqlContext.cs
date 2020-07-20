@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ResourceAPI.Models.Category;
 using ResourceAPI.Models.Exercise;
 using ResourceAPI.Models.MultipleChoice;
 using ResourceAPI.Models.Post;
@@ -19,13 +20,13 @@ namespace ResourceAPI
         public DbSet<Author> Authors { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<ProblemTag> ProblemTags { get; set; }
-
         public DbSet<ProblemVote> ProblemVotes { get; set; }
         public DbSet<AnswerVote> AnswerVotes { get; set; }
         public static string FileDirectory { get; set; } = "../../images";
         public DbSet<MultipleChoiceTest> MultipleChoiceTests { get; set; }
         public DbSet<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
         public DbSet<MultipleChoiceAnswer> MultipleChoiceAnswers { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

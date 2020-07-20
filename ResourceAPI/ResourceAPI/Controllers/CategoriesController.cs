@@ -54,7 +54,5 @@ namespace ResourceAPI.Controllers
             if (_categoryService.Delete(id)) return Ok();
             return NotFound();
         }
-
-        // TODO: Ustalić ścieżkę dla SetParent.
     }
 }

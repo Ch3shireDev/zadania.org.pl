@@ -10,8 +10,9 @@ namespace ResourceAPI.ApiServices
         Category Get(int id);
         bool Create(int id, Category category);
         bool Update(int id, Category category);
+
         bool Delete(int id);
-        bool SetParent(int parentId, int childId);
+        //bool SetParent(int parentId, int childId);
     }
 
     public class CategoryService : ICategoryService
@@ -30,7 +31,12 @@ namespace ResourceAPI.ApiServices
 
         public Category Get(int id)
         {
-            return _context.Categories.FirstOrDefault(c => c.Id == id);
+            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            if (category != null || id != 1) return category;
+            category = new Category {Name = "Root"};
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+            return _context.Categories.First(c => c.Id == 1);
         }
 
         public bool Create(int id, Category category)
@@ -63,17 +69,6 @@ namespace ResourceAPI.ApiServices
             var category = Get(id);
             if (category == null) return false;
             _context.Categories.Remove(category);
-            _context.SaveChanges();
-            return true;
-        }
-
-        public bool SetParent(int parentId, int childId)
-        {
-            if (!Exists(parentId)) return false;
-            var child = Get(childId);
-            if (child == null) return false;
-            child.ParentId = parentId;
-            _context.Categories.Update(child);
             _context.SaveChanges();
             return true;
         }

@@ -9,7 +9,6 @@ namespace ResourceAPI.Models.Problem
     {
         [StringLength(64)] public string Title { get; set; }
         [NotMapped] public string Url => $"/api/v1/problems/{Id}";
-
         [StringLength(64)] public string Source { get; set; }
 
         public IList<Answer> Answers { get; set; } = new List<Answer>();

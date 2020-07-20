@@ -6,7 +6,7 @@ namespace ResourceAPI.Models.Category
     public class Category
     {
         public int Id { get; set; }
-        public string Url { get; set; }
+        [NotMapped] public string Url { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         [NotMapped] public string DescriptionHtml { get; set; }

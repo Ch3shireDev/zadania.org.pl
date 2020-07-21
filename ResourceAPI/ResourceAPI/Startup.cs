@@ -27,9 +27,9 @@ namespace ResourceAPI
             services.AddResponseCompression();
             services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
-                if (Environment.IsEnvironment("tests"))
-                    options.UseSqlite("Filename=sqlite.db");
-                else if (Environment.IsDevelopment()) options.UseMySQL(Configuration.GetConnectionString("Local"));
+                if (Environment.IsEnvironment("tests")) options.UseInMemoryDatabase("zadania");
+                else if (Environment.IsDevelopment()) options.UseSqlite("Filename=sqlite.db");
+                //options.UseMySQL(Configuration.GetConnectionString("Local"));
                 else options.UseMySQL(Configuration.GetConnectionString("Default"));
             });
 

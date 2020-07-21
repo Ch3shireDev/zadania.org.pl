@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Enums;
 using ResourceAPI.Models.Post;
 using ResourceAPI.Models.Problem;
 
@@ -11,11 +10,13 @@ namespace ResourceAPI.ApiServices
 {
     public class ProblemService : IProblemService
     {
+        private readonly ICategoryService _categoryService;
         private readonly SqlContext _context;
 
-        public ProblemService(SqlContext context)
+        public ProblemService(SqlContext context, ICategoryService categoryService)
         {
             _context = context;
+            _categoryService = categoryService;
         }
 
         public Problem ProblemById(int id)
@@ -23,17 +24,17 @@ namespace ResourceAPI.ApiServices
             var problem = _context.Problems.Select(p => new Problem
                 {
                     Id = p.Id,
-                    Title = p.Title,
-                    Content = p.Content,
-                    AuthorId = p.AuthorId,
-                    AuthorName = p.Author.Name,
-                    Created = p.Created,
-                    Edited = p.Edited,
-                    FileData = p.FileData,
-                    Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}).ToArray(),
-                    Points = p.Points,
-                    UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                    UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
+                    Title = p.Title
+                    //Content = p.Content,
+                    //AuthorId = p.AuthorId,
+                    //AuthorName = p.Author.Name,
+                    //Created = p.Created,
+                    //Edited = p.Edited,
+                    //FileData = p.FileData,
+                    //Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}),
+                    //Points = p.Points,
+                    //UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
+                    //UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
                 })
                 .FirstOrDefault(p => p.Id == id);
             if (problem == null) return null;
@@ -73,18 +74,18 @@ namespace ResourceAPI.ApiServices
                 problem = _context.Problems.Select(p => new Problem
                     {
                         Id = p.Id,
-                        Title = p.Title,
-                        Content = p.Content,
-                        AuthorId = p.AuthorId,
-                        AuthorName = p.Author.Name,
-                        Answers = p.Answers.Select(a => new Answer {Id = a.Id, ProblemId = a.ProblemId}).ToList(),
-                        Created = p.Created,
-                        Edited = p.Edited,
-                        FileData = p.FileData,
-                        Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}).ToArray(),
-                        Points = p.Points,
-                        UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                        UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
+                        Title = p.Title
+                        //Content = p.Content,
+                        //AuthorId = p.AuthorId,
+                        //AuthorName = p.Author.Name,
+                        //Answers = p.Answers.Select(a => new Answer {Id = a.Id, ProblemId = a.ProblemId}).ToList(),
+                        //Created = p.Created,
+                        //Edited = p.Edited,
+                        //FileData = p.FileData,
+                        //Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}).ToArray(),
+                        //Points = p.Points,
+                        //UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
+                        //UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
                     })
                     .FirstOrDefault(p => p.Id == id);
             if (problem == null) return null;
@@ -96,10 +97,14 @@ namespace ResourceAPI.ApiServices
             return problem;
         }
 
-        public bool AddProblem(Problem problem, Author author, bool withAnswers = false)
+        public int Create(int categoryId, Problem problem, Author author, bool withAnswers = false)
         {
             if (!withAnswers) problem.Answers = null;
-            if (author == null) return false;
+            if (author == null) return 0;
+
+            var category = _categoryService.Get(categoryId);
+            if (category == null) return 0;
+
             problem.Created = DateTime.Now;
             problem.Author = author;
 
@@ -137,8 +142,10 @@ namespace ResourceAPI.ApiServices
                 }
 
             problem.Tags = null;
+            problem.CategoryId = categoryId;
             _context.Problems.Add(problem);
-            return true;
+            _context.SaveChanges();
+            return problem.Id;
         }
 
         public IEnumerable<Problem> BrowseProblems(string tags, string query, bool newest, bool highest, int page,

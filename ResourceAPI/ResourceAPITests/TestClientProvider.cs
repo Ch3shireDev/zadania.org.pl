@@ -11,7 +11,6 @@ namespace ResourceAPITests
         {
             var builder = new WebHostBuilder().UseStartup<Startup>();
             builder.UseEnvironment("tests");
-
             var server = new TestServer(builder);
             Client = server.CreateClient();
         }

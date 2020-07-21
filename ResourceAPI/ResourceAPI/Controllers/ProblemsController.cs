@@ -15,20 +15,20 @@ namespace ResourceAPI.Controllers
     {
         private readonly IAuthorService _authorService;
 
+        private readonly SqlContext _context;
+
+        private readonly IProblemService _problemService;
+
+        private ILogger<ProblemsController> _logger;
+
         public ProblemsController(ILogger<ProblemsController> logger, SqlContext context,
             IProblemService problemProblemService, IAuthorService authorService)
         {
-            Logger = logger;
-            Context = context;
-            ProblemService = problemProblemService;
+            _logger = logger;
+            _context = context;
+            _problemService = problemProblemService;
             _authorService = authorService;
         }
-
-        private ILogger<ProblemsController> Logger { get; }
-
-        private SqlContext Context { get; }
-
-        private IProblemService ProblemService { get; }
 
         [HttpGet]
         public OkObjectResult Browse(
@@ -39,7 +39,7 @@ namespace ResourceAPI.Controllers
             [FromQuery] bool highest = false
         )
         {
-            var problems = ProblemService.BrowseProblems(tags, query, newest, highest, page, out var totalPages);
+            var problems = _problemService.BrowseProblems(tags, query, newest, highest, page, out var totalPages);
 
             return new OkObjectResult(new
             {
@@ -54,7 +54,7 @@ namespace ResourceAPI.Controllers
         [Route("{id:int}")]
         public ActionResult Get(int id)
         {
-            var problem = ProblemService.ProblemWithAnswersById(id);
+            var problem = _problemService.ProblemWithAnswersById(id);
             if (problem == null) return StatusCode(404);
             return StatusCode(200, problem);
         }
@@ -65,13 +65,11 @@ namespace ResourceAPI.Controllers
         {
             if (problem.ContentHtml == null) return StatusCode(400);
             if (problem.ContentHtml.Length > 1024 * 1024) return StatusCode(413);
-            var author = _authorService.GetAuthor(HttpContext);
+            var author = _authorService.GetAuthor(1);
             if (author == null) return StatusCode(403);
-            var result = ProblemService.AddProblem(problem, author);
-            //var result = _context.AddProblem(problem, author);
-            if (!result) return StatusCode(403);
-            Context.SaveChanges();
-            return StatusCode(201);
+            var problemId = _problemService.Create(1, problem, author);
+            if (problemId == 0) return StatusCode(403);
+            return StatusCode(201, new Problem {Id = problemId});
         }
 
 
@@ -80,15 +78,15 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Put(int id, Problem problem)
         {
-            if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
-            var initialProblem = Context.Problems.First(p => p.Id == id);
+            if (!_context.Problems.Any(p => p.Id == id)) return StatusCode(404);
+            var initialProblem = _context.Problems.First(p => p.Id == id);
 
             initialProblem.Title = problem.Title;
             initialProblem.Content = problem.Content;
             initialProblem.Edited = DateTime.Now;
 
-            Context.Problems.Update(initialProblem);
-            Context.SaveChanges();
+            _context.Problems.Update(initialProblem);
+            _context.SaveChanges();
 
             return StatusCode(201);
         }
@@ -98,18 +96,18 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Delete(int id)
         {
-            if (!Context.Problems.Any(p => p.Id == id)) return StatusCode(404);
-            var problem = Context.Problems.FirstOrDefault(p => p.Id == id);
+            if (!_context.Problems.Any(p => p.Id == id)) return StatusCode(404);
+            var problem = _context.Problems.FirstOrDefault(p => p.Id == id);
             if (problem == null) return StatusCode(403);
-            Context.Problems.Remove(problem);
+            _context.Problems.Remove(problem);
 
-            var answers = Context.Answers.Where(a => a.ProblemId == id);
-            Context.Answers.RemoveRange(answers);
+            var answers = _context.Answers.Where(a => a.ProblemId == id);
+            _context.Answers.RemoveRange(answers);
 
-            var problemTags = Context.ProblemTags.Where(pt => pt.ProblemId == id);
-            Context.ProblemTags.RemoveRange(problemTags);
+            var problemTags = _context.ProblemTags.Where(pt => pt.ProblemId == id);
+            _context.ProblemTags.RemoveRange(problemTags);
 
-            Context.SaveChanges();
+            _context.SaveChanges();
             return StatusCode(201);
         }
 
@@ -117,7 +115,7 @@ namespace ResourceAPI.Controllers
         [Route("{id}/points")]
         public ActionResult Points(int id)
         {
-            var points = Context.Problems.First(problem => problem.Id == id).Points;
+            var points = _context.Problems.First(problem => problem.Id == id).Points;
             return StatusCode(200, new {points});
         }
 
@@ -141,31 +139,32 @@ namespace ResourceAPI.Controllers
         [NonAction]
         public ActionResult VoteProblem(int id, Vote vote)
         {
-            var problem = Context.Problems.FirstOrDefault(p => p.Id == id);
+            var problem = _context.Problems.FirstOrDefault(p => p.Id == id);
             if (problem == null) return StatusCode(403);
-            var author = _authorService.GetAuthor(HttpContext);
+            var author = _authorService.GetAuthor(1);
             if (author == null) return StatusCode(403);
-            var problemVote = Context.ProblemVotes.FirstOrDefault(pv => pv.AuthorId == author.Id && pv.ProblemId == id);
+            var problemVote =
+                _context.ProblemVotes.FirstOrDefault(pv => pv.AuthorId == author.Id && pv.ProblemId == id);
             if (problemVote == null)
             {
                 problemVote = new ProblemVote {Author = author, Problem = problem};
-                Context.ProblemVotes.Add(problemVote);
+                _context.ProblemVotes.Add(problemVote);
             }
             else
             {
                 problemVote.Vote = problemVote.Vote == vote ? Vote.None : vote;
-                Context.ProblemVotes.Update(problemVote);
+                _context.ProblemVotes.Update(problemVote);
             }
 
-            Context.SaveChanges();
+            _context.SaveChanges();
 
-            problem.Points = Context.ProblemVotes.Where(pv => pv.ProblemId == problem.Id)
+            problem.Points = _context.ProblemVotes.Where(pv => pv.ProblemId == problem.Id)
                 .Select(pv => pv.Vote == Vote.Upvote ? 1 : pv.Vote == Vote.Downvote ? -1 : 0)
                 .Sum();
 
-            Context.Problems.Update(problem);
+            _context.Problems.Update(problem);
 
-            Context.SaveChanges();
+            _context.SaveChanges();
 
             return StatusCode(200, problemVote.Vote);
         }

@@ -15,16 +15,17 @@ namespace ResourceAPI.ApiServices
         public AuthorService(SqlContext context)
         {
             _context = context;
+            if (!_context.Authors.Any()) _context.Authors.Add(new Author {Name = "Admininstrator", UserId = "admin"});
+            _context.SaveChanges();
+        }
+
+        public Author GetAuthor(int id)
+        {
+            return _context.Authors.FirstOrDefault(a => a.Id == id);
         }
 
         public Author GetAuthor(HttpContext context)
         {
-#if DEBUG
-            if (!_context.Authors.Any()) _context.Authors.Add(new Author {Name = "dummy", UserId = "dummy"});
-            _context.SaveChanges();
-            return _context.Authors.First();
-#endif
-
             var profileData = context.Request.Headers["profile"][0];
             var profile = JsonConvert.DeserializeObject<UserData>(profileData);
             //return _authorService.GetAuthor(, profile);

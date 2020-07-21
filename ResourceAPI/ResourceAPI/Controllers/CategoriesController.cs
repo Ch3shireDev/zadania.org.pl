@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.Category;
 
 namespace ResourceAPI.Controllers

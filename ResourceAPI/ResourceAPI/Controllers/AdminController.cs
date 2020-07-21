@@ -41,7 +41,7 @@ namespace ResourceAPI.Controllers
             var lines = System.IO.File.ReadAllLines("../../../WIT-Zajecia/semestr-2/Ekonomia 2/egzamin-1.md");
             var mdElement = new MdElement(lines);
 
-            var author = _authorService.GetAuthor(HttpContext);
+            var author = _authorService.GetAuthor(1);
             var test = new MultipleChoiceTest
             {
                 Title = mdElement.Title,
@@ -77,7 +77,7 @@ namespace ResourceAPI.Controllers
             var i = 0;
             foreach (var problem in problems)
             {
-                _problemService.AddProblem(problem, author, true);
+                _problemService.Create(1, problem, author, true);
                 i++;
                 if (i % 100 == 0)
                 {
@@ -118,7 +118,7 @@ namespace ResourceAPI.Controllers
             {
                 problem.Title = $"Zadanie {n++}";
                 problem.Tags = new List<Tag> {new Tag {Name = "OAK"}, new Tag {Name = "Informatyka"}};
-                _problemService.AddProblem(problem, author, true);
+                _problemService.Create(1, problem, author, true);
             }
 
             _context.SaveChanges();

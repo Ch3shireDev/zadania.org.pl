@@ -1,20 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.Category;
+using ResourceAPI.Models.Problem;
 
 namespace ResourceAPI.ApiServices
 {
-    public interface ICategoryService
-    {
-        IEnumerable<Category> Browse();
-        Category Get(int id);
-        int Create(int id, Category category);
-        bool Update(int id, Category category);
-
-        bool Delete(int id);
-        //bool SetParent(int parentId, int childId);
-    }
-
     public class CategoryService : ICategoryService
     {
         private readonly SqlContext _context;
@@ -22,7 +13,10 @@ namespace ResourceAPI.ApiServices
         public CategoryService(SqlContext context)
         {
             _context = context;
-            EnsureCreated();
+            if (_context.Categories.Any(c => c.Id == 1)) return;
+            var category = new Category {Name = "Root"};
+            _context.Categories.Add(category);
+            _context.SaveChanges();
         }
 
         public IEnumerable<Category> Browse()
@@ -40,20 +34,22 @@ namespace ResourceAPI.ApiServices
 
         public Category Get(int id)
         {
+            //var category = _context.Categories.FirstOrDefault(c => c.Id == id);
             var category = _context.Categories
                 .Select(c => new Category
                 {
                     Id = c.Id,
                     Name = c.Name,
-                    Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList()
+                    Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList(),
+                    Problems = c.Problems.Select(cp => new Problem {Id = cp.Id, Title = cp.Title}).ToList()
                 })
                 .FirstOrDefault(c => c.Id == id);
 
-            if (category == null) return category;
+            if (category == null) return null;
 
             category.Categories = _context.Categories.Where(c => c.ParentId == id)
                 .Select(c => new Category {Id = c.Id, Name = c.Name}).ToList();
-
+            //var problems = _context.Problems.ToList();
             return category;
         }
 
@@ -74,33 +70,21 @@ namespace ResourceAPI.ApiServices
 
         public bool Update(int id, Category category)
         {
-            var baseElement = Get(id);
+            var baseElement = _context.Categories.FirstOrDefault(c => c.Id == id);
             if (baseElement == null) return false;
-            _context.Entry(baseElement).CurrentValues.SetValues(category);
+            baseElement.Name = category.Name;
+            _context.Categories.Update(baseElement);
             _context.SaveChanges();
             return true;
         }
 
         public bool Delete(int id)
         {
-            var category = Get(id);
+            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
             if (category == null) return false;
             _context.Categories.Remove(category);
             _context.SaveChanges();
             return true;
-        }
-
-        private void EnsureCreated()
-        {
-            if (_context.Categories.Any(c => c.Id == 1)) return;
-            var category = new Category {Name = "Root"};
-            _context.Categories.Add(category);
-            _context.SaveChanges();
-        }
-
-        public bool Exists(int id)
-        {
-            return _context.Categories.Any(c => c.Id == id);
         }
     }
 }

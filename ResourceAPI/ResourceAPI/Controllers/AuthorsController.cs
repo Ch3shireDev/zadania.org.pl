@@ -29,7 +29,7 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Get()
         {
-            var author = _authorService.GetAuthor(HttpContext);
+            var author = _authorService.GetAuthor(1);
             if (author != null)
             {
                 author.Problems = null;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using ResourceAPI.Models.Exercise;
 using ResourceAPI.Models.MultipleChoice;
 
 namespace ResourceAPI.Models.Category
@@ -14,8 +15,10 @@ namespace ResourceAPI.Models.Category
         public Category Parent { get; set; }
         public int? ParentId { get; set; }
         public IEnumerable<Category> Categories { get; set; }
-        public IEnumerable<Problem.Problem> Problems { get; set; }
-        public IEnumerable<Exercise.Exercise> Exercises { get; set; }
-        public IEnumerable<MultipleChoiceTest> MultipleChoiceTests { get; set; }
+        public IEnumerable<Problem.Problem> Problems { get; set; } = new List<Problem.Problem>();
+
+        public IEnumerable<AutomatedExercise> Exercises { get; set; } = new List<AutomatedExercise>();
+
+        public IEnumerable<MultipleChoiceTest> MultipleChoiceTests { get; set; } = new List<MultipleChoiceTest>();
     }
 }

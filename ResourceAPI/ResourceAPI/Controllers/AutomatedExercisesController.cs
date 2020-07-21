@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.ApiServices;
+using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/automated-exercises")]
     [ApiController]
-    public class ExercisesController : ControllerBase
+    public class AutomatedExercisesController : ControllerBase
     {
         private readonly IExerciseService _exerciseService;
-        private readonly ILogger<ExercisesController> _logger;
+        private readonly ILogger<AutomatedExercisesController> _logger;
 
-        public ExercisesController(ILogger<ExercisesController> logger,
+        public AutomatedExercisesController(ILogger<AutomatedExercisesController> logger,
             IExerciseService exerciseService)
         {
             _logger = logger;

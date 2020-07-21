@@ -8,7 +8,7 @@ namespace ResourceAPI.ApiServices
     {
         IEnumerable<Category> Browse();
         Category Get(int id);
-        bool Create(int id, Category category);
+        int Create(int id, Category category);
         bool Update(int id, Category category);
 
         bool Delete(int id);
@@ -22,37 +22,54 @@ namespace ResourceAPI.ApiServices
         public CategoryService(SqlContext context)
         {
             _context = context;
+            EnsureCreated();
         }
 
         public IEnumerable<Category> Browse()
         {
-            return _context.Categories.ToList();
+            return _context.Categories
+                .Select(c => new Category
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList()
+                })
+                .ToList();
         }
 
         public Category Get(int id)
         {
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
-            if (category != null || id != 1) return category;
-            category = new Category {Name = "Root"};
-            _context.Categories.Add(category);
-            _context.SaveChanges();
-            return _context.Categories.First(c => c.Id == 1);
+            var category = _context.Categories
+                .Select(c => new Category
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList()
+                })
+                .FirstOrDefault(c => c.Id == id);
+
+            if (category == null) return category;
+
+            category.Categories = _context.Categories.Where(c => c.ParentId == id)
+                .Select(c => new Category {Id = c.Id, Name = c.Name}).ToList();
+
+            return category;
         }
 
-        public bool Create(int id, Category category)
+        public int Create(int id, Category category)
         {
             var rootCategory = Get(id);
-            if (rootCategory == null) return false;
+            if (rootCategory == null) return 0;
             var newCategory = new Category
             {
                 Description = category.Description,
-                Url = category.Url,
                 Name = category.Name,
                 ParentId = id
             };
             _context.Categories.Add(newCategory);
             _context.SaveChanges();
-            return true;
+            return newCategory.Id;
         }
 
         public bool Update(int id, Category category)
@@ -71,6 +88,14 @@ namespace ResourceAPI.ApiServices
             _context.Categories.Remove(category);
             _context.SaveChanges();
             return true;
+        }
+
+        private void EnsureCreated()
+        {
+            if (_context.Categories.Any(c => c.Id == 1)) return;
+            var category = new Category {Name = "Root"};
+            _context.Categories.Add(category);
+            _context.SaveChanges();
         }
 
         public bool Exists(int id)

@@ -28,7 +28,7 @@ namespace ResourceAPITests
                 Title = "abc",
                 Content = "cde",
                 ContentHtml = "cde",
-                ParentId = 1,
+                ParentId = 1
             };
 
             var jsonString = JsonSerializer.Serialize(problem);

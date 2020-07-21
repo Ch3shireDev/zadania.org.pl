@@ -4,7 +4,7 @@ using ResourceAPI.Models.Category;
 
 namespace ResourceAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
@@ -35,7 +35,7 @@ namespace ResourceAPI.Controllers
         [Route("{id}")]
         public ActionResult Create(int id, Category category)
         {
-            if (_categoryService.Create(id, category)) return Ok();
+            if (_categoryService.Create(id, category) != 0) return Ok();
             return NotFound();
         }
 

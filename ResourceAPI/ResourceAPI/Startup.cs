@@ -74,7 +74,7 @@ namespace ResourceAPI
                 var context = serviceScope.ServiceProvider.GetRequiredService<SqlContext>();
                 if (Environment.IsEnvironment("tests")) context.Database.EnsureDeleted();
 #if DEBUG
-                //context.Database.EnsureDeleted();
+                if (Environment.IsDevelopment()) context.Database.EnsureDeleted();
 #endif
                 context.Database.EnsureCreated();
             }

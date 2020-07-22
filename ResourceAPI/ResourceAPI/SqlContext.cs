@@ -51,6 +51,12 @@ namespace ResourceAPI
                 .WithMany(p => p.ProblemTags)
                 .HasForeignKey(pt => pt.ProblemId);
 
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.Parent)
+                .WithMany("Categories")
+                .HasForeignKey("ParentId")
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<ProblemVote>().HasKey(pv => new {pv.ProblemId, pv.AuthorId});
             modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Problem).WithMany(p => p.ProblemVotes);
             modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Author).WithMany(a => a.ProblemVotes);

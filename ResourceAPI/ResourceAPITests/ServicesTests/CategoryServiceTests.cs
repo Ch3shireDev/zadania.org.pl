@@ -88,6 +88,21 @@ namespace ResourceAPITests.ServicesTests
         }
 
         [Fact]
+        public void CascadeDeleteTest()
+        {
+            Thread.Sleep(1500);
+
+            var first = _categoryService.Create(1, new Category());
+            var second = _categoryService.Create(first, new Category());
+            var third = _categoryService.Create(second, new Category());
+            var fourth = _categoryService.Create(third, new Category());
+            var num0 = _context.Categories.Count();
+            _categoryService.Delete(first);
+            var num1 = _context.Categories.Count();
+            Assert.Equal(num0 - 4, num1);
+        }
+
+        [Fact]
         public void CreateCategoryTest()
         {
             var name = "abc";
@@ -138,7 +153,6 @@ namespace ResourceAPITests.ServicesTests
         [Fact]
         public void EditCategoryTest()
         {
-            var author = _authorService.GetAuthor(1);
             var categoryId = _categoryService.Create(1, new Category {Name = "abc"});
 
             _problemService.Create(categoryId, new Problem {Name = "xyz"});

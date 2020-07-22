@@ -44,7 +44,7 @@ namespace ResourceAPI.Controllers
             var author = _authorService.GetAuthor(1);
             var test = new MultipleChoiceTest
             {
-                Title = mdElement.Title,
+                Name = mdElement.Title,
                 Content = mdElement.Content,
                 Author = author,
                 Questions = mdElement.Children[0].Children.Select(c => c.ToQuestion(author)).ToList()
@@ -77,7 +77,7 @@ namespace ResourceAPI.Controllers
             var i = 0;
             foreach (var problem in problems)
             {
-                _problemService.Create(1, problem, author, true);
+                _problemService.Create(1, problem);
                 i++;
                 if (i % 100 == 0)
                 {
@@ -116,9 +116,9 @@ namespace ResourceAPI.Controllers
             var n = 1;
             foreach (var problem in problems)
             {
-                problem.Title = $"Zadanie {n++}";
+                problem.Name = $"Zadanie {n++}";
                 problem.Tags = new List<Tag> {new Tag {Name = "OAK"}, new Tag {Name = "Informatyka"}};
-                _problemService.Create(1, problem, author, true);
+                _problemService.Create(1, problem);
             }
 
             _context.SaveChanges();

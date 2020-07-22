@@ -56,7 +56,7 @@ namespace ResourceAPIBenchmark
         //            .Select(p => new Problem
         //            {
         //                Id = p.Id,
-        //                Title = p.Title,
+        //                Name = p.Name,
         //                Content = p.Content,
         //             })
         //            .FirstOrDefault(p => p.Id == id);

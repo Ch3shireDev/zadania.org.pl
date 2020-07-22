@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ResourceAPI.Models.Problem;
 using Xunit;
 
-namespace ResourceAPITests
+namespace ResourceAPITests.ControllersTests
 {
     public class ProblemsControllerTests
     {
@@ -21,7 +21,7 @@ namespace ResourceAPITests
         {
             var problem = new Problem
             {
-                Title = "abc",
+                Name = "abc",
                 Content = "cde",
                 ContentHtml = "cde",
                 CategoryId = 1
@@ -33,7 +33,7 @@ namespace ResourceAPITests
             response.EnsureSuccessStatusCode();
             var resProblem = response.ToElement<Problem>();
             var response2 = await client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            Assert.Equal("abc", response2.ToElement<Problem>().Title);
+            Assert.Equal("abc", response2.ToElement<Problem>().Name);
         }
     }
 }

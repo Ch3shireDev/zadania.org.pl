@@ -2,6 +2,7 @@
 using System.Linq;
 using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.Category;
+using ResourceAPI.Models.MultipleChoice;
 using ResourceAPI.Models.Problem;
 
 namespace ResourceAPI.ApiServices
@@ -34,6 +35,7 @@ namespace ResourceAPI.ApiServices
 
         public Category Get(int id)
         {
+            var allcat = _context.Categories.ToList();
             //var category = _context.Categories.FirstOrDefault(c => c.Id == id);
             var category = _context.Categories
                 .Select(c => new Category
@@ -41,7 +43,9 @@ namespace ResourceAPI.ApiServices
                     Id = c.Id,
                     Name = c.Name,
                     Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList(),
-                    Problems = c.Problems.Select(cp => new Problem {Id = cp.Id, Title = cp.Title}).ToList()
+                    Problems = c.Problems.Select(cp => new Problem {Id = cp.Id, Name = cp.Name}).ToList(),
+                    MultipleChoiceTests = c.MultipleChoiceTests
+                        .Select(mt => new MultipleChoiceTest {Id = mt.Id, Name = mt.Name}).ToList()
                 })
                 .FirstOrDefault(c => c.Id == id);
 
@@ -59,8 +63,8 @@ namespace ResourceAPI.ApiServices
             if (rootCategory == null) return 0;
             var newCategory = new Category
             {
-                Description = category.Description,
                 Name = category.Name,
+                Description = category.Description,
                 ParentId = id
             };
             _context.Categories.Add(newCategory);

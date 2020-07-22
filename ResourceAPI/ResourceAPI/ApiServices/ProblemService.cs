@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Post;
 using ResourceAPI.Models.Problem;
 
 namespace ResourceAPI.ApiServices
@@ -24,7 +21,7 @@ namespace ResourceAPI.ApiServices
             var problem = _context.Problems.Select(p => new Problem
                 {
                     Id = p.Id,
-                    Title = p.Title
+                    Name = p.Name
                     //Content = p.Content,
                     //AuthorId = p.AuthorId,
                     //AuthorName = p.Author.Name,
@@ -74,7 +71,7 @@ namespace ResourceAPI.ApiServices
                 problem = _context.Problems.Select(p => new Problem
                     {
                         Id = p.Id,
-                        Title = p.Title
+                        Name = p.Name
                         //Content = p.Content,
                         //AuthorId = p.AuthorId,
                         //AuthorName = p.Author.Name,
@@ -97,52 +94,53 @@ namespace ResourceAPI.ApiServices
             return problem;
         }
 
-        public int Create(int categoryId, Problem problem, Author author, bool withAnswers = false)
+        public int Create(int categoryId, Problem problem, int authorId = 1)
         {
-            if (!withAnswers) problem.Answers = null;
-            if (author == null) return 0;
+            //if (!withAnswers) problem.Answers = null;
+            //if (author == null) return 0;
 
-            var category = _categoryService.Get(categoryId);
-            if (category == null) return 0;
+            //var category = _categoryService.Get(categoryId);
+            //if (category == null) return 0;
 
-            problem.Created = DateTime.Now;
-            problem.Author = author;
+            //problem.Created = DateTime.Now;
+            //problem.Author = author;
 
-            if (problem.FileData != null)
-                foreach (var file in problem.FileData)
-                {
-                    file.Save();
-                    var regex = @"!\[\]\(" + file.OldFileName + @"\)";
-                    problem.Content = Regex.Replace(problem.Content, regex, $"![]({file.FileName})");
-                }
+            //if (problem.FileData != null)
+            //    foreach (var file in problem.FileData)
+            //    {
+            //        file.Save();
+            //        var regex = @"!\[\]\(" + file.OldFileName + @"\)";
+            //        problem.Content = Regex.Replace(problem.Content, regex, $"![]({file.FileName})");
+            //    }
 
-            problem.ProblemTags ??= new List<ProblemTag>();
-            problem.Tags ??= new List<Tag>();
+            //problem.ProblemTags ??= new List<ProblemTag>();
+            //problem.Tags ??= new List<Tag>();
 
-            foreach (var tag in problem.Tags)
-            {
-                tag.Url = tag.GenerateUrl();
-                var existing = _context.Tags.Find(tag.Url) ?? tag;
-                var problemTag = new ProblemTag {Tag = existing, TagUrl = tag.Url};
-                problem.ProblemTags.Add(problemTag);
-            }
+            //foreach (var tag in problem.Tags)
+            //{
+            //    tag.Url = tag.GenerateUrl();
+            //    var existing = _context.Tags.Find(tag.Url) ?? tag;
+            //    var problemTag = new ProblemTag {Tag = existing, TagUrl = tag.Url};
+            //    problem.ProblemTags.Add(problemTag);
+            //}
 
-            if (problem.Answers != null)
-                foreach (var answer in problem.Answers)
-                {
-                    if (answer.FileData == null) continue;
-                    foreach (var file in answer.FileData)
-                    {
-                        file.Save();
-                        var regex = @"!\[\]\(" + file.OldFileName + @"\)";
-                        answer.Content = Regex.Replace(answer.Content, regex, $"![]({file.FileName})");
-                    }
+            //if (problem.Answers != null)
+            //    foreach (var answer in problem.Answers)
+            //    {
+            //        if (answer.FileData == null) continue;
+            //        foreach (var file in answer.FileData)
+            //        {
+            //            file.Save();
+            //            var regex = @"!\[\]\(" + file.OldFileName + @"\)";
+            //            answer.Content = Regex.Replace(answer.Content, regex, $"![]({file.FileName})");
+            //        }
 
-                    answer.Author = author;
-                }
+            //        answer.Author = author;
+            //    }
 
-            problem.Tags = null;
+            //problem.Tags = null;
             problem.CategoryId = categoryId;
+            problem.AuthorId = authorId;
             _context.Problems.Add(problem);
             _context.SaveChanges();
             return problem.Id;

@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http;
 using Xunit;
 
-namespace ResourceAPITests
+namespace ResourceAPITests.ControllersTests
 {
     public class CategoryControllerTests
     {

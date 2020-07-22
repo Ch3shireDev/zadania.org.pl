@@ -67,7 +67,7 @@ namespace ResourceAPI.Controllers
             if (problem.ContentHtml.Length > 1024 * 1024) return StatusCode(413);
             var author = _authorService.GetAuthor(1);
             if (author == null) return StatusCode(403);
-            var problemId = _problemService.Create(1, problem, author);
+            var problemId = _problemService.Create(1, problem);
             if (problemId == 0) return StatusCode(403);
             return StatusCode(201, new Problem {Id = problemId});
         }
@@ -81,7 +81,7 @@ namespace ResourceAPI.Controllers
             if (!_context.Problems.Any(p => p.Id == id)) return StatusCode(404);
             var initialProblem = _context.Problems.First(p => p.Id == id);
 
-            initialProblem.Title = problem.Title;
+            initialProblem.Name = problem.Name;
             initialProblem.Content = problem.Content;
             initialProblem.Edited = DateTime.Now;
 

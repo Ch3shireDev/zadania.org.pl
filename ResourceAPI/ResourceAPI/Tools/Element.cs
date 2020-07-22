@@ -78,8 +78,8 @@ namespace ResourceAPI.Tools
                 };
 
 
-            if (string.IsNullOrWhiteSpace(problem.Title) && problem.Tags != null && problem.Tags.Any())
-                problem.Title = problem.Tags.Last().Name;
+            if (string.IsNullOrWhiteSpace(problem.Name) && problem.Tags != null && problem.Tags.Any())
+                problem.Name = problem.Tags.Last().Name;
 
             return problem;
         }

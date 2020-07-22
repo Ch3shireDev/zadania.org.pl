@@ -7,7 +7,7 @@ namespace ResourceAPI.Models.Problem
 {
     public class Problem : Post.Post
     {
-        [StringLength(64)] public string Title { get; set; }
+        [StringLength(64)] public string Name { get; set; }
         [NotMapped] public string Url => $"/api/v1/problems/{Id}";
         [StringLength(64)] public string Source { get; set; }
 

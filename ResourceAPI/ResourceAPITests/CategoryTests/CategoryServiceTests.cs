@@ -1,5 +1,5 @@
+using System;
 using System.Linq;
-using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
@@ -9,13 +9,13 @@ using ResourceAPI.Models.MultipleChoice;
 using ResourceAPI.Models.Problem;
 using Xunit;
 
-namespace ResourceAPITests.ServicesTests
+namespace ResourceAPITests.CategoryTests
 {
     public class CategoryServiceTests
     {
         public CategoryServiceTests()
         {
-            var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase("zadania");
+            var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
             _context = new SqlContext(optionsBuilder.Options);
             _categoryService = new CategoryService(_context);
             _problemService = new ProblemService(_context, _categoryService);
@@ -32,7 +32,7 @@ namespace ResourceAPITests.ServicesTests
         [Fact]
         public void AddMultipleChoiceTest()
         {
-            Thread.Sleep(500);
+            //Thread.Sleep(500);
             var id = _categoryService.Create(1, new Category {Name = "abc"});
             _categoryService.Create(id, new Category {Name = "cde"});
             _categoryService.Create(id, new Category {Name = "xyz"});
@@ -60,7 +60,6 @@ namespace ResourceAPITests.ServicesTests
             _categoryService.Create(id, new Category {Name = "xyz"});
             var id2 = _categoryService.Create(id, new Category {Name = "xyz"});
 
-            var author = _authorService.GetAuthor(1);
             var pid0 = _problemService.Create(id2, new Problem {Name = "xxx1"});
             var pid1 = _problemService.Create(id2, new Problem {Name = "xxx2"});
             var pid2 = _problemService.Create(id2, new Problem {Name = "xxx3"});
@@ -90,7 +89,7 @@ namespace ResourceAPITests.ServicesTests
         [Fact]
         public void CascadeDeleteTest()
         {
-            Thread.Sleep(1500);
+            //Thread.Sleep(1500);
 
             var first = _categoryService.Create(1, new Category());
             var second = _categoryService.Create(first, new Category());
@@ -165,6 +164,20 @@ namespace ResourceAPITests.ServicesTests
             _categoryService.Update(categoryId, new Category {Name = "xxx"});
             Assert.Equal("xxx", _context.Categories.First(c => c.Id == categoryId).Name);
             Assert.Equal(3, _categoryService.Get(categoryId).Problems.Count());
+        }
+
+        [Fact]
+        public void GetCategoryTest()
+        {
+            var cid1 = _categoryService.Create(1, new Category {Name = "xxxx"});
+            var cid2 = _categoryService.Create(cid1, new Category {Name = "yyyy"});
+
+            var c1 = _categoryService.Get(cid1);
+            Assert.Equal("xxxx", c1.Name);
+            var cid3 = c1.Categories.First().Id;
+            Assert.Equal(cid2, cid3);
+            var c2 = _categoryService.Get(cid3);
+            Assert.Equal("yyyy", c2.Name);
         }
     }
 }

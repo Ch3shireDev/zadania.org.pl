@@ -24,8 +24,7 @@ namespace ResourceAPI.Controllers
         private SqlContext Context { get; }
 
 
-        [HttpGet]
-        [Route("self")]
+        [HttpGet("self")]
         [Authorize]
         public ActionResult Get()
         {
@@ -40,8 +39,7 @@ namespace ResourceAPI.Controllers
             return StatusCode(200, author);
         }
 
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
             var author = Context.Authors.Select(a => new Author

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,11 +21,11 @@ namespace ResourceAPI.Controllers
         private ILogger<ProblemsController> _logger;
 
         public ProblemsController(ILogger<ProblemsController> logger, SqlContext context,
-            IProblemService problemProblemService, IAuthorService authorService)
+            IProblemService problemService, IAuthorService authorService)
         {
             _logger = logger;
             _context = context;
-            _problemService = problemProblemService;
+            _problemService = problemService;
             _authorService = authorService;
         }
 
@@ -39,7 +38,7 @@ namespace ResourceAPI.Controllers
             [FromQuery] bool highest = false
         )
         {
-            var problems = _problemService.BrowseProblems(tags, query, newest, highest, page, out var totalPages);
+            var problems = _problemService.BrowseProblems(page, out var totalPages, tags, query, newest, highest);
 
             return new OkObjectResult(new
             {
@@ -50,21 +49,18 @@ namespace ResourceAPI.Controllers
         }
 
 
-        [HttpGet]
-        [Route("{id:int}")]
+        [HttpGet("{id:int}")]
         public ActionResult Get(int id)
         {
-            var problem = _problemService.ProblemWithAnswersById(id);
-            if (problem == null) return StatusCode(404);
-            return StatusCode(200, problem);
+            var problem = _problemService.Get(1, id);
+            if (problem == null) return NotFound();
+            return Ok(problem);
         }
 
         [HttpPost]
         [Authorize]
         public ActionResult Post(Problem problem)
         {
-            if (problem.ContentHtml == null) return StatusCode(400);
-            if (problem.ContentHtml.Length > 1024 * 1024) return StatusCode(413);
             var author = _authorService.GetAuthor(1);
             if (author == null) return StatusCode(403);
             var problemId = _problemService.Create(1, problem);
@@ -73,46 +69,24 @@ namespace ResourceAPI.Controllers
         }
 
 
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
         [Authorize]
         public ActionResult Put(int id, Problem problem)
         {
-            if (!_context.Problems.Any(p => p.Id == id)) return StatusCode(404);
-            var initialProblem = _context.Problems.First(p => p.Id == id);
-
-            initialProblem.Name = problem.Name;
-            initialProblem.Content = problem.Content;
-            initialProblem.Edited = DateTime.Now;
-
-            _context.Problems.Update(initialProblem);
-            _context.SaveChanges();
-
-            return StatusCode(201);
+            var result = _problemService.Edit(1, id, problem);
+            if (!result) return BadRequest();
+            return Ok();
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         [Authorize]
         public ActionResult Delete(int id)
         {
-            if (!_context.Problems.Any(p => p.Id == id)) return StatusCode(404);
-            var problem = _context.Problems.FirstOrDefault(p => p.Id == id);
-            if (problem == null) return StatusCode(403);
-            _context.Problems.Remove(problem);
-
-            var answers = _context.Answers.Where(a => a.ProblemId == id);
-            _context.Answers.RemoveRange(answers);
-
-            var problemTags = _context.ProblemTags.Where(pt => pt.ProblemId == id);
-            _context.ProblemTags.RemoveRange(problemTags);
-
-            _context.SaveChanges();
-            return StatusCode(201);
+            var result = _problemService.Delete(1, id);
+            return Ok();
         }
 
-        [HttpGet]
-        [Route("{id}/points")]
+        [HttpGet("{id}/points")]
         public ActionResult Points(int id)
         {
             var points = _context.Problems.First(problem => problem.Id == id).Points;
@@ -120,16 +94,14 @@ namespace ResourceAPI.Controllers
         }
 
 
-        [HttpPost]
-        [Route("{id}/upvote")]
+        [HttpPost("{id}/upvote")]
         [Authorize]
         public ActionResult UpvoteProblem(int id)
         {
             return VoteProblem(id, Vote.Upvote);
         }
 
-        [HttpPost]
-        [Route("{id}/downvote")]
+        [HttpPost("{id}/downvote")]
         [Authorize]
         public ActionResult DownvoteProblem(int id)
         {

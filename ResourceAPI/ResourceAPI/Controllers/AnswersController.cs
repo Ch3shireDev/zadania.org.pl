@@ -44,8 +44,7 @@ namespace ResourceAPI.Controllers
             return StatusCode(200, answers.ToArray());
         }
 
-        [HttpGet]
-        [Route("{answerId}")]
+        [HttpGet("{answerId}")]
         public ActionResult Get(int problemId, int answerId)
         {
             var answer = ProblemService.GetAnswerById(problemId, answerId);
@@ -71,8 +70,7 @@ namespace ResourceAPI.Controllers
             return Ok();
         }
 
-        [HttpPut]
-        [Route("{answerId}")]
+        [HttpPut("{answerId}")]
         [Authorize]
         public ActionResult Put(int problemId, int answerId, Answer answer)
         {
@@ -83,8 +81,7 @@ namespace ResourceAPI.Controllers
             return StatusCode(201);
         }
 
-        [HttpDelete]
-        [Route("{answerId}")]
+        [HttpDelete("{answerId}")]
         [Authorize]
         public ActionResult Delete(int problemId, int answerId)
         {
@@ -95,16 +92,14 @@ namespace ResourceAPI.Controllers
             return StatusCode(201);
         }
 
-        [HttpPut]
-        [Route("{answerId}/upvote")]
+        [HttpPut("{answerId}/upvote")]
         [Authorize]
         public ActionResult Upvote(int problemId, int answerId)
         {
             return Vote(problemId, answerId, Enums.Vote.Upvote);
         }
 
-        [HttpPut]
-        [Route("{answerId}/downvote")]
+        [HttpPut("{answerId}/downvote")]
         [Authorize]
         public ActionResult Downvote(int problemId, int answerId)
         {
@@ -122,8 +117,7 @@ namespace ResourceAPI.Controllers
             return StatusCode(200, new {success = true, points = answer.Points});
         }
 
-        [HttpGet]
-        [Route("{answerId}/points")]
+        [HttpGet("{answerId}/points")]
         public ActionResult Points(int problemId, int answerId)
         {
             var answer = Context.Answers.FirstOrDefault(a => a.Id == answerId && a.ProblemId == problemId);
@@ -131,8 +125,7 @@ namespace ResourceAPI.Controllers
             return StatusCode(200, new {points = answer.Points});
         }
 
-        [HttpPost]
-        [Route("{answerId}/approve")]
+        [HttpPost("{answerId}/approve")]
         [Authorize]
         public ActionResult ApproveAnswer(int problemId, int answerId)
         {
@@ -165,16 +158,14 @@ namespace ResourceAPI.Controllers
         }
 
 
-        [HttpPost]
-        [Route("{answerId}/upvote")]
+        [HttpPost("{answerId}/upvote")]
         [Authorize]
         public ActionResult UpvoteAnswer(int id)
         {
             return VoteAnswer(id, Enums.Vote.Upvote);
         }
 
-        [HttpPost]
-        [Route("{answerId}/downvote")]
+        [HttpPost("{answerId}/downvote")]
         [Authorize]
         public ActionResult DownvoteAnswer(int id)
         {

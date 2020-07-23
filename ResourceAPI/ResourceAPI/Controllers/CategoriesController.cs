@@ -22,8 +22,7 @@ namespace ResourceAPI.Controllers
             return Ok(categories);
         }
 
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
             var category = _categoryService.Get(id);
@@ -31,24 +30,22 @@ namespace ResourceAPI.Controllers
             return Ok(category);
         }
 
-        [HttpPost]
-        [Route("{id}")]
-        public ActionResult Create(int id, Category category)
+        [HttpPost("{id}")]
+        public ActionResult Post(int id, Category category)
         {
-            if (_categoryService.Create(id, category) != 0) return Ok();
+            var cid = _categoryService.Create(id, category);
+            if (cid != 0) return Ok(new Category {Id = cid});
             return NotFound();
         }
 
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
         public ActionResult Edit(int id, Category category)
         {
             if (_categoryService.Update(id, category)) return Ok();
             return NotFound();
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
             if (_categoryService.Delete(id)) return Ok();

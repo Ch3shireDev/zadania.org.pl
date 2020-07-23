@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -24,10 +25,12 @@ namespace ResourceAPI
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            var guid = Guid.NewGuid().ToString();
             services.AddResponseCompression();
             services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
-                if (Environment.IsEnvironment("tests")) options.UseInMemoryDatabase("zadania");
+                if (Environment.IsEnvironment("tests"))
+                    options.UseInMemoryDatabase(guid).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 else if (Environment.IsDevelopment()) options.UseSqlite("Filename=sqlite.db");
                 //options.UseMySQL(Configuration.GetConnectionString("Local"));
                 else options.UseMySQL(Configuration.GetConnectionString("Default"));

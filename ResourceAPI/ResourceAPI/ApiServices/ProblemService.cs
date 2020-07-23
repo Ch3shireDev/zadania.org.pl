@@ -65,16 +65,20 @@ namespace ResourceAPI.ApiServices
             return answer;
         }
 
-        public Problem ProblemWithAnswersById(int id)
+        public Problem Get(int categoryId, int problemId)
         {
             var
                 problem = _context.Problems.Select(p => new Problem
                     {
                         Id = p.Id,
-                        Name = p.Name
-                        //Content = p.Content,
-                        //AuthorId = p.AuthorId,
-                        //AuthorName = p.Author.Name,
+                        Name = p.Name,
+                        Content = p.Content,
+                        AuthorId = p.AuthorId,
+                        IsAnswered = p.IsAnswered,
+                        CategoryId = p.CategoryId,
+                        AuthorName = p.Author.Name,
+                        Answers = p.Answers.Select(a => new Answer
+                            {Id = a.Id, Content = a.Content, AuthorName = a.AuthorName}).ToList()
                         //Answers = p.Answers.Select(a => new Answer {Id = a.Id, ProblemId = a.ProblemId}).ToList(),
                         //Created = p.Created,
                         //Edited = p.Edited,
@@ -84,7 +88,7 @@ namespace ResourceAPI.ApiServices
                         //UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
                         //UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
                     })
-                    .FirstOrDefault(p => p.Id == id);
+                    .FirstOrDefault(p => p.CategoryId == categoryId && p.Id == problemId);
             if (problem == null) return null;
 
             problem.IsAnswered = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
@@ -146,8 +150,8 @@ namespace ResourceAPI.ApiServices
             return problem.Id;
         }
 
-        public IEnumerable<Problem> BrowseProblems(string tags, string query, bool newest, bool highest, int page,
-            out int totalPages)
+        public IEnumerable<Problem> BrowseProblems(int page,
+            out int totalPages, string tags, string query, bool newest, bool highest)
         {
             var tag = tags;
             var problemsQuery = _context.Problems.AsQueryable();
@@ -189,6 +193,72 @@ namespace ResourceAPI.ApiServices
             totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1;
 
             return problems;
+        }
+
+        public bool Edit(int categoryId, int problemId, Problem problem)
+        {
+            var element = _context.Problems.FirstOrDefault(p => p.Id == problemId && p.CategoryId == categoryId);
+            if (element == null) return false;
+            element.Name = problem.Name;
+            element.Content = problem.Content;
+            _context.Problems.Update(element);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool Delete(int categoryId, int problemId)
+        {
+            var problem = _context.Problems.FirstOrDefault(p => p.CategoryId == categoryId && p.Id == problemId);
+            if (problem == null) return false;
+            _context.Problems.Remove(problem);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public int CreateAnswer(int problemId, Answer answer, int authorId = 1)
+        {
+            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
+            if (problem == null) return 0;
+
+            var author = _context.Authors.FirstOrDefault(a => a.Id == authorId);
+            if (author == null) return 0;
+
+            var element = new Answer
+            {
+                Content = answer.Content,
+                ProblemId = problemId,
+                AuthorId = authorId
+            };
+
+            _context.Answers.Add(element);
+            _context.SaveChanges();
+
+            return element.Id;
+        }
+
+        public Answer GetAnswer(int problemId, int answerId)
+        {
+            var answer = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
+            return answer?.Render();
+        }
+
+        public bool EditAnswer(int problemId, int answerId, Answer answer, int authorId = 1)
+        {
+            var element = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
+            if (element == null) return false;
+            element.Content = answer.Content;
+            _context.Answers.Update(element);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteAnswer(int problemId, int answerId)
+        {
+            var element = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
+            if (element == null) return false;
+            _context.Answers.Remove(element);
+            _context.SaveChanges();
+            return true;
         }
 
 

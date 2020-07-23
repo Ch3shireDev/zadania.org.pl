@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
@@ -8,7 +7,7 @@ using ResourceAPI.Models.Category;
 using ResourceAPI.Models.MultipleChoice;
 using Xunit;
 
-namespace ResourceAPITests.ServicesTests
+namespace ResourceAPITests.MultipleChoiceTests
 {
     public class MultipleChoiceServiceTests
     {
@@ -40,7 +39,7 @@ namespace ResourceAPITests.ServicesTests
         [Fact]
         public void DeleteTest()
         {
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
 
             var id = _categoryService.Create(1, new Category {Name = "xyz"});
 

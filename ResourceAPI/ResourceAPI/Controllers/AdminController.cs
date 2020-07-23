@@ -34,8 +34,7 @@ namespace ResourceAPI.Controllers
             _authorService = authorService;
         }
 
-        [HttpPost]
-        [Route("upload/eko2")]
+        [HttpPost("upload/eko2")]
         public ActionResult PostEconomy()
         {
             var lines = System.IO.File.ReadAllLines("../../../WIT-Zajecia/semestr-2/Ekonomia 2/egzamin-1.md");
@@ -56,8 +55,7 @@ namespace ResourceAPI.Controllers
             return StatusCode(200);
         }
 
-        [HttpPost]
-        [Route("upload")]
+        [HttpPost("upload")]
         public ActionResult PostFiles([FromQuery] string all = null)
         {
             var curr = Directory.GetCurrentDirectory();
@@ -92,8 +90,7 @@ namespace ResourceAPI.Controllers
             return StatusCode(200);
         }
 
-        [HttpPost]
-        [Route("cleanTags")]
+        [HttpPost("cleanTags")]
         public ActionResult CleanTags()
         {
             var pt = _context.ProblemTags.Where(pt => pt.Problem == null || pt.Tag == null);

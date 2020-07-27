@@ -29,7 +29,7 @@ namespace ResourceAPIBenchmark
             var options = new DbContextOptionsBuilder().UseMySQL(configuration.GetConnectionString("Default"));
             _context = new SqlContext(options.Options);
             _categoryService = new CategoryService(_context);
-            _problemService = new ProblemService(_context, _categoryService);
+            _problemService = new ProblemService(_context);
             _authorService = new AuthorService(_context);
             _controller = new ProblemsController(null, _context, _problemService, _authorService);
         }

@@ -19,7 +19,7 @@ namespace ResourceAPI.ApiServices
             _context.SaveChanges();
         }
 
-        public Category Get(int id)
+        public Category GetProblems(int id)
         {
             var category = _context.Categories
                 .Select(c => new Category
@@ -40,13 +40,34 @@ namespace ResourceAPI.ApiServices
 
             category.Categories = _context.Categories.Where(c => c.ParentId == id)
                 .Select(c => new Category {Id = c.Id, Name = c.Name}).ToList();
-            //var problems = _context.Problems.ToList();
             return category.Render();
+        }
+
+        public Category GetMultipleChoiceTests(int categoryId)
+        {
+            var category = _context.Categories.Select(c => new Category
+            {
+                Id = c.Id,
+                ParentId = c.ParentId,
+                MultipleChoiceTests = c.MultipleChoiceTests.ToList()
+            }).FirstOrDefault(c => c.Id == categoryId);
+            return category;
+        }
+
+        public Category GetExercises(int categoryId)
+        {
+            var category = _context.Categories.Select(c => new Category
+            {
+                Id = c.Id,
+                ParentId = c.ParentId,
+                Exercises = c.Exercises.ToList()
+            }).FirstOrDefault(c => c.Id == categoryId);
+            return category;
         }
 
         public int Create(int id, Category category)
         {
-            var rootCategory = Get(id);
+            var rootCategory = GetProblems(id);
             if (rootCategory == null) return 0;
             var newCategory = new Category
             {

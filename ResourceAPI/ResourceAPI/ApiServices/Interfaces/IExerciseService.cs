@@ -5,6 +5,7 @@ namespace ResourceAPI.ApiServices.Interfaces
 {
     public interface IExerciseService
     {
-        public IEnumerable<AutomatedExercise> Browse();
+        public IEnumerable<Exercise> Browse();
+        int Create(Exercise exercise, int authorId = 1);
     }
 }

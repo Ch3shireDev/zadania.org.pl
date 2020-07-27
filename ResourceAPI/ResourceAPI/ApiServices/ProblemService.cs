@@ -7,13 +7,11 @@ namespace ResourceAPI.ApiServices
 {
     public class ProblemService : IProblemService
     {
-        private readonly ICategoryService _categoryService;
         private readonly SqlContext _context;
 
-        public ProblemService(SqlContext context, ICategoryService categoryService)
+        public ProblemService(SqlContext context)
         {
             _context = context;
-            _categoryService = categoryService;
         }
 
         public Problem ProblemById(int id)
@@ -104,7 +102,7 @@ namespace ResourceAPI.ApiServices
             //if (!withAnswers) problem.Answers = null;
             //if (author == null) return 0;
 
-            //var category = _categoryService.Get(categoryId);
+            //var category = _categoryService.GetProblems(categoryId);
             //if (category == null) return 0;
 
             //problem.Created = DateTime.Now;

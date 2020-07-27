@@ -7,12 +7,10 @@ namespace ResourceAPI.ApiServices
     public class MultipleChoiceService : IMultipleChoiceService
     {
         private readonly SqlContext _context;
-        private ICategoryService _categoryService;
 
-        public MultipleChoiceService(SqlContext context, ICategoryService categoryService)
+        public MultipleChoiceService(SqlContext context)
         {
             _context = context;
-            _categoryService = categoryService;
         }
 
         public MultipleChoiceTest GetTestById(int testId, bool includeQuestions = false, bool includeAnswers = false)
@@ -123,6 +121,20 @@ namespace ResourceAPI.ApiServices
             _context.MultipleChoiceTests.Remove(test);
             _context.SaveChanges();
             return true;
+        }
+
+        public int Create(MultipleChoiceTest multipleChoiceTest, int authorId = 1)
+        {
+            var element = new MultipleChoiceTest
+            {
+                Name = multipleChoiceTest.Name,
+                Content = multipleChoiceTest.Content,
+                AuthorId = authorId,
+                CategoryId = multipleChoiceTest.CategoryId
+            };
+            _context.MultipleChoiceTests.Add(element);
+            _context.SaveChanges();
+            return element.Id;
         }
     }
 }

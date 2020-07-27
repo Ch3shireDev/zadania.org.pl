@@ -5,6 +5,7 @@ using ResourceAPI;
 using ResourceAPI.ApiServices;
 using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.Category;
+using ResourceAPI.Models.Exercise;
 using ResourceAPI.Models.MultipleChoice;
 using ResourceAPI.Models.Problem;
 using Xunit;
@@ -18,12 +19,14 @@ namespace ResourceAPITests.CategoryTests
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
             _context = new SqlContext(optionsBuilder.Options);
             _categoryService = new CategoryService(_context);
-            _problemService = new ProblemService(_context, _categoryService);
-            _multipleChoiceService = new MultipleChoiceService(_context, _categoryService);
+            _problemService = new ProblemService(_context);
+            _multipleChoiceService = new MultipleChoiceService(_context);
+            _exerciseService = new ExerciseService(_context);
             _authorService = new AuthorService(_context);
         }
 
         private readonly SqlContext _context;
+        private readonly IExerciseService _exerciseService;
         private readonly ICategoryService _categoryService;
         private readonly IProblemService _problemService;
         private readonly IAuthorService _authorService;
@@ -42,7 +45,7 @@ namespace ResourceAPITests.CategoryTests
             var pid1 = _multipleChoiceService.CreateTest(id2, new MultipleChoiceTest {Name = "xxx2"});
             var pid2 = _multipleChoiceService.CreateTest(id2, new MultipleChoiceTest {Name = "xxx3"});
 
-            var category = _categoryService.Get(id2);
+            var category = _categoryService.GetProblems(id2);
 
             Assert.Equal("xyz", category.Name);
             Assert.Equal(3, category.MultipleChoiceTests.Count());
@@ -64,7 +67,7 @@ namespace ResourceAPITests.CategoryTests
             var pid1 = _problemService.Create(new Problem {Name = "xxx2", CategoryId = id2});
             var pid2 = _problemService.Create(new Problem {Name = "xxx3", CategoryId = id2});
 
-            var category = _categoryService.Get(id2);
+            var category = _categoryService.GetProblems(id2);
 
             Assert.Equal("xyz", category.Name);
             Assert.Equal(3, category.Problems.Count());
@@ -82,7 +85,7 @@ namespace ResourceAPITests.CategoryTests
             _categoryService.Create(id, new Category {Name = "xyz"});
             _categoryService.Create(id, new Category {Name = "xyz"});
 
-            var category = _categoryService.Get(id);
+            var category = _categoryService.GetProblems(id);
             Assert.Equal(3, category.Categories.Count());
         }
 
@@ -114,8 +117,8 @@ namespace ResourceAPITests.CategoryTests
             };
 
             var id = _categoryService.Create(1, category);
-            var root = _categoryService.Get(1);
-            var child = _categoryService.Get(id);
+            var root = _categoryService.GetProblems(1);
+            var child = _categoryService.GetProblems(id);
 
             Assert.NotNull(root);
             Assert.NotNull(child);
@@ -127,14 +130,14 @@ namespace ResourceAPITests.CategoryTests
         {
             var categoryId = _categoryService.Create(1, new Category {Name = "abc"});
 
-            var initial = _categoryService.Get(categoryId).Problems.Count();
+            var initial = _categoryService.GetProblems(categoryId).Problems.Count();
 
             _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
             _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
             _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
 
             Assert.Equal("abc", _context.Categories.First(c => c.Id == categoryId).Name);
-            Assert.Equal(initial + 3, _categoryService.Get(categoryId).Problems.Count());
+            Assert.Equal(initial + 3, _categoryService.GetProblems(categoryId).Problems.Count());
 
             var categoriesNum = _context.Categories.Count();
             var problemsNum = _context.Problems.Count();
@@ -159,11 +162,71 @@ namespace ResourceAPITests.CategoryTests
             _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
 
             Assert.Equal("abc", _context.Categories.First(c => c.Id == categoryId).Name);
-            Assert.Equal(3, _categoryService.Get(categoryId).Problems.Count());
+            Assert.Equal(3, _categoryService.GetProblems(categoryId).Problems.Count());
 
             _categoryService.Update(categoryId, new Category {Name = "xxx"});
             Assert.Equal("xxx", _context.Categories.First(c => c.Id == categoryId).Name);
-            Assert.Equal(3, _categoryService.Get(categoryId).Problems.Count());
+            Assert.Equal(3, _categoryService.GetProblems(categoryId).Problems.Count());
+        }
+
+        [Fact]
+        public void GetCategoryExercises()
+        {
+            var cid1 = _categoryService.Create(1, new Category {Name = "xxxx"});
+
+            var pid1 = _exerciseService.Create(new Exercise {Name = "aaa", CategoryId = cid1});
+            var pid2 = _exerciseService.Create(new Exercise {Name = "bbb", CategoryId = cid1});
+            var pid3 = _exerciseService.Create(new Exercise {Name = "ccc", CategoryId = cid1});
+
+            var category = _categoryService.GetExercises(cid1);
+
+            var names = category.Exercises.Select(p => p.Name).ToList();
+
+            Assert.Equal(3, category.Exercises.Count());
+
+            Assert.Contains("aaa", names);
+            Assert.Contains("bbb", names);
+            Assert.Contains("ccc", names);
+        }
+
+        [Fact]
+        public void GetCategoryMultipleChoiceTests()
+        {
+            var cid1 = _categoryService.Create(1, new Category {Name = "xxxx"});
+
+            var pid1 = _multipleChoiceService.Create(new MultipleChoiceTest {Name = "aaa", CategoryId = cid1});
+            var pid2 = _multipleChoiceService.Create(new MultipleChoiceTest {Name = "bbb", CategoryId = cid1});
+            var pid3 = _multipleChoiceService.Create(new MultipleChoiceTest {Name = "ccc", CategoryId = cid1});
+
+            var category = _categoryService.GetMultipleChoiceTests(cid1);
+
+            var names = category.MultipleChoiceTests.Select(p => p.Name).ToList();
+
+            Assert.Equal(3, category.MultipleChoiceTests.Count());
+
+            Assert.Contains("aaa", names);
+            Assert.Contains("bbb", names);
+            Assert.Contains("ccc", names);
+        }
+
+        [Fact]
+        public void GetCategoryProblems()
+        {
+            var cid1 = _categoryService.Create(1, new Category {Name = "xxxx"});
+
+            var pid1 = _problemService.Create(new Problem {Name = "aaa", CategoryId = cid1});
+            var pid2 = _problemService.Create(new Problem {Name = "bbb", CategoryId = cid1});
+            var pid3 = _problemService.Create(new Problem {Name = "ccc", CategoryId = cid1});
+
+            var category = _categoryService.GetProblems(cid1);
+
+            var names = category.Problems.Select(p => p.Name).ToList();
+
+            Assert.Equal(3, category.Problems.Count());
+
+            Assert.Contains("aaa", names);
+            Assert.Contains("bbb", names);
+            Assert.Contains("ccc", names);
         }
 
         [Fact]
@@ -172,11 +235,11 @@ namespace ResourceAPITests.CategoryTests
             var cid1 = _categoryService.Create(1, new Category {Name = "xxxx"});
             var cid2 = _categoryService.Create(cid1, new Category {Name = "yyyy"});
 
-            var c1 = _categoryService.Get(cid1);
+            var c1 = _categoryService.GetProblems(cid1);
             Assert.Equal("xxxx", c1.Name);
             var cid3 = c1.Categories.First().Id;
             Assert.Equal(cid2, cid3);
-            var c2 = _categoryService.Get(cid3);
+            var c2 = _categoryService.GetProblems(cid3);
             Assert.Equal("yyyy", c2.Name);
         }
     }

@@ -10,17 +10,19 @@ namespace ResourceAPI.Controllers
     [ApiController]
     public class MultipleChoiceController : ControllerBase
     {
+        private readonly IMultipleChoiceService _multipleChoiceService;
+
+        private ILogger<ProblemsController> _logger;
+
         public MultipleChoiceController(ILogger<ProblemsController> logger, SqlContext context,
             IMultipleChoiceService multipleChoiceService)
         {
-            Logger = logger;
+            _logger = logger;
             Context = context;
-            MultipleChoiceService = multipleChoiceService;
+            _multipleChoiceService = multipleChoiceService;
         }
 
-        private ILogger<ProblemsController> Logger { get; }
         private SqlContext Context { get; }
-        private IMultipleChoiceService MultipleChoiceService { get; }
 
         [HttpGet]
         public ActionResult Get()
@@ -34,11 +36,18 @@ namespace ResourceAPI.Controllers
             });
         }
 
-        [Route("{testId:int}")]
-        [HttpGet]
+        [HttpPost]
+        public ActionResult Post(MultipleChoiceTest test)
+        {
+            _multipleChoiceService.Create(test);
+            return Ok();
+        }
+
+
+        [HttpGet("{testId:int}")]
         public ActionResult GetTest(int testId)
         {
-            var test = MultipleChoiceService.GetTestById(testId, true, true);
+            var test = _multipleChoiceService.GetTestById(testId, true, true);
             return StatusCode(200, test);
         }
 
@@ -70,7 +79,7 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult GetQuestion(int testId, int questionId)
         {
-            var question = MultipleChoiceService.GetQuestionById(testId, questionId, true);
+            var question = _multipleChoiceService.GetQuestionById(testId, questionId, true);
             if (question == null) return StatusCode(404);
             return StatusCode(200, question);
         }
@@ -100,7 +109,7 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult GetAnswer(int testId, int questionId, int answerId)
         {
-            var answer = MultipleChoiceService.GetAnswerById(testId, questionId, answerId);
+            var answer = _multipleChoiceService.GetAnswerById(testId, questionId, answerId);
             if (answer == null) return StatusCode(404);
             return StatusCode(200, answer);
         }

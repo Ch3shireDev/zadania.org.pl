@@ -1,6 +1,6 @@
 ﻿namespace ResourceAPI.Models.Exercise
 {
-    public class AutomatedExercise : Post.Post
+    public class Exercise : Post.Post
     {
         public string Name { get; set; }
     }

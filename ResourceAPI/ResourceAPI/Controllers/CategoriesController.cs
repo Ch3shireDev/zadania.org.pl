@@ -18,7 +18,7 @@ namespace ResourceAPI.Controllers
         [HttpGet]
         public ActionResult GetRoot()
         {
-            var categories = _categoryService.Get(1);
+            var categories = _categoryService.GetProblems(1);
             return Ok(categories);
         }
 
@@ -38,7 +38,7 @@ namespace ResourceAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var category = _categoryService.Get(id);
+            var category = _categoryService.GetProblems(id);
             if (category == null) return NotFound();
             return Ok(category);
         }
@@ -63,6 +63,30 @@ namespace ResourceAPI.Controllers
         {
             if (_categoryService.Delete(id)) return Ok();
             return NotFound();
+        }
+
+        [HttpGet("{id}/problems")]
+        public ActionResult GetProblems(int id)
+        {
+            var category = _categoryService.GetProblems(id);
+            if (category == null) return NotFound();
+            return Ok(category);
+        }
+
+        [HttpGet("{id}/exercises")]
+        public ActionResult GetExercises(int id)
+        {
+            var category = _categoryService.GetExercises(id);
+            if (category == null) return NotFound();
+            return Ok(category);
+        }
+
+        [HttpGet("{id}/multiple-choice")]
+        public ActionResult GetMultipleChoiceTests(int id)
+        {
+            var category = _categoryService.GetMultipleChoiceTests(id);
+            if (category == null) return NotFound();
+            return Ok(category);
         }
     }
 }

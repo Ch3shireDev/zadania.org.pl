@@ -2,6 +2,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using ResourceAPI.Models.Category;
+using ResourceAPI.Models.Exercise;
+using ResourceAPI.Models.MultipleChoice;
+using ResourceAPI.Models.Problem;
 using Xunit;
 
 namespace ResourceAPITests.CategoryTests
@@ -41,6 +44,81 @@ namespace ResourceAPITests.CategoryTests
             response.EnsureSuccessStatusCode();
             var category = response.ToElement<Category>();
             Assert.Equal("Root", category.Name);
+        }
+
+        [Fact]
+        public async void GetCategoryExercises()
+        {
+            var res0 = await Client.PostAsync("/api/v1/categories", new Category {Name = "aaa"}.ToHttpContent());
+            var cid = res0.ToElement<Category>().Id;
+
+            await Client.PostAsync("/api/v1/exercises", new Exercise {Name = "xxx", CategoryId = cid}.ToHttpContent());
+            await Client.PostAsync("/api/v1/exercises", new Exercise {Name = "yyy", CategoryId = cid}.ToHttpContent());
+            await Client.PostAsync("/api/v1/exercises", new Exercise {Name = "zzz", CategoryId = cid}.ToHttpContent());
+
+            var res = await Client.GetAsync($"/api/v1/categories/{cid}/exercises");
+            var category = res.ToElement<Category>();
+
+            Assert.Equal(cid, category.Id);
+            Assert.Equal(1, category.ParentId);
+            Assert.Equal(3, category.Exercises.Count());
+
+            var names = category.Exercises.Select(p => p.Name).ToList();
+
+            Assert.Contains("xxx", names);
+            Assert.Contains("yyy", names);
+            Assert.Contains("zzz", names);
+        }
+
+        [Fact]
+        public async void GetCategoryMultipleChoiceTests()
+        {
+            var res0 = await Client.PostAsync("/api/v1/categories", new Category {Name = "aaa"}.ToHttpContent());
+            var cid = res0.ToElement<Category>().Id;
+
+            await Client.PostAsync("/api/v1/multiple-choice",
+                new MultipleChoiceTest {Name = "xxx", CategoryId = cid}.ToHttpContent());
+            await Client.PostAsync("/api/v1/multiple-choice",
+                new MultipleChoiceTest {Name = "yyy", CategoryId = cid}.ToHttpContent());
+            await Client.PostAsync("/api/v1/multiple-choice",
+                new MultipleChoiceTest {Name = "zzz", CategoryId = cid}.ToHttpContent());
+
+            var res = await Client.GetAsync($"/api/v1/categories/{cid}/multiple-choice");
+            var category = res.ToElement<Category>();
+
+            Assert.Equal(cid, category.Id);
+            Assert.Equal(1, category.ParentId);
+            Assert.Equal(3, category.MultipleChoiceTests.Count());
+
+            var names = category.MultipleChoiceTests.Select(p => p.Name).ToList();
+
+            Assert.Contains("xxx", names);
+            Assert.Contains("yyy", names);
+            Assert.Contains("zzz", names);
+        }
+
+        [Fact]
+        public async void GetCategoryProblems()
+        {
+            var res0 = await Client.PostAsync("/api/v1/categories", new Category {Name = "aaa"}.ToHttpContent());
+            var cid = res0.ToElement<Category>().Id;
+
+            await Client.PostAsync("/api/v1/problems", new Problem {Name = "xxx", CategoryId = cid}.ToHttpContent());
+            await Client.PostAsync("/api/v1/problems", new Problem {Name = "yyy", CategoryId = cid}.ToHttpContent());
+            await Client.PostAsync("/api/v1/problems", new Problem {Name = "zzz", CategoryId = cid}.ToHttpContent());
+
+            var res = await Client.GetAsync($"/api/v1/categories/{cid}/problems");
+            var category = res.ToElement<Category>();
+
+            Assert.Equal(cid, category.Id);
+            Assert.Equal(1, category.ParentId);
+            Assert.Equal(3, category.Problems.Count());
+
+            var names = category.Problems.Select(p => p.Name).ToList();
+
+            Assert.Contains("xxx", names);
+            Assert.Contains("yyy", names);
+            Assert.Contains("zzz", names);
         }
 
         [Fact]

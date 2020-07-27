@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.ApiServices.Interfaces;
+using ResourceAPI.Models.Exercise;
 
 namespace ResourceAPI.Controllers
 {
-    [Route("api/v1/automated-exercises")]
+    [Route("api/v1/exercises")]
     [ApiController]
-    public class AutomatedExercisesController : ControllerBase
+    public class ExercisesController : ControllerBase
     {
         private readonly IExerciseService _exerciseService;
-        private readonly ILogger<AutomatedExercisesController> _logger;
+        private readonly ILogger<ExercisesController> _logger;
 
-        public AutomatedExercisesController(ILogger<AutomatedExercisesController> logger,
+        public ExercisesController(ILogger<ExercisesController> logger,
             IExerciseService exerciseService)
         {
             _logger = logger;
@@ -23,6 +24,13 @@ namespace ResourceAPI.Controllers
         {
             var exercises = _exerciseService.Browse();
             return StatusCode(200, exercises);
+        }
+
+        [HttpPost]
+        public ActionResult PostExercise(Exercise exercise)
+        {
+            _exerciseService.Create(exercise);
+            return Ok();
         }
     }
 }

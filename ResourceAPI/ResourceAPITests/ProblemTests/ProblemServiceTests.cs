@@ -15,8 +15,7 @@ namespace ResourceAPITests.ProblemTests
         {
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
             var context = new SqlContext(optionsBuilder.Options);
-            ICategoryService categoryService = new CategoryService(context);
-            _problemService = new ProblemService(context, categoryService);
+            _problemService = new ProblemService(context);
             _authorService = new AuthorService(context);
         }
 

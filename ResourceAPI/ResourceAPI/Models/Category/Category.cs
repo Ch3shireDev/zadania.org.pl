@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using ResourceAPI.Models.Exercise;
 using ResourceAPI.Models.MultipleChoice;
 using ResourceAPI.Models.Post;
 
@@ -19,7 +18,7 @@ namespace ResourceAPI.Models.Category
         public IEnumerable<Category> Categories { get; set; }
         public IEnumerable<Problem.Problem> Problems { get; set; } = new List<Problem.Problem>();
 
-        public IEnumerable<AutomatedExercise> Exercises { get; set; } = new List<AutomatedExercise>();
+        public IEnumerable<Exercise.Exercise> Exercises { get; set; } = new List<Exercise.Exercise>();
 
         public IEnumerable<MultipleChoiceTest> MultipleChoiceTests { get; set; } = new List<MultipleChoiceTest>();
 

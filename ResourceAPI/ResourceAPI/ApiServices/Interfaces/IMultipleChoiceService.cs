@@ -11,5 +11,6 @@ namespace ResourceAPI.ApiServices.Interfaces
         public int CreateQuestion(int testId, MultipleChoiceQuestion question, int authorId = 1);
         public int CreateAnswer(int questionId, MultipleChoiceAnswer answer, int authorId = 1);
         bool DeleteTest(int testId);
+        int Create(MultipleChoiceTest multipleChoiceTest, int authorId = 1);
     }
 }

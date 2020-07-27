@@ -16,7 +16,7 @@ namespace ResourceAPITests.MultipleChoiceTests
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase("zadania");
             _context = new SqlContext(optionsBuilder.Options);
             _categoryService = new CategoryService(_context);
-            _multipleChoiceService = new MultipleChoiceService(_context, _categoryService);
+            _multipleChoiceService = new MultipleChoiceService(_context);
             _authorService = new AuthorService(_context);
         }
 

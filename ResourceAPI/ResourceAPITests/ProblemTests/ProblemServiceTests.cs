@@ -129,6 +129,7 @@ namespace ResourceAPITests.ProblemTests
             Assert.Contains("bbb", answer2.ContentHtml);
         }
 
+
         [Fact]
         public void EditProblemTest()
         {
@@ -149,6 +150,61 @@ namespace ResourceAPITests.ProblemTests
             var problem2 = _problemService.Get(1, id);
             Assert.Equal(id, problem2.Id);
             Assert.Equal("yyy", problem2.Name);
+        }
+
+        [Fact]
+        public void ApproveAnswersTest()
+        {
+            // Tworzymy nowy problem.
+            var id = _problemService.Create(1, new Problem { Name = "xxx", Content = "yyy" });
+
+            // Tworzymy nową odpowiedź.
+            var answerId1 = _problemService.CreateAnswer(id, new Answer {Content = "xxx"});
+            var answerId2 = _problemService.CreateAnswer(id, new Answer {Content = "yyy"});
+            var answerId3 = _problemService.CreateAnswer(id, new Answer {Content = "zzz"});
+
+            // Pobieramy problem i sprawdzamy czy dostajemy odpowiedzi.
+            var problem = _problemService.Get(1, id);
+
+            // Sprawdzamy czy treść odpowiedzi się zgadza.
+            Assert.Contains("xxx", problem.Answers.First(a => a.Id == answerId1).ContentHtml);
+            Assert.Contains("yyy", problem.Answers.First(a => a.Id == answerId2).ContentHtml);
+            Assert.Contains("zzz", problem.Answers.First(a => a.Id == answerId3).ContentHtml);
+
+            // Sprawdzamy czy odpowiedzi oznaczone są jako niezatwierdzone.
+            Assert.False(problem.Answers.First(a=>a.Id==answerId1).IsApproved);
+            Assert.False(problem.Answers.First(a=>a.Id==answerId2).IsApproved);
+            Assert.False(problem.Answers.First(a=>a.Id==answerId3).IsApproved);
+
+            // Zatwierdzamy odpowiedź.
+            _problemService.SetAnswerApproval(id, answerId1);
+
+            // Pobrany problem powinien figurować jako rozwiązany.
+            var problem1 = _problemService.Get(1, id);
+            Assert.True(problem1.IsAnswered);
+            Assert.True(problem1.Answers.First(a=>a.Id == answerId1).IsApproved);
+            Assert.False(problem1.Answers.First(a=>a.Id == answerId2).IsApproved);
+            Assert.False(problem1.Answers.First(a=>a.Id == answerId3).IsApproved);
+
+            // Zatwierdzamy inną odpowiedź.
+            _problemService.SetAnswerApproval(id, answerId2);
+
+            // Przy zatwierdzeniu innego rozwiązania odpowiedź pierwsza nie powinna być dalej zatwierdzona.
+            var problem2 = _problemService.Get(1, id);
+            Assert.True(problem2.IsAnswered);
+            Assert.False(problem2.Answers.First(a => a.Id == answerId1).IsApproved);
+            Assert.True(problem2.Answers.First(a => a.Id == answerId2).IsApproved);
+            Assert.False(problem2.Answers.First(a => a.Id == answerId3).IsApproved);
+
+            // Zdejmujemy zatwierdzenie odpowiedzi.
+            _problemService.SetAnswerApproval(id, answerId2, false);
+
+            // Teraz problem powinien figurować jako nierozwiązany.
+            var problem3 = _problemService.Get(1, id);
+            Assert.False(problem3.IsAnswered);
+            Assert.False(problem3.Answers.First(a => a.Id == answerId1).IsApproved);
+            Assert.False(problem3.Answers.First(a => a.Id == answerId2).IsApproved);
+            Assert.False(problem3.Answers.First(a => a.Id == answerId3).IsApproved);
         }
 
         [Fact]

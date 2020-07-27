@@ -19,5 +19,6 @@ namespace ResourceAPI.ApiServices.Interfaces
         Answer GetAnswer(int problemId, int answerId);
         bool EditAnswer(int problemId, int answerId, Answer answer, int authorId = 1);
         bool DeleteAnswer(int problemId, int answerId);
+        void SetAnswerApproval(int problemId, int answerId1, bool isApproved = true);
     }
 }

@@ -16,10 +16,23 @@ namespace ResourceAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult Browse()
+        public ActionResult GetRoot()
         {
-            var categories = _categoryService.Browse();
+            var categories = _categoryService.Get(1);
             return Ok(categories);
+        }
+
+        [HttpPost]
+        public ActionResult PostRoot(Category category)
+        {
+            var element = new Category
+            {
+                Name = category.Name,
+                Description = category.Description
+            };
+
+            var categoryId = _categoryService.Create(1, element);
+            return Ok(new Category {Id = categoryId});
         }
 
         [HttpGet("{id}")]

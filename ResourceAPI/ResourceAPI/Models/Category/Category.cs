@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using ResourceAPI.Models.Exercise;
 using ResourceAPI.Models.MultipleChoice;
+using ResourceAPI.Models.Post;
 
 namespace ResourceAPI.Models.Category
 {
@@ -9,6 +10,7 @@ namespace ResourceAPI.Models.Category
     {
         public int Id { get; set; }
         [NotMapped] public string Url => $"/api/v1/categories/{Id}";
+        public ICollection<FileData> FileData { get; set; } = new List<FileData>();
         public string Name { get; set; }
         public string Description { get; set; }
         [NotMapped] public string DescriptionHtml { get; set; }
@@ -20,5 +22,12 @@ namespace ResourceAPI.Models.Category
         public IEnumerable<AutomatedExercise> Exercises { get; set; } = new List<AutomatedExercise>();
 
         public IEnumerable<MultipleChoiceTest> MultipleChoiceTests { get; set; } = new List<MultipleChoiceTest>();
+
+        public Category Render()
+        {
+            DescriptionHtml = Tools.Tools.Render(Description, FileData);
+            FileData = null;
+            return this;
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.Category;
 using ResourceAPI.Models.MultipleChoice;
@@ -20,28 +19,16 @@ namespace ResourceAPI.ApiServices
             _context.SaveChanges();
         }
 
-        public IEnumerable<Category> Browse()
-        {
-            return _context.Categories
-                .Select(c => new Category
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description,
-                    Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList()
-                })
-                .ToList();
-        }
-
         public Category Get(int id)
         {
-            var allcat = _context.Categories.ToList();
-            //var category = _context.Categories.FirstOrDefault(c => c.Id == id);
             var category = _context.Categories
                 .Select(c => new Category
                 {
                     Id = c.Id,
                     Name = c.Name,
+                    ParentId = c.ParentId,
+                    FileData = c.FileData,
+                    Description = c.Description,
                     Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList(),
                     Problems = c.Problems.Select(cp => new Problem {Id = cp.Id, Name = cp.Name}).ToList(),
                     MultipleChoiceTests = c.MultipleChoiceTests
@@ -54,7 +41,7 @@ namespace ResourceAPI.ApiServices
             category.Categories = _context.Categories.Where(c => c.ParentId == id)
                 .Select(c => new Category {Id = c.Id, Name = c.Name}).ToList();
             //var problems = _context.Problems.ToList();
-            return category;
+            return category.Render();
         }
 
         public int Create(int id, Category category)

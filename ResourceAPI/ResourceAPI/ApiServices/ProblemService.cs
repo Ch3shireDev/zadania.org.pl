@@ -78,7 +78,8 @@ namespace ResourceAPI.ApiServices
                         CategoryId = p.CategoryId,
                         AuthorName = p.Author.Name,
                         Answers = p.Answers.Select(a => new Answer
-                            {Id = a.Id, Content = a.Content, AuthorName = a.AuthorName}).ToList()
+                                {Id = a.Id, Content = a.Content, AuthorName = a.AuthorName, IsApproved = a.IsApproved})
+                            .ToList()
                         //Answers = p.Answers.Select(a => new Answer {Id = a.Id, ProblemId = a.ProblemId}).ToList(),
                         //Created = p.Created,
                         //Edited = p.Edited,
@@ -93,8 +94,7 @@ namespace ResourceAPI.ApiServices
 
             problem.IsAnswered = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
             problem = problem.Render();
-
-
+            problem.Answers = problem.Answers.Select(a => a.Render()).ToList();
             return problem;
         }
 
@@ -259,6 +259,27 @@ namespace ResourceAPI.ApiServices
             _context.Answers.Remove(element);
             _context.SaveChanges();
             return true;
+        }
+
+        public void SetAnswerApproval(int problemId, int answerId, bool isApproved = true)
+        {
+            var answer = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
+            if (answer == null) return;
+            if (answer.IsApproved == isApproved) return;
+            if (isApproved)
+            {
+                var answers = _context.Answers.Where(a => a.ProblemId == problemId).ToList();
+                foreach (var element in answers) element.IsApproved = element.Id == answerId;
+
+                _context.Answers.UpdateRange(answers);
+            }
+            else
+            {
+                answer.IsApproved = false;
+                _context.Answers.Update(answer);
+            }
+
+            _context.SaveChanges();
         }
 
 

@@ -65,7 +65,7 @@ namespace ResourceAPI.ApiServices
             return answer;
         }
 
-        public Problem Get(int categoryId, int problemId)
+        public Problem Get(int problemId)
         {
             var
                 problem = _context.Problems.Select(p => new Problem
@@ -89,7 +89,7 @@ namespace ResourceAPI.ApiServices
                         //UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
                         //UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
                     })
-                    .FirstOrDefault(p => p.CategoryId == categoryId && p.Id == problemId);
+                    .FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return null;
 
             problem.IsAnswered = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
@@ -98,8 +98,9 @@ namespace ResourceAPI.ApiServices
             return problem;
         }
 
-        public int Create(int categoryId, Problem problem, int authorId = 1)
+        public int Create(Problem problem, int authorId = 1)
         {
+            if (problem.CategoryId == 0) problem.CategoryId = 1;
             //if (!withAnswers) problem.Answers = null;
             //if (author == null) return 0;
 
@@ -143,7 +144,7 @@ namespace ResourceAPI.ApiServices
             //    }
 
             //problem.Tags = null;
-            problem.CategoryId = categoryId;
+            //problem.CategoryId = categoryId;
             problem.AuthorId = authorId;
             _context.Problems.Add(problem);
             _context.SaveChanges();
@@ -195,9 +196,9 @@ namespace ResourceAPI.ApiServices
             return problems;
         }
 
-        public bool Edit(int categoryId, int problemId, Problem problem)
+        public bool Edit(int problemId, Problem problem)
         {
-            var element = _context.Problems.FirstOrDefault(p => p.Id == problemId && p.CategoryId == categoryId);
+            var element = _context.Problems.FirstOrDefault(p => p.Id == problemId);
             if (element == null) return false;
             element.Name = problem.Name;
             element.Content = problem.Content;
@@ -206,9 +207,9 @@ namespace ResourceAPI.ApiServices
             return true;
         }
 
-        public bool Delete(int categoryId, int problemId)
+        public bool Delete(int problemId)
         {
-            var problem = _context.Problems.FirstOrDefault(p => p.CategoryId == categoryId && p.Id == problemId);
+            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return false;
             _context.Problems.Remove(problem);
             _context.SaveChanges();

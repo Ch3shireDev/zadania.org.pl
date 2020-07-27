@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -19,7 +17,7 @@ namespace ResourceAPITests.CategoryTests
             await Client.PostAsync("/api/v1/categories", new Category {Name = "xxx"}.ToHttpContent());
             await Client.PostAsync("/api/v1/categories", new Category {Name = "yyy"}.ToHttpContent());
             await Client.PostAsync("/api/v1/categories", new Category {Name = "zzz"}.ToHttpContent());
-            
+
             // Pobieramy kategorię pnia.
             var response = await Client.GetAsync("/api/v1/categories/");
             response.EnsureSuccessStatusCode();
@@ -48,7 +46,8 @@ namespace ResourceAPITests.CategoryTests
         [Fact]
         public async void PostCategory()
         {
-            var res = await Client.PostAsync("/api/v1/categories", new Category {Name = "xxx", Description = "yyy"}.ToHttpContent());
+            var res = await Client.PostAsync("/api/v1/categories",
+                new Category {Name = "xxx", Description = "yyy"}.ToHttpContent());
             var id = res.ToElement<Category>().Id;
             var getRes = await Client.GetAsync($"/api/v1/categories/{id}");
             var category = getRes.ToElement<Category>();

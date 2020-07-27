@@ -52,7 +52,7 @@ namespace ResourceAPI.Controllers
         [HttpGet("{id:int}")]
         public ActionResult Get(int id)
         {
-            var problem = _problemService.Get(1, id);
+            var problem = _problemService.Get(id);
             if (problem == null) return NotFound();
             return Ok(problem);
         }
@@ -63,7 +63,7 @@ namespace ResourceAPI.Controllers
         {
             var author = _authorService.GetAuthor(1);
             if (author == null) return StatusCode(403);
-            var problemId = _problemService.Create(1, problem);
+            var problemId = _problemService.Create(problem);
             if (problemId == 0) return StatusCode(403);
             return StatusCode(201, new Problem {Id = problemId});
         }
@@ -73,7 +73,7 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Put(int id, Problem problem)
         {
-            var result = _problemService.Edit(1, id, problem);
+            var result = _problemService.Edit(id, problem);
             if (!result) return BadRequest();
             return Ok();
         }
@@ -82,7 +82,7 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Delete(int id)
         {
-            var result = _problemService.Delete(1, id);
+            var result = _problemService.Delete(id);
             return Ok();
         }
 

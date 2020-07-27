@@ -10,7 +10,7 @@ namespace ResourceAPITests.ProblemTests
 {
     public class ProblemsControllerTests
     {
-        readonly HttpClient _client = new TestClientProvider().Client;
+        private readonly HttpClient _client = new TestClientProvider().Client;
 
         [Fact]
         public async Task BrowseTest()

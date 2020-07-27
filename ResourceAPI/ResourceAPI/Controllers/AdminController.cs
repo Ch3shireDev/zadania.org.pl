@@ -75,7 +75,7 @@ namespace ResourceAPI.Controllers
             var i = 0;
             foreach (var problem in problems)
             {
-                _problemService.Create(1, problem);
+                _problemService.Create(problem);
                 i++;
                 if (i % 100 == 0)
                 {
@@ -115,7 +115,7 @@ namespace ResourceAPI.Controllers
             {
                 problem.Name = $"Zadanie {n++}";
                 problem.Tags = new List<Tag> {new Tag {Name = "OAK"}, new Tag {Name = "Informatyka"}};
-                _problemService.Create(1, problem);
+                _problemService.Create(problem);
             }
 
             _context.SaveChanges();

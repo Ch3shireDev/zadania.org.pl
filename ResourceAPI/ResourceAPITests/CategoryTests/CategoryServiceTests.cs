@@ -60,9 +60,9 @@ namespace ResourceAPITests.CategoryTests
             _categoryService.Create(id, new Category {Name = "xyz"});
             var id2 = _categoryService.Create(id, new Category {Name = "xyz"});
 
-            var pid0 = _problemService.Create(id2, new Problem {Name = "xxx1"});
-            var pid1 = _problemService.Create(id2, new Problem {Name = "xxx2"});
-            var pid2 = _problemService.Create(id2, new Problem {Name = "xxx3"});
+            var pid0 = _problemService.Create(new Problem {Name = "xxx1", CategoryId = id2});
+            var pid1 = _problemService.Create(new Problem {Name = "xxx2", CategoryId = id2});
+            var pid2 = _problemService.Create(new Problem {Name = "xxx3", CategoryId = id2});
 
             var category = _categoryService.Get(id2);
 
@@ -129,9 +129,9 @@ namespace ResourceAPITests.CategoryTests
 
             var initial = _categoryService.Get(categoryId).Problems.Count();
 
-            _problemService.Create(categoryId, new Problem {Name = "xyz"});
-            _problemService.Create(categoryId, new Problem {Name = "xyz"});
-            _problemService.Create(categoryId, new Problem {Name = "xyz"});
+            _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
+            _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
+            _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
 
             Assert.Equal("abc", _context.Categories.First(c => c.Id == categoryId).Name);
             Assert.Equal(initial + 3, _categoryService.Get(categoryId).Problems.Count());
@@ -154,9 +154,9 @@ namespace ResourceAPITests.CategoryTests
         {
             var categoryId = _categoryService.Create(1, new Category {Name = "abc"});
 
-            _problemService.Create(categoryId, new Problem {Name = "xyz"});
-            _problemService.Create(categoryId, new Problem {Name = "xyz"});
-            _problemService.Create(categoryId, new Problem {Name = "xyz"});
+            _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
+            _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
+            _problemService.Create(new Problem {Name = "xyz", CategoryId = categoryId});
 
             Assert.Equal("abc", _context.Categories.First(c => c.Id == categoryId).Name);
             Assert.Equal(3, _categoryService.Get(categoryId).Problems.Count());

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CommonLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProblemLibrary;
 using ResourceAPI.ApiServices.Interfaces;
 using ResourceAPI.Models.MultipleChoice;
-using ResourceAPI.Models.Post;
-using ResourceAPI.Models.Problem;
-using ResourceAPI.Tools;
 
 namespace ResourceAPI.Controllers
 {
@@ -136,7 +135,7 @@ namespace ResourceAPI.Controllers
         {
             var matches = Regex.Matches(text, @"### (?:Zad.*)[\s\n]*([^#]+)(?:### (?:Rozw.*)[\s\n]*([^#]+))?",
                 RegexOptions.Multiline);
-            var elements = matches.Select(m => new Element(m, path)).Select(e => e.GetProblem());
+            var elements = matches.Select(m => new ProblemElement(m, path)).Select(e => e.GetProblem());
 
             foreach (var element in elements) yield return element;
         }

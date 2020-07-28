@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using CommonLibrary;
+using ProblemLibrary;
 using ResourceAPI.Models.MultipleChoice;
-using ResourceAPI.Models.Post;
 
 namespace ResourceAPI.Models.Category
 {
@@ -16,7 +17,7 @@ namespace ResourceAPI.Models.Category
         public Category Parent { get; set; }
         public int? ParentId { get; set; }
         public IEnumerable<Category> Categories { get; set; }
-        public IEnumerable<Problem.Problem> Problems { get; set; } = new List<Problem.Problem>();
+        public IEnumerable<Problem> Problems { get; set; } = new List<Problem>();
 
         public IEnumerable<Exercise.Exercise> Exercises { get; set; } = new List<Exercise.Exercise>();
 
@@ -24,7 +25,7 @@ namespace ResourceAPI.Models.Category
 
         public Category Render()
         {
-            DescriptionHtml = Tools.Tools.Render(Description, FileData);
+            DescriptionHtml = Tools.Render(Description, FileData);
             FileData = null;
             return this;
         }

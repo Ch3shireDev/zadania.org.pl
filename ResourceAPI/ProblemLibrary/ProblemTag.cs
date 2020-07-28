@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ResourceAPI.Models.Problem
+namespace ProblemLibrary
 {
     public class ProblemTag
     {

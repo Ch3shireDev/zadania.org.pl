@@ -1,4 +1,4 @@
-﻿namespace ResourceAPI.Tools
+﻿namespace CommonLibrary
 {
     public class UserData
     {

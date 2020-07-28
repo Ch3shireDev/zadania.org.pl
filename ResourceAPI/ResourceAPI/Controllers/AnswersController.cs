@@ -1,10 +1,10 @@
 ﻿using System.Linq;
+using CommonLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProblemLibrary;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Enums;
-using ResourceAPI.Models.Problem;
 
 namespace ResourceAPI.Controllers
 {
@@ -96,22 +96,22 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult Upvote(int problemId, int answerId)
         {
-            return Vote(problemId, answerId, Enums.Vote.Upvote);
+            return Vote(problemId, answerId, CommonLibrary.Vote.Upvote);
         }
 
         [HttpPut("{answerId}/downvote")]
         [Authorize]
         public ActionResult Downvote(int problemId, int answerId)
         {
-            return Vote(problemId, answerId, Enums.Vote.Downvote);
+            return Vote(problemId, answerId, CommonLibrary.Vote.Downvote);
         }
 
         [NonAction]
         public ActionResult Vote(int problemId, int answerId, Vote vote)
         {
             var answer = Context.Answers.First(a => a.Id == answerId && a.ProblemId == problemId);
-            if (vote == Enums.Vote.Upvote) answer.Points++;
-            if (vote == Enums.Vote.Downvote) answer.Points--;
+            if (vote == CommonLibrary.Vote.Upvote) answer.Points++;
+            if (vote == CommonLibrary.Vote.Downvote) answer.Points--;
             Context.Answers.Update(answer);
             Context.SaveChanges();
             return StatusCode(200, new {success = true, points = answer.Points});
@@ -162,14 +162,14 @@ namespace ResourceAPI.Controllers
         [Authorize]
         public ActionResult UpvoteAnswer(int id)
         {
-            return VoteAnswer(id, Enums.Vote.Upvote);
+            return VoteAnswer(id, CommonLibrary.Vote.Upvote);
         }
 
         [HttpPost("{answerId}/downvote")]
         [Authorize]
         public ActionResult DownvoteAnswer(int id)
         {
-            return VoteAnswer(id, Enums.Vote.Downvote);
+            return VoteAnswer(id, CommonLibrary.Vote.Downvote);
         }
 
         public ActionResult VoteAnswer(int id, Vote vote)
@@ -186,7 +186,7 @@ namespace ResourceAPI.Controllers
             }
             else
             {
-                answerVote.Vote = answerVote.Vote == vote ? Enums.Vote.None : vote;
+                answerVote.Vote = answerVote.Vote == vote ? CommonLibrary.Vote.None : vote;
                 Context.AnswerVotes.Update(answerVote);
             }
 
@@ -194,7 +194,7 @@ namespace ResourceAPI.Controllers
 
             answer.Points = Context.AnswerVotes
                 .Where(av => av.AnswerId == answer.Id)
-                .Select(av => av.Vote == Enums.Vote.Upvote ? 1 : av.Vote == Enums.Vote.Downvote ? -1 : 0)
+                .Select(av => av.Vote == CommonLibrary.Vote.Upvote ? 1 : av.Vote == CommonLibrary.Vote.Downvote ? -1 : 0)
                 .Sum();
 
             Context.Answers.Update(answer);

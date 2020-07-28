@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using ResourceAPI.Models.Problem;
 
-namespace ResourceAPI.ApiServices.Interfaces
+namespace ProblemLibrary
 {
     public interface IProblemService
     {

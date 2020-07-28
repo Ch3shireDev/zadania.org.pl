@@ -1,7 +1,6 @@
-﻿using ResourceAPI.Enums;
-using ResourceAPI.Models.Post;
+﻿using CommonLibrary;
 
-namespace ResourceAPI.Models.Problem
+namespace ProblemLibrary
 {
     public class ProblemVote
     {

@@ -1,4 +1,4 @@
-﻿namespace ResourceAPI.Models.Post
+﻿namespace CommonLibrary
 {
     public class Comment : Post
     {

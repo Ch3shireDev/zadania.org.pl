@@ -1,4 +1,4 @@
-﻿namespace ResourceAPI.Enums
+﻿namespace CommonLibrary
 {
     public enum Vote
     {

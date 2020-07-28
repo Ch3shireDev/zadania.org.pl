@@ -1,6 +1,9 @@
-﻿namespace ResourceAPI.Models.Exercise
+﻿using CommonLibrary;
+using ProblemLibrary;
+
+namespace ResourceAPI.Models.Exercise
 {
-    public class Exercise : Post.Post
+    public class Exercise : Post
     {
         public string Name { get; set; }
     }

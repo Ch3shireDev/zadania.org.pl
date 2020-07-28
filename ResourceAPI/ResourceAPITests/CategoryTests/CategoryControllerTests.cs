@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using ProblemLibrary;
 using ResourceAPI.Models.Category;
 using ResourceAPI.Models.Exercise;
 using ResourceAPI.Models.MultipleChoice;
-using ResourceAPI.Models.Problem;
 using Xunit;
 
 namespace ResourceAPITests.CategoryTests

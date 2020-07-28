@@ -1,6 +1,4 @@
-﻿using ResourceAPI.Models.Post;
-
-namespace ResourceAPI.ApiServices.Interfaces
+﻿namespace CommonLibrary
 {
     public interface IAuthorService
     {

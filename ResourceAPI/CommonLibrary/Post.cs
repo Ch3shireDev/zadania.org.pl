@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using ResourceAPI.Enums;
 
-namespace ResourceAPI.Models.Post
+namespace CommonLibrary
 {
     public class Post
     {
@@ -19,12 +18,12 @@ namespace ResourceAPI.Models.Post
         public DateTime Created { get; set; }
         public DateTime Edited { get; set; }
         public ICollection<FileData> FileData { get; set; }
-        public Category.Category Category { get; set; }
+        //public Category.Category Category { get; set; }
         public int CategoryId { get; set; }
 
         public void Render()
         {
-            ContentHtml = Tools.Tools.Render(Content, FileData);
+            ContentHtml = Tools.Render(Content, FileData);
         }
     }
 }

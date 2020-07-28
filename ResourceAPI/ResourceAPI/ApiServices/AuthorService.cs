@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Security.Claims;
+using CommonLibrary;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using ProblemLibrary;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Post;
-using ResourceAPI.Tools;
 
 namespace ResourceAPI.ApiServices
 {

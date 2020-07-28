@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommonLibrary;
+using Microsoft.EntityFrameworkCore;
+using ProblemLibrary;
 using ResourceAPI.Models.Category;
 using ResourceAPI.Models.Exercise;
 using ResourceAPI.Models.MultipleChoice;
-using ResourceAPI.Models.Post;
-using ResourceAPI.Models.Problem;
 
 namespace ResourceAPI
 {
-    public class SqlContext : DbContext
+    public class SqlContext : DbContext, IProblemDbContext, IExerciseDbContext
     {
         public SqlContext(DbContextOptions options) : base(options)
         {
@@ -27,6 +27,7 @@ namespace ResourceAPI
         public DbSet<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
         public DbSet<MultipleChoiceAnswer> MultipleChoiceAnswers { get; set; }
         public DbSet<Category> Categories { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -59,11 +60,11 @@ namespace ResourceAPI
 
             modelBuilder.Entity<ProblemVote>().HasKey(pv => new {pv.ProblemId, pv.AuthorId});
             modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Problem).WithMany(p => p.ProblemVotes);
-            modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Author).WithMany(a => a.ProblemVotes);
+            //modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Author).WithMany(a => a.ProblemVotes);
 
             modelBuilder.Entity<AnswerVote>().HasKey(pv => new {pv.AnswerId, pv.AuthorId});
             modelBuilder.Entity<AnswerVote>().HasOne(av => av.Answer).WithMany(a => a.AnswerVotes);
-            modelBuilder.Entity<AnswerVote>().HasOne(av => av.Author).WithMany(a => a.AnswerVotes);
+            //modelBuilder.Entity<AnswerVote>().HasOne(av => av.Author).WithMany(a => a.AnswerVotes);
         }
     }
 }

@@ -2,8 +2,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ProblemLibrary;
 using ResourceAPI.Models.Category;
-using ResourceAPI.Models.Problem;
 using Xunit;
 
 namespace ResourceAPITests.ProblemTests

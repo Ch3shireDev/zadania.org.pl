@@ -1,12 +1,10 @@
 ﻿using System.Linq;
+using CommonLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Enums;
-using ResourceAPI.Models.Problem;
 
-namespace ResourceAPI.Controllers
+namespace ProblemLibrary
 {
     [ApiController]
     [Route("api/v1/[controller]")]
@@ -14,13 +12,13 @@ namespace ResourceAPI.Controllers
     {
         private readonly IAuthorService _authorService;
 
-        private readonly SqlContext _context;
+        private readonly IProblemDbContext _context;
 
         private readonly IProblemService _problemService;
 
         private ILogger<ProblemsController> _logger;
 
-        public ProblemsController(ILogger<ProblemsController> logger, SqlContext context,
+        public ProblemsController(ILogger<ProblemsController> logger, IProblemDbContext context,
             IProblemService problemService, IAuthorService authorService)
         {
             _logger = logger;

@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Problem;
 
-namespace ResourceAPI.ApiServices
+namespace ProblemLibrary
 {
     public class ProblemService : IProblemService
     {
-        private readonly SqlContext _context;
+        private readonly IProblemDbContext _context;
 
-        public ProblemService(SqlContext context)
+        public ProblemService(IProblemDbContext context)
         {
             _context = context;
         }
@@ -219,8 +217,8 @@ namespace ResourceAPI.ApiServices
             var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return 0;
 
-            var author = _context.Authors.FirstOrDefault(a => a.Id == authorId);
-            if (author == null) return 0;
+            //var author = _context.Authors.FirstOrDefault(a => a.Id == authorId);
+            //if (author == null) return 0;
 
             var element = new Answer
             {

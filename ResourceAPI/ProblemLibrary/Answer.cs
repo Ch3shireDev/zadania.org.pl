@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using ResourceAPI.Models.Post;
+using CommonLibrary;
 
-namespace ResourceAPI.Models.Problem
+namespace ProblemLibrary
 {
-    public class Answer : Post.Post
+    public class Answer : Post
     {
         public Problem Problem { get; set; }
         [NotMapped] public string Url => $"/api/v1/problems/{ProblemId}/answers/{Id}";
@@ -24,7 +24,7 @@ namespace ResourceAPI.Models.Problem
 
         public new Answer Render()
         {
-            ContentHtml = Tools.Tools.Render(Content, FileData);
+            ContentHtml = Tools.Render(Content, FileData);
             return this;
         }
     }

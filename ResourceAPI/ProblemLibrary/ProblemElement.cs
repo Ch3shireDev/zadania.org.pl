@@ -2,14 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ResourceAPI.Models.Post;
-using ResourceAPI.Models.Problem;
+using CommonLibrary;
 
-namespace ResourceAPI.Tools
+namespace ProblemLibrary
 {
-    internal class Element
+    public class ProblemElement
     {
-        public Element(Match match, string path)
+        public ProblemElement(Match match, string path)
         {
             ContentProblem = match.Groups[1].Value;
             ContentSolution = match.Groups[2].Value;

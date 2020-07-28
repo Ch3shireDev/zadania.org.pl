@@ -1,9 +1,10 @@
 ﻿using System.Linq;
+using CommonLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProblemLibrary;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Post;
 
 namespace ResourceAPI.Controllers
 {
@@ -31,8 +32,8 @@ namespace ResourceAPI.Controllers
             var author = _authorService.GetAuthor(1);
             if (author != null)
             {
-                author.Problems = null;
-                author.Answers = null;
+                //author.Problems = null;
+                //author.Answers = null;
                 author.VotedProblems = null;
             }
 

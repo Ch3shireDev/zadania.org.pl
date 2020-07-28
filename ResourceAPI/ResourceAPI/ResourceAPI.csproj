@@ -26,5 +26,14 @@
 		<PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.21" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
+	  <ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Tools\" />
+	</ItemGroup>
+
 
 </Project>

@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using CommonLibrary;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProblemLibrary;
 using ResourceAPI.ApiServices;
 using ResourceAPI.ApiServices.Interfaces;
 
@@ -36,7 +39,7 @@ namespace ResourceAPI
                 else options.UseMySQL(Configuration.GetConnectionString("Default"));
             });
 
-
+            services.AddScoped<IProblemDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IMultipleChoiceService, MultipleChoiceService>();
@@ -51,6 +54,9 @@ namespace ResourceAPI
             ConfigureAuthentication(services);
 
             if (Environment.IsEnvironment("tests")) services.AddSingleton<IAuthorizationHandler, AllowAnonymous>();
+
+            var assembly = Assembly.Load("ProblemLibrary");
+            services.AddMvc().AddApplicationPart(assembly).AddControllersAsServices();
         }
 
         protected virtual void ConfigureAuthentication(IServiceCollection services)
@@ -82,10 +88,12 @@ namespace ResourceAPI
                 context.Database.EnsureCreated();
             }
 
+
             app.UseRouting();
             app.UseResponseCaching();
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

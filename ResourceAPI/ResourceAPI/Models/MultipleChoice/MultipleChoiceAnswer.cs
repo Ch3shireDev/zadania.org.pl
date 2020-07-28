@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using CommonLibrary;
+using ProblemLibrary;
 
 namespace ResourceAPI.Models.MultipleChoice
 {
-    public class MultipleChoiceAnswer : Post.Post
+    public class MultipleChoiceAnswer : Post
     {
         public bool IsCorrect { get; set; }
         public MultipleChoiceQuestion Question { get; set; }

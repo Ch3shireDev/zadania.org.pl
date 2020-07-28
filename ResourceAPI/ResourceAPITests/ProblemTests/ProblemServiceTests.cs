@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using CommonLibrary;
 using Microsoft.EntityFrameworkCore;
+using ProblemLibrary;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Problem;
 using Xunit;
 
 namespace ResourceAPITests.ProblemTests

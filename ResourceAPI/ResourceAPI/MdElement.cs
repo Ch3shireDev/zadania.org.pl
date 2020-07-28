@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using CommonLibrary;
+using ProblemLibrary;
 using ResourceAPI.Models.MultipleChoice;
-using ResourceAPI.Models.Post;
 
-namespace ResourceAPI.Tools
+namespace ResourceAPI
 {
     public class MdElement
     {

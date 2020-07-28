@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using CommonLibrary;
+using ProblemLibrary;
 
 namespace ResourceAPI.Models.MultipleChoice
 {
-    public class MultipleChoiceQuestion : Post.Post
+    public class MultipleChoiceQuestion : Post
     {
         public List<MultipleChoiceAnswer> Answers { get; set; }
         public MultipleChoiceTest Test { get; set; }
@@ -17,8 +19,8 @@ namespace ResourceAPI.Models.MultipleChoice
 
         public new void Render()
         {
-            ContentHtml = Tools.Tools.Render(Content, FileData);
-            SolutionHtml = Tools.Tools.Render(Solution, FileData);
+            ContentHtml = Tools.Render(Content, FileData);
+            SolutionHtml = Tools.Render(Solution, FileData);
         }
     }
 }

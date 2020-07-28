@@ -1,7 +1,6 @@
-﻿using ExerciseLibrary;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace ResourceAPI
+namespace ExerciseLibrary
 {
     public interface IExerciseDbContext
     {

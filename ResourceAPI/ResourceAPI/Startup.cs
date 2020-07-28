@@ -42,6 +42,8 @@ namespace ResourceAPI
             });
 
             services.AddScoped<IProblemDbContext>(provider => provider.GetService<SqlContext>());
+            services.AddScoped<ICategoryDbContext>(provider => provider.GetService<SqlContext>());
+
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IMultipleChoiceService, MultipleChoiceService>();
@@ -57,8 +59,11 @@ namespace ResourceAPI
 
             if (Environment.IsEnvironment("tests")) services.AddSingleton<IAuthorizationHandler, AllowAnonymous>();
 
-            var assembly = Assembly.Load("ProblemLibrary");
-            services.AddMvc().AddApplicationPart(assembly).AddControllersAsServices();
+            var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
+            services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
+
+            var categoryLibraryAssembly = Assembly.Load("CategoryLibrary");
+            services.AddMvc().AddApplicationPart(categoryLibraryAssembly).AddControllersAsServices();
         }
 
         protected virtual void ConfigureAuthentication(IServiceCollection services)

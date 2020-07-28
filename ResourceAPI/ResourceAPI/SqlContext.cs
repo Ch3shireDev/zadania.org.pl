@@ -7,7 +7,7 @@ using ProblemLibrary;
 
 namespace ResourceAPI
 {
-    public class SqlContext : DbContext, IProblemDbContext, IExerciseDbContext
+    public class SqlContext : DbContext, IProblemDbContext, IExerciseDbContext, ICategoryDbContext
     {
         public SqlContext(DbContextOptions options) : base(options)
         {

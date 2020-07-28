@@ -1,7 +1,6 @@
-﻿using CategoryLibrary;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ResourceAPI.Controllers
+namespace CategoryLibrary
 {
     [Route("api/v1/[controller]")]
     [ApiController]

@@ -1,15 +1,14 @@
 ﻿using System.Linq;
-using CategoryLibrary;
 using MultipleChoiceLibrary;
 using ProblemLibrary;
 
-namespace ResourceAPI.ApiServices
+namespace CategoryLibrary
 {
     public class CategoryService : ICategoryService
     {
-        private readonly SqlContext _context;
+        private readonly ICategoryDbContext _context;
 
-        public CategoryService(SqlContext context)
+        public CategoryService(ICategoryDbContext context)
         {
             _context = context;
             if (_context.Categories.Any(c => c.Id == 1)) return;

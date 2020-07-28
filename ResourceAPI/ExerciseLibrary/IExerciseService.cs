@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ResourceAPI.Models.Exercise;
+using ExerciseLibrary;
 
 namespace ResourceAPI.ApiServices.Interfaces
 {

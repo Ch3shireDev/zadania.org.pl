@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using CommonLibrary;
-using ProblemLibrary;
 
-namespace ResourceAPI.Models.MultipleChoice
+namespace MultipleChoiceLibrary
 {
     public class MultipleChoiceAnswer : Post
     {

@@ -10,6 +10,6 @@ namespace ProblemLibrary
 
         public DbSet<ProblemVote> ProblemVotes { get; set; }
 
-        int SaveChanges(bool acceptAllChangesOnSuccess=true);
+        int SaveChanges(bool acceptAllChangesOnSuccess = true);
     }
 }

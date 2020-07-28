@@ -6,7 +6,6 @@ using ProblemLibrary;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Controllers;
 
 namespace ResourceAPIBenchmark
 {

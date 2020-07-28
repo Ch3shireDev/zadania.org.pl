@@ -3,8 +3,6 @@ using System.Security.Claims;
 using CommonLibrary;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using ProblemLibrary;
-using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI.ApiServices
 {

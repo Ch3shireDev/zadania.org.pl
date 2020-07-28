@@ -2,11 +2,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using CategoryLibrary;
 using ProblemLibrary;
-using ResourceAPI.Models.Category;
 using Xunit;
 
-namespace ResourceAPITests.ProblemTests
+namespace ResourceAPITests
 {
     public class ProblemsControllerTests
     {

@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
-using ResourceAPI.ApiServices.Interfaces;
 using Xunit;
 
-namespace ResourceAPITests.ProblemTests
+namespace ResourceAPITests
 {
     public class ProblemServiceTests
     {

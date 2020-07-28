@@ -1,7 +1,6 @@
 ﻿using CommonLibrary;
-using ProblemLibrary;
 
-namespace ResourceAPI.Models.Exercise
+namespace ExerciseLibrary
 {
     public class Exercise : Post
     {

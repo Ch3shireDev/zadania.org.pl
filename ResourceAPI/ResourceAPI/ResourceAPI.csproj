@@ -27,12 +27,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\CategoryLibrary\CategoryLibrary.csproj" />
 	  <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
+	  <ProjectReference Include="..\ExerciseLibrary\ExerciseLibrary.csproj" />
+	  <ProjectReference Include="..\MultipleChoiceLibrary\MultipleChoiceLibrary.csproj" />
 	  <ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Tools\" />
 	</ItemGroup>
 
 

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using MultipleChoiceLibrary;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.MultipleChoice;
 
 namespace ResourceAPI.ApiServices
 {

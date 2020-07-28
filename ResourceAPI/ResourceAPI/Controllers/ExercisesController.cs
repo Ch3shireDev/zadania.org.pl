@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ExerciseLibrary;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Exercise;
 
 namespace ResourceAPI.Controllers
 {

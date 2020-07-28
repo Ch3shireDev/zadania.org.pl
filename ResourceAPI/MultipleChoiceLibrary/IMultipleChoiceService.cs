@@ -1,4 +1,4 @@
-﻿using ResourceAPI.Models.MultipleChoice;
+﻿using MultipleChoiceLibrary;
 
 namespace ResourceAPI.ApiServices.Interfaces
 {

@@ -17,7 +17,9 @@ namespace CommonLibrary
         public Author Author { get; set; }
         public DateTime Created { get; set; }
         public DateTime Edited { get; set; }
+
         public ICollection<FileData> FileData { get; set; }
+
         //public Category.Category Category { get; set; }
         public int CategoryId { get; set; }
 

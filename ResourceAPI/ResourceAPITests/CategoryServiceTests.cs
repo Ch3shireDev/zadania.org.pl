@@ -1,17 +1,17 @@
 using System;
 using System.Linq;
+using CategoryLibrary;
 using CommonLibrary;
+using ExerciseLibrary;
 using Microsoft.EntityFrameworkCore;
+using MultipleChoiceLibrary;
 using ProblemLibrary;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Category;
-using ResourceAPI.Models.Exercise;
-using ResourceAPI.Models.MultipleChoice;
 using Xunit;
 
-namespace ResourceAPITests.CategoryTests
+namespace ResourceAPITests
 {
     public class CategoryServiceTests
     {

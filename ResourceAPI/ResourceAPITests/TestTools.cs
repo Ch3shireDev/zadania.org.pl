@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ResourceAPITests
 {
-    public static class Tools
+    public static class TestTools
     {
         public static HttpContent ToHttpContent<T>(this T element)
         {

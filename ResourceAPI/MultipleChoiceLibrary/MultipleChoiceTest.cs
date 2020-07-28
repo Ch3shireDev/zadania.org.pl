@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using CommonLibrary;
-using ProblemLibrary;
 
-namespace ResourceAPI.Models.MultipleChoice
+namespace MultipleChoiceLibrary
 {
     public class MultipleChoiceTest : Post
     {

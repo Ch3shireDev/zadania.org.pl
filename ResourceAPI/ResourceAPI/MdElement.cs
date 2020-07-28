@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using CommonLibrary;
-using ProblemLibrary;
-using ResourceAPI.Models.MultipleChoice;
+using MultipleChoiceLibrary;
 
 namespace ResourceAPI
 {

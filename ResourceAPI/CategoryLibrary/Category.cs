@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using CommonLibrary;
+using ExerciseLibrary;
+using MultipleChoiceLibrary;
 using ProblemLibrary;
-using ResourceAPI.Models.MultipleChoice;
 
-namespace ResourceAPI.Models.Category
+namespace CategoryLibrary
 {
     public class Category
     {
@@ -19,7 +20,7 @@ namespace ResourceAPI.Models.Category
         public IEnumerable<Category> Categories { get; set; }
         public IEnumerable<Problem> Problems { get; set; } = new List<Problem>();
 
-        public IEnumerable<Exercise.Exercise> Exercises { get; set; } = new List<Exercise.Exercise>();
+        public IEnumerable<Exercise> Exercises { get; set; } = new List<Exercise>();
 
         public IEnumerable<MultipleChoiceTest> MultipleChoiceTests { get; set; } = new List<MultipleChoiceTest>();
 

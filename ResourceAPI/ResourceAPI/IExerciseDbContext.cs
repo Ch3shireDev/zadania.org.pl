@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ResourceAPI.Models.Exercise;
+﻿using ExerciseLibrary;
+using Microsoft.EntityFrameworkCore;
 
 namespace ResourceAPI
 {

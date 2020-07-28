@@ -1,8 +1,8 @@
 ﻿using System.Linq;
+using CategoryLibrary;
+using MultipleChoiceLibrary;
 using ProblemLibrary;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Category;
-using ResourceAPI.Models.MultipleChoice;
 
 namespace ResourceAPI.ApiServices
 {

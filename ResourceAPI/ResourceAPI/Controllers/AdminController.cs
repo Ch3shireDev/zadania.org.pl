@@ -6,9 +6,8 @@ using System.Text.RegularExpressions;
 using CommonLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MultipleChoiceLibrary;
 using ProblemLibrary;
-using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.MultipleChoice;
 
 namespace ResourceAPI.Controllers
 {

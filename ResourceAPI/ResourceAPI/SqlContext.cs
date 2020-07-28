@@ -1,9 +1,9 @@
-﻿using CommonLibrary;
+﻿using CategoryLibrary;
+using CommonLibrary;
+using ExerciseLibrary;
 using Microsoft.EntityFrameworkCore;
+using MultipleChoiceLibrary;
 using ProblemLibrary;
-using ResourceAPI.Models.Category;
-using ResourceAPI.Models.Exercise;
-using ResourceAPI.Models.MultipleChoice;
 
 namespace ResourceAPI
 {
@@ -13,20 +13,21 @@ namespace ResourceAPI
         {
         }
 
-        public DbSet<Answer> Answers { get; set; }
-        public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<Problem> Problems { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Author> Authors { get; set; }
-        public DbSet<Tag> Tags { get; set; }
         public DbSet<ProblemTag> ProblemTags { get; set; }
-        public DbSet<ProblemVote> ProblemVotes { get; set; }
         public DbSet<AnswerVote> AnswerVotes { get; set; }
         public static string FileDirectory { get; set; } = "../../images";
         public DbSet<MultipleChoiceTest> MultipleChoiceTests { get; set; }
         public DbSet<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
         public DbSet<MultipleChoiceAnswer> MultipleChoiceAnswers { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Exercise> Exercises { get; set; }
+
+        public DbSet<Answer> Answers { get; set; }
+        public DbSet<Problem> Problems { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<ProblemVote> ProblemVotes { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

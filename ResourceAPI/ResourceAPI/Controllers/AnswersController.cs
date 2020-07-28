@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProblemLibrary;
-using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI.Controllers
 {
@@ -194,7 +193,8 @@ namespace ResourceAPI.Controllers
 
             answer.Points = Context.AnswerVotes
                 .Where(av => av.AnswerId == answer.Id)
-                .Select(av => av.Vote == CommonLibrary.Vote.Upvote ? 1 : av.Vote == CommonLibrary.Vote.Downvote ? -1 : 0)
+                .Select(av =>
+                    av.Vote == CommonLibrary.Vote.Upvote ? 1 : av.Vote == CommonLibrary.Vote.Downvote ? -1 : 0)
                 .Sum();
 
             Context.Answers.Update(answer);

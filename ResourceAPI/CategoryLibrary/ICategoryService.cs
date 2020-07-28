@@ -1,4 +1,4 @@
-﻿using ResourceAPI.Models.Category;
+﻿using CategoryLibrary;
 
 namespace ResourceAPI.ApiServices.Interfaces
 {

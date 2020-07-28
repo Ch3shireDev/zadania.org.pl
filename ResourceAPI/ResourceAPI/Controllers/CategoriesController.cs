@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CategoryLibrary;
+using Microsoft.AspNetCore.Mvc;
 using ResourceAPI.ApiServices.Interfaces;
-using ResourceAPI.Models.Category;
 
 namespace ResourceAPI.Controllers
 {

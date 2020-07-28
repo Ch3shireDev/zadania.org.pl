@@ -2,7 +2,6 @@
 using CategoryLibrary;
 using MultipleChoiceLibrary;
 using ProblemLibrary;
-using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI.ApiServices
 {

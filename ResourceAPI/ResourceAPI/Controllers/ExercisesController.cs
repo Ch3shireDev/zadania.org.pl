@@ -1,7 +1,6 @@
 ﻿using ExerciseLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI.Controllers
 {

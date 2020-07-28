@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
+using CategoryLibrary;
 using CommonLibrary;
+using ExerciseLibrary;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -9,9 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MultipleChoiceLibrary;
 using ProblemLibrary;
 using ResourceAPI.ApiServices;
-using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI
 {

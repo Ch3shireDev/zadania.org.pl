@@ -20,7 +20,7 @@ namespace ProblemLibrary
         public ICollection<ProblemVote> ProblemVotes { get; set; }
 
         //[NotMapped] public IEnumerable<string> AnswerLinks { get; set; }
-        [NotMapped] public bool IsAnswered { get; set; }
+        [NotMapped] public bool IsSolved { get; set; }
         public ICollection<Comment> Comments { get; set; }
         [NotMapped] public string AuthorName { get; set; }
 

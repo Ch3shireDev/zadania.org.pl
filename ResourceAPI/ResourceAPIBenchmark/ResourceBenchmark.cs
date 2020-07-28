@@ -1,11 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
+using CategoryLibrary;
 using CommonLibrary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ProblemLibrary;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
-using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPIBenchmark
 {

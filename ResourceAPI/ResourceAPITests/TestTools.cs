@@ -24,5 +24,18 @@ namespace ResourceAPITests
             });
             return element;
         }
+
+
+        public static async Task<T> PostAsync<T>(this HttpClient client, string url, T element)
+        {
+            var res = await client.PostAsync(url, element.ToHttpContent());
+            return res.ToElement<T>();
+        }
+
+        public static async Task<T> PutAsync<T>(this HttpClient client, string url, T element)
+        {
+            var res = await client.PutAsync(url, element.ToHttpContent());
+            return res.ToElement<T>();
+        }
     }
 }

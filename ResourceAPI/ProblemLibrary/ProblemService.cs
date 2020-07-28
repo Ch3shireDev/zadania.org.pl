@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CommonLibrary;
 
 namespace ProblemLibrary
 {
@@ -32,7 +33,7 @@ namespace ProblemLibrary
                 .FirstOrDefault(p => p.Id == id);
             if (problem == null) return null;
 
-            problem.IsAnswered = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
+            problem.IsSolved = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
             problem = problem.Render();
             problem.Content = null;
             return problem;
@@ -70,7 +71,7 @@ namespace ProblemLibrary
                         Name = p.Name,
                         Content = p.Content,
                         AuthorId = p.AuthorId,
-                        IsAnswered = p.IsAnswered,
+                        IsSolved = p.IsSolved,
                         CategoryId = p.CategoryId,
                         AuthorName = p.Author.Name,
                         Answers = p.Answers.Select(a => new Answer
@@ -88,7 +89,7 @@ namespace ProblemLibrary
                     .FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return null;
 
-            problem.IsAnswered = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
+            problem.IsSolved = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
             problem = problem.Render();
             problem.Answers = problem.Answers.Select(a => a.Render()).ToList();
             return problem;
@@ -263,20 +264,61 @@ namespace ProblemLibrary
             var answer = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
             if (answer == null) return;
             if (answer.IsApproved == isApproved) return;
+
+            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
+            if (problem == null) return;
+
             if (isApproved)
             {
                 var answers = _context.Answers.Where(a => a.ProblemId == problemId).ToList();
                 foreach (var element in answers) element.IsApproved = element.Id == answerId;
-
                 _context.Answers.UpdateRange(answers);
+                if (!problem.IsSolved)
+                {
+                    problem.IsSolved = true;
+                    _context.Problems.Update(problem);
+                }
             }
             else
             {
                 answer.IsApproved = false;
                 _context.Answers.Update(answer);
+                if (problem.IsSolved)
+                {
+                    problem.IsSolved = false;
+                    _context.Problems.Update(problem);
+                }
             }
 
             _context.SaveChanges();
+        }
+
+        public void VoteProblem(int problemId, Vote vote, int authorId)
+        {
+            //var problemVote =
+            //    _context.ProblemVotes.FirstOrDefault(pv => pv.AuthorId == authorId && pv.ProblemId == problemId);
+            //if (problemVote == null)
+            //{
+            //    problemVote = new ProblemVote { AuthorId = authorId, ProblemId = problemId };
+            //    _context.ProblemVotes.Add(problemVote);
+            //}
+            //else
+            //{
+            //    problemVote.Vote = problemVote.Vote == vote ? Vote.None : vote;
+            //    _context.ProblemVotes.Update(problemVote);
+            //}
+
+            //_context.SaveChanges();
+
+            //var problem = Get(problemId);
+
+            //problem.Points = _context.ProblemVotes.Where(pv => pv.ProblemId == problem.Id)
+            //    .Select(pv => pv.Vote == Vote.Upvote ? 1 : pv.Vote == Vote.Downvote ? -1 : 0)
+            //    .Sum();
+
+            //_context.Problems.Update(problem);
+
+            //_context.SaveChanges();
         }
 
 

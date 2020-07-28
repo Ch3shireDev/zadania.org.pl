@@ -8,7 +8,6 @@ using MultipleChoiceLibrary;
 using ProblemLibrary;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
-using ResourceAPI.ApiServices.Interfaces;
 using Xunit;
 
 namespace ResourceAPITests

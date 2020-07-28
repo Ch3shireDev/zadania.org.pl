@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CommonLibrary;
 
 namespace ProblemLibrary
 {
@@ -19,5 +20,6 @@ namespace ProblemLibrary
         bool EditAnswer(int problemId, int answerId, Answer answer, int authorId = 1);
         bool DeleteAnswer(int problemId, int answerId);
         void SetAnswerApproval(int problemId, int answerId1, bool isApproved = true);
+        void VoteProblem(int id, Vote vote, int authorId = 1);
     }
 }

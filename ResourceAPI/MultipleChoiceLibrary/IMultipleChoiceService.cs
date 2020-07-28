@@ -1,6 +1,4 @@
-﻿using MultipleChoiceLibrary;
-
-namespace ResourceAPI.ApiServices.Interfaces
+﻿namespace MultipleChoiceLibrary
 {
     public interface IMultipleChoiceService
     {

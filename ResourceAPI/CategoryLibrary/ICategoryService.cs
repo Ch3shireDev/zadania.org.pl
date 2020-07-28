@@ -1,6 +1,4 @@
-﻿using CategoryLibrary;
-
-namespace ResourceAPI.ApiServices.Interfaces
+﻿namespace CategoryLibrary
 {
     public interface ICategoryService
     {

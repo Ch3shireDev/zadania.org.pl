@@ -1,6 +1,5 @@
 ﻿using CategoryLibrary;
 using Microsoft.AspNetCore.Mvc;
-using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI.Controllers
 {

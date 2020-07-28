@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using MultipleChoiceLibrary;
 using ResourceAPI;
 using ResourceAPI.ApiServices;
-using ResourceAPI.ApiServices.Interfaces;
 using Xunit;
 
 namespace ResourceAPITests

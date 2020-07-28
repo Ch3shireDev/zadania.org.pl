@@ -52,7 +52,7 @@ namespace ResourceAPITests
 
             // Pobrany problem powinien figurować jako rozwiązany.
             var problem1 = _problemService.Get(id);
-            Assert.True(problem1.IsAnswered);
+            Assert.True(problem1.IsSolved);
             Assert.True(problem1.Answers.First(a => a.Id == answerId1).IsApproved);
             Assert.False(problem1.Answers.First(a => a.Id == answerId2).IsApproved);
             Assert.False(problem1.Answers.First(a => a.Id == answerId3).IsApproved);
@@ -62,7 +62,7 @@ namespace ResourceAPITests
 
             // Przy zatwierdzeniu innego rozwiązania odpowiedź pierwsza nie powinna być dalej zatwierdzona.
             var problem2 = _problemService.Get(id);
-            Assert.True(problem2.IsAnswered);
+            Assert.True(problem2.IsSolved);
             Assert.False(problem2.Answers.First(a => a.Id == answerId1).IsApproved);
             Assert.True(problem2.Answers.First(a => a.Id == answerId2).IsApproved);
             Assert.False(problem2.Answers.First(a => a.Id == answerId3).IsApproved);
@@ -72,7 +72,7 @@ namespace ResourceAPITests
 
             // Teraz problem powinien figurować jako nierozwiązany.
             var problem3 = _problemService.Get(id);
-            Assert.False(problem3.IsAnswered);
+            Assert.False(problem3.IsSolved);
             Assert.False(problem3.Answers.First(a => a.Id == answerId1).IsApproved);
             Assert.False(problem3.Answers.First(a => a.Id == answerId2).IsApproved);
             Assert.False(problem3.Answers.First(a => a.Id == answerId3).IsApproved);

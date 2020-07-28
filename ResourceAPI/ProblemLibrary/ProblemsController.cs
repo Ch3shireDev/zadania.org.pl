@@ -109,34 +109,52 @@ namespace ProblemLibrary
         [NonAction]
         public ActionResult VoteProblem(int id, Vote vote)
         {
-            var problem = _context.Problems.FirstOrDefault(p => p.Id == id);
+            var problem = _problemService.Get(id);
             if (problem == null) return StatusCode(403);
             var author = _authorService.GetAuthor(1);
             if (author == null) return StatusCode(403);
-            var problemVote =
-                _context.ProblemVotes.FirstOrDefault(pv => pv.AuthorId == author.Id && pv.ProblemId == id);
-            if (problemVote == null)
-            {
-                problemVote = new ProblemVote {Author = author, Problem = problem};
-                _context.ProblemVotes.Add(problemVote);
-            }
-            else
-            {
-                problemVote.Vote = problemVote.Vote == vote ? Vote.None : vote;
-                _context.ProblemVotes.Update(problemVote);
-            }
 
-            _context.SaveChanges();
+            _problemService.VoteProblem(id, vote);
+            return StatusCode(200);
+        }
 
-            problem.Points = _context.ProblemVotes.Where(pv => pv.ProblemId == problem.Id)
-                .Select(pv => pv.Vote == Vote.Upvote ? 1 : pv.Vote == Vote.Downvote ? -1 : 0)
-                .Sum();
+        [HttpGet("{problemId}/answers/{answerId}")]
+        public ActionResult GetAnswer(int problemId, int answerId)
+        {
+            var answer = _problemService.GetAnswer(problemId, answerId);
+            if (answer == null) return NotFound();
+            return Ok(answer);
+        }
 
-            _context.Problems.Update(problem);
+        [HttpPost("{problemId}/answers")]
+        public ActionResult PostAnswer(int problemId, Answer answer)
+        {
+            var answerId = _problemService.CreateAnswer(problemId, answer);
+            if (answerId == 0) return Forbid();
+            return Ok(new Answer {Id = answerId});
+        }
 
-            _context.SaveChanges();
+        [HttpPut("{problemId}/answers/{answerId}")]
+        public ActionResult PutAnswer(int problemId, int answerId, Answer answer)
+        {
+            var result = _problemService.EditAnswer(problemId, answerId, answer);
+            if (result == false) return Forbid();
+            return Ok();
+        }
 
-            return StatusCode(200, problemVote.Vote);
+        [HttpDelete("{problemId}/answers/{answerId}")]
+        public ActionResult DeleteAnswer(int problemId, int answerId)
+        {
+            var result = _problemService.DeleteAnswer(problemId, answerId);
+            if (result == false) return Forbid();
+            return Ok();
+        }
+
+        [HttpPatch("{problemId}/answers/{answerId}")]
+        public ActionResult PatchAnswer(int problemId, int answerId, Answer answer)
+        {
+            _problemService.SetAnswerApproval(problemId, answerId, answer.IsApproved);
+            return Ok();
         }
     }
 }

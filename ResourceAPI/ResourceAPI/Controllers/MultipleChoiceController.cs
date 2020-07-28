@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MultipleChoiceLibrary;
 using ProblemLibrary;
-using ResourceAPI.ApiServices.Interfaces;
 
 namespace ResourceAPI.Controllers
 {

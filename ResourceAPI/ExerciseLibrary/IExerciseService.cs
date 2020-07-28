@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using ExerciseLibrary;
 
-namespace ResourceAPI.ApiServices.Interfaces
+namespace ExerciseLibrary
 {
     public interface IExerciseService
     {

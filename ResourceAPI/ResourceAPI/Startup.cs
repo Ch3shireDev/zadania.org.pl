@@ -43,6 +43,9 @@ namespace ResourceAPI
 
             services.AddScoped<IProblemDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<ICategoryDbContext>(provider => provider.GetService<SqlContext>());
+            services.AddScoped<IMultipleChoiceDbContext>(provider => provider.GetService<SqlContext>());
+            services.AddScoped<IExerciseDbContext>(provider => provider.GetService<SqlContext>());
+
 
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IProblemService, ProblemService>();
@@ -61,6 +64,12 @@ namespace ResourceAPI
 
             var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
             services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
+
+            var multipleChoiceLibraryAssembly = Assembly.Load("MultipleChoiceLibrary");
+            services.AddMvc().AddApplicationPart(multipleChoiceLibraryAssembly).AddControllersAsServices();
+
+            var exerciseLibraryAssembly = Assembly.Load("ExerciseLibrary");
+            services.AddMvc().AddApplicationPart(exerciseLibraryAssembly).AddControllersAsServices();
 
             var categoryLibraryAssembly = Assembly.Load("CategoryLibrary");
             services.AddMvc().AddApplicationPart(categoryLibraryAssembly).AddControllersAsServices();

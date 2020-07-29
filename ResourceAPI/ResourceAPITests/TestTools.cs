@@ -16,6 +16,7 @@ namespace ResourceAPITests
 
         public static T ToElement<T>(this HttpResponseMessage response)
         {
+            if (!response.IsSuccessStatusCode) return default;
             var task = Task.Run(async () => await response.Content.ReadAsStringAsync());
             var responseStr = task.Result;
             var element = JsonSerializer.Deserialize<T>(responseStr, new JsonSerializerOptions

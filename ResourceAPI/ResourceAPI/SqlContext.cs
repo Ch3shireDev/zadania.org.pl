@@ -7,7 +7,8 @@ using ProblemLibrary;
 
 namespace ResourceAPI
 {
-    public class SqlContext : DbContext, IProblemDbContext, IExerciseDbContext, ICategoryDbContext
+    public class SqlContext : DbContext, IProblemDbContext, IExerciseDbContext, ICategoryDbContext,
+        IMultipleChoiceDbContext
     {
         public SqlContext(DbContextOptions options) : base(options)
         {
@@ -18,11 +19,11 @@ namespace ResourceAPI
         public DbSet<ProblemTag> ProblemTags { get; set; }
         public DbSet<AnswerVote> AnswerVotes { get; set; }
         public static string FileDirectory { get; set; } = "../../images";
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Exercise> Exercises { get; set; }
         public DbSet<MultipleChoiceTest> MultipleChoiceTests { get; set; }
         public DbSet<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
         public DbSet<MultipleChoiceAnswer> MultipleChoiceAnswers { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Exercise> Exercises { get; set; }
 
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Problem> Problems { get; set; }

@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ExerciseLibrary;
 
-namespace ResourceAPI.ApiServices
+namespace ExerciseLibrary
 {
     public class ExerciseService : IExerciseService
     {
-        private readonly SqlContext _context;
+        private readonly IExerciseDbContext _context;
 
-        public ExerciseService(SqlContext context)
+        public ExerciseService(IExerciseDbContext context)
         {
             _context = context;
         }

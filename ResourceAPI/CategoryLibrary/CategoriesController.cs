@@ -79,7 +79,7 @@ namespace CategoryLibrary
             return Ok(category);
         }
 
-        [HttpGet("{id}/multiple-choice")]
+        [HttpGet("{id}/multiple-choice-tests")]
         public ActionResult GetMultipleChoiceTests(int id)
         {
             var category = _categoryService.GetMultipleChoiceTests(id);

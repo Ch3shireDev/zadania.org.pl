@@ -1,8 +1,7 @@
-﻿using ExerciseLibrary;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace ResourceAPI.Controllers
+namespace ExerciseLibrary
 {
     [Route("api/v1/exercises")]
     [ApiController]

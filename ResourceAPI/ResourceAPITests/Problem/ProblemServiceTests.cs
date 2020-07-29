@@ -7,7 +7,7 @@ using ResourceAPI;
 using ResourceAPI.ApiServices;
 using Xunit;
 
-namespace ResourceAPITests
+namespace ResourceAPITests.Problem
 {
     public class ProblemServiceTests
     {
@@ -27,7 +27,7 @@ namespace ResourceAPITests
         public void ApproveAnswersTest()
         {
             // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx", Content = "yyy"});
+            var id = _problemService.Create(new ProblemLibrary.Problem {Name = "xxx", Content = "yyy"});
 
             // Tworzymy nową odpowiedź.
             var answerId1 = _problemService.CreateAnswer(id, new Answer {Content = "xxx"});
@@ -82,9 +82,9 @@ namespace ResourceAPITests
         public void BrowseProblemsTest()
         {
             var num1 = _problemService.BrowseProblems(0, out _).Count();
-            _problemService.Create(new Problem {Name = "xxx"});
-            _problemService.Create(new Problem {Name = "xxx"});
-            _problemService.Create(new Problem {Name = "xxx"});
+            _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
+            _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
+            _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
             var num2 = _problemService.BrowseProblems(0, out _).Count();
             Assert.Equal(num1 + 3, num2);
         }
@@ -93,7 +93,7 @@ namespace ResourceAPITests
         public void CreateAnswerTest()
         {
             // Tworzymy nowy problem.
-            var problemId = _problemService.Create(new Problem {Name = "xxx"});
+            var problemId = _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
 
             // Tworzymy nowe odpowiedzi.
             var aid1 = _problemService.CreateAnswer(problemId, new Answer {Content = "aaa"});
@@ -109,7 +109,7 @@ namespace ResourceAPITests
         [Fact]
         public void CreateProblemTest()
         {
-            var id = _problemService.Create(new Problem {Name = "xxx"});
+            var id = _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
             var problem = _problemService.Get(id);
             Assert.Equal(id, problem.Id);
         }
@@ -118,7 +118,7 @@ namespace ResourceAPITests
         public void DeleteAnswerTest()
         {
             // Tworzymy nowy problem.
-            var problemId = _problemService.Create(new Problem {Name = "xxx"});
+            var problemId = _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
 
             // Tworzymy nowe odpowiedzi.
             var answer1Id = _problemService.CreateAnswer(problemId, new Answer {Content = "aaa"});
@@ -148,7 +148,7 @@ namespace ResourceAPITests
         public void DeleteProblemTest()
         {
             // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx"});
+            var id = _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
 
             // Wartości powinny być takie jak utworzone.
             var problem = _problemService.Get(id);
@@ -164,7 +164,7 @@ namespace ResourceAPITests
         public void EditAnswerTest()
         {
             // Tworzymy nowy problem.
-            var problemId = _problemService.Create(new Problem {Name = "xxx"});
+            var problemId = _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
 
             // Tworzymy nowe odpowiedzi.
             var answerId = _problemService.CreateAnswer(problemId, new Answer {Content = "aaa"});
@@ -188,7 +188,7 @@ namespace ResourceAPITests
         public void EditProblemTest()
         {
             // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx"});
+            var id = _problemService.Create(new ProblemLibrary.Problem {Name = "xxx"});
 
             // Wartości powinny być takie jak utworzone.
             var problem = _problemService.Get(id);
@@ -210,7 +210,7 @@ namespace ResourceAPITests
         public void GetProblemTest()
         {
             // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx", Content = "yyy"});
+            var id = _problemService.Create(new ProblemLibrary.Problem {Name = "xxx", Content = "yyy"});
 
             // Wartości powinny być takie jak utworzone.
             var problem = _problemService.Get(id);

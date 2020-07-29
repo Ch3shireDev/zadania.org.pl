@@ -1,56 +1,57 @@
-﻿using System.Linq;
-using MultipleChoiceLibrary;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace ResourceAPI.ApiServices
+namespace MultipleChoiceLibrary
 {
     public class MultipleChoiceService : IMultipleChoiceService
     {
-        private readonly SqlContext _context;
+        private readonly IMultipleChoiceDbContext _context;
 
-        public MultipleChoiceService(SqlContext context)
+        public MultipleChoiceService(IMultipleChoiceDbContext context)
         {
             _context = context;
         }
 
-        public MultipleChoiceTest GetTest(int testId, bool includeQuestions = false, bool includeAnswers = false)
+        public MultipleChoiceTest GetTest(int testId, bool includeQuestions = true, bool includeAnswers = true)
         {
             var test = _context.MultipleChoiceTests.Select(t => new MultipleChoiceTest
             {
                 Id = t.Id,
                 AuthorId = t.AuthorId,
                 Content = t.Content,
+                CategoryId = t.CategoryId,
                 Name = t.Name,
-                Questions = t.Questions.Select(q => new MultipleChoiceQuestion {TestId = q.TestId, Id = q.Id}).ToList()
+                Questions = t.Questions.Select(q => new MultipleChoiceQuestion {Id = q.Id}).ToList()
             }).FirstOrDefault(t => t.Id == testId);
             if (test == null) return null;
             test.Render();
             if (includeQuestions)
-                test.Questions = test.Questions.Select(q => GetQuestionById(q.TestId, q.Id, includeAnswers)).ToList();
+                test.Questions = test.Questions.Select(q => GetQuestion(q.Id, includeAnswers)).ToList();
             return test;
         }
 
-        public MultipleChoiceQuestion GetQuestionById(int testId, int questionId, bool includeAnswers = false)
+        public MultipleChoiceQuestion GetQuestion(int questionId, bool includeAnswers = false)
         {
             var question = _context.MultipleChoiceQuestions
                 .Select(q => new MultipleChoiceQuestion
                 {
                     Id = q.Id,
                     AuthorId = q.AuthorId,
-                    TestId = testId,
+                    TestId = q.TestId,
                     Content = q.Content,
                     Solution = q.Solution,
                     Answers = q.Answers.Select(a => new MultipleChoiceAnswer
                         {Id = a.Id, QuestionId = a.QuestionId, TestId = a.TestId}).ToList()
                 })
-                .FirstOrDefault(q => q.TestId == testId && q.Id == questionId);
+                .FirstOrDefault(q => q.Id == questionId);
             if (question == null) return null;
             question.Render();
             if (includeAnswers)
-                question.Answers = question.Answers.Select(a => GetAnswerById(a.TestId, a.QuestionId, a.Id)).ToList();
+                question.Answers = question.Answers.Select(a => GetAnswer(a.Id)).ToList();
             return question;
         }
 
-        public MultipleChoiceAnswer GetAnswerById(int testId, int questionId, int answerId)
+        public MultipleChoiceAnswer GetAnswer(int answerId)
         {
             var answer = _context.MultipleChoiceAnswers.Select(a => new MultipleChoiceAnswer
             {
@@ -59,19 +60,20 @@ namespace ResourceAPI.ApiServices
                 TestId = a.Question.TestId,
                 Content = a.Content,
                 IsCorrect = a.IsCorrect
-            }).FirstOrDefault(a => a.Id == answerId && a.QuestionId == questionId && a.TestId == testId);
+            }).FirstOrDefault(a => a.Id == answerId);
             answer?.Render();
             return answer;
         }
 
         public int CreateTest(int categoryId, MultipleChoiceTest element, int authorId = 1)
         {
-            if (!_context.Categories.Any(c => c.Id != categoryId)) return 0;
-            if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
+            //if (!_context.Categories.Any(c => c.Id != categoryId)) return 0;
+            //if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
 
             var test = new MultipleChoiceTest
             {
                 Name = element.Name,
+                Content = element.Content,
                 CategoryId = categoryId,
                 AuthorId = authorId
             };
@@ -85,7 +87,7 @@ namespace ResourceAPI.ApiServices
         {
             var test = _context.MultipleChoiceTests.FirstOrDefault(t => t.Id == testId);
             if (test == null) return 0;
-            if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
+            //if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
             var newQuestion = new MultipleChoiceQuestion
             {
                 Content = question.Content,
@@ -101,7 +103,7 @@ namespace ResourceAPI.ApiServices
         {
             var question = _context.MultipleChoiceQuestions.FirstOrDefault(q => q.Id == questionId);
             if (question == null) return 0;
-            if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
+            //if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
             var newAnswer = new MultipleChoiceAnswer
             {
                 Content = answer.Content,
@@ -120,6 +122,32 @@ namespace ResourceAPI.ApiServices
             _context.MultipleChoiceTests.Remove(test);
             _context.SaveChanges();
             return true;
+        }
+
+        public bool EditAnswer(int answerId, MultipleChoiceAnswer answer)
+        {
+            var element = _context.MultipleChoiceAnswers.FirstOrDefault(a => a.Id == answerId);
+            if (element == null) return false;
+            element.Content = answer.Content;
+            _context.MultipleChoiceAnswers.Update(element);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool EditQuestion(int questionId, MultipleChoiceQuestion question)
+        {
+            var element = _context.MultipleChoiceQuestions.FirstOrDefault(q => q.Id == questionId);
+            if (element == null) return false;
+            element.Content = question.Content;
+            _context.MultipleChoiceQuestions.Update(element);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public IEnumerable<MultipleChoiceTest> Browse()
+        {
+            var multipleChoiceTests = _context.MultipleChoiceTests.ToList();
+            return multipleChoiceTests;
         }
 
         public int Create(MultipleChoiceTest multipleChoiceTest, int authorId = 1)
@@ -141,7 +169,27 @@ namespace ResourceAPI.ApiServices
             var element = _context.MultipleChoiceTests.FirstOrDefault(m => m.Id == testId);
             if (element == null) return false;
             element.Name = multipleChoiceTest.Name;
+            element.Content = multipleChoiceTest.Content;
+            element.CategoryId = multipleChoiceTest.CategoryId;
             _context.MultipleChoiceTests.Update(element);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteAnswer(int answerId)
+        {
+            var answer = _context.MultipleChoiceAnswers.FirstOrDefault(a => a.Id == answerId);
+            if (answer == null) return false;
+            _context.MultipleChoiceAnswers.Remove(answer);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteQuestion(int questionId)
+        {
+            var question = _context.MultipleChoiceQuestions.FirstOrDefault(q => q.Id == questionId);
+            if (question == null) return false;
+            _context.MultipleChoiceQuestions.Remove(question);
             _context.SaveChanges();
             return true;
         }

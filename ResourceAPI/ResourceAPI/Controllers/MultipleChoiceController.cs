@@ -47,7 +47,7 @@ namespace ResourceAPI.Controllers
         [HttpGet("{testId:int}")]
         public ActionResult GetTest(int testId)
         {
-            var test = _multipleChoiceService.GetTestById(testId, true, true);
+            var test = _multipleChoiceService.GetTest(testId, true, true);
             return StatusCode(200, test);
         }
 

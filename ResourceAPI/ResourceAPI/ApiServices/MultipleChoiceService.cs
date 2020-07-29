@@ -12,7 +12,7 @@ namespace ResourceAPI.ApiServices
             _context = context;
         }
 
-        public MultipleChoiceTest GetTestById(int testId, bool includeQuestions = false, bool includeAnswers = false)
+        public MultipleChoiceTest GetTest(int testId, bool includeQuestions = false, bool includeAnswers = false)
         {
             var test = _context.MultipleChoiceTests.Select(t => new MultipleChoiceTest
             {
@@ -134,6 +134,16 @@ namespace ResourceAPI.ApiServices
             _context.MultipleChoiceTests.Add(element);
             _context.SaveChanges();
             return element.Id;
+        }
+
+        public bool EditTest(int testId, MultipleChoiceTest multipleChoiceTest)
+        {
+            var element = _context.MultipleChoiceTests.FirstOrDefault(m => m.Id == testId);
+            if (element == null) return false;
+            element.Name = multipleChoiceTest.Name;
+            _context.MultipleChoiceTests.Update(element);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

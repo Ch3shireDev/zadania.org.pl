@@ -28,3 +28,4 @@ ResourceAPI/ResourceAPITests/bin/**
 ResourceAPI/.vs/**
 old/**
 /ResourceAPI/ResourceAPIBenchmark/appsettings.Development.json
+*.xml

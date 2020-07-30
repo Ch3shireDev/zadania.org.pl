@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using CommonLibrary;
-using MultipleChoiceLibrary;
+using QuizLibrary;
 
 namespace ResourceAPI
 {
@@ -51,7 +51,7 @@ namespace ResourceAPI
         public string Content { get; set; }
         public List<MdElement> Children { get; set; } = new List<MdElement>();
 
-        public MultipleChoiceQuestion ToQuestion(Author author)
+        public QuizQuestion ToQuestion(Author author)
         {
             var solutionText = Children.Count > 0 ? Children[0].Content : null;
             var correctLetter = "";
@@ -63,11 +63,11 @@ namespace ResourceAPI
             }
 
             var matchGroup = Regex.Matches(Content, @"^([a-zA-Z])[\.\)] (.*)$", RegexOptions.Multiline);
-            var answers = new List<MultipleChoiceAnswer>();
+            var answers = new List<QuizAnswer>();
             foreach (Match m in matchGroup)
             {
                 var isCorrect = m.Groups[1].Value.ToLower() == correctLetter;
-                var answer = new MultipleChoiceAnswer
+                var answer = new QuizAnswer
                     {Content = m.Groups[2].Value, IsCorrect = isCorrect, Author = author};
                 answers.Add(answer);
             }
@@ -77,7 +77,7 @@ namespace ResourceAPI
             var solution = Children.Count > 0 ? Children[0].Content.Trim() : null;
             if (!string.IsNullOrWhiteSpace(solution))
                 solution = Regex.Replace(solution, @"^Odpowiedź[:]? [A-Z]$", "", RegexOptions.Multiline);
-            var question = new MultipleChoiceQuestion
+            var question = new QuizQuestion
                 {Content = Content.Trim(), Solution = solution, Answers = answers, Author = author};
             return question;
         }

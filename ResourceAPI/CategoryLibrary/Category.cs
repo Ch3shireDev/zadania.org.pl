@@ -2,8 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using CommonLibrary;
 using ExerciseLibrary;
-using MultipleChoiceLibrary;
 using ProblemLibrary;
+using QuizLibrary;
 
 namespace CategoryLibrary
 {
@@ -22,7 +22,7 @@ namespace CategoryLibrary
 
         public IEnumerable<Exercise> Exercises { get; set; } = new List<Exercise>();
 
-        public IEnumerable<MultipleChoiceTest> MultipleChoiceTests { get; set; } = new List<MultipleChoiceTest>();
+        public IEnumerable<Quiz> QuizTests { get; set; } = new List<Quiz>();
 
         public Category Render()
         {

@@ -2,6 +2,9 @@
 
 namespace CategoryLibrary
 {
+    /// <summary>
+    ///     Kategorie - działają jak foldery. Zawierają w sobie listy elementów typu Problem, Quiz oraz Exercise.
+    /// </summary>
     [Route("api/v1/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -13,6 +16,10 @@ namespace CategoryLibrary
             _categoryService = categoryService;
         }
 
+        /// <summary>
+        ///     Pobiera element główny kategorii.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult GetRoot()
         {
@@ -79,10 +86,10 @@ namespace CategoryLibrary
             return Ok(category);
         }
 
-        [HttpGet("{id}/multiple-choice-tests")]
-        public ActionResult GetMultipleChoiceTests(int id)
+        [HttpGet("{id}/quiz")]
+        public ActionResult GetQuizTests(int id)
         {
-            var category = _categoryService.GetMultipleChoiceTests(id);
+            var category = _categoryService.GetQuizTests(id);
             if (category == null) return NotFound();
             return Ok(category);
         }

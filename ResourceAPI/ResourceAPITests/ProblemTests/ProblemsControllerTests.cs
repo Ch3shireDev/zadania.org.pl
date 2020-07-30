@@ -2,19 +2,20 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using CategoryLibrary;
 using ProblemLibrary;
 using Xunit;
 
-namespace ResourceAPITests.Problem
+namespace ResourceAPITests.ProblemTests
 {
     public class ProblemsControllerTests
     {
         private readonly HttpClient _client = new TestClientProvider().Client;
 
-        private async Task<ProblemLibrary.Problem> GetProblem(int problemId)
+        private async Task<Problem> GetProblem(int problemId)
         {
             var problemRes = await _client.GetAsync($"/api/v1/problems/{problemId}");
-            var problem = problemRes.ToElement<ProblemLibrary.Problem>();
+            var problem = problemRes.ToElement<Problem>();
             return problem;
         }
 
@@ -106,7 +107,7 @@ namespace ResourceAPITests.Problem
         [Fact]
         public async Task<int> CreateProblem()
         {
-            var problem = new ProblemLibrary.Problem
+            var problem = new Problem
             {
                 Name = "abc",
                 Content = "cde",
@@ -116,17 +117,17 @@ namespace ResourceAPITests.Problem
             // Utworzenie problemu powinno zwrócić wartość id.
             var response = await _client.PostAsync("/api/v1/problems/", problem.ToHttpContent());
             response.EnsureSuccessStatusCode();
-            var resProblem = response.ToElement<ProblemLibrary.Problem>();
+            var resProblem = response.ToElement<Problem>();
 
             // Problem powinien być pod wskazanym id.
             var response2 = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            var probRes = response2.ToElement<ProblemLibrary.Problem>();
+            var probRes = response2.ToElement<Problem>();
             Assert.Equal("abc", probRes.Name);
             Assert.Contains("cde", probRes.ContentHtml);
 
             // Problem powinien wylądować w kategorii 1, Root.
             var catRes = await _client.GetAsync("/api/v1/categories/1");
-            var cat = catRes.ToElement<CategoryLibrary.Category>();
+            var cat = catRes.ToElement<Category>();
             Assert.Equal("abc", cat.Problems.First().Name);
 
             return resProblem.Id;
@@ -180,7 +181,7 @@ namespace ResourceAPITests.Problem
         [Fact]
         public async Task DeleteProblem()
         {
-            var problem = new ProblemLibrary.Problem
+            var problem = new Problem
             {
                 Name = "abc",
                 Content = "cde"
@@ -189,11 +190,11 @@ namespace ResourceAPITests.Problem
             // Utworzenie problemu powinno zwrócić wartość id.
             var response = await _client.PostAsync("/api/v1/problems/", problem.ToHttpContent());
             response.EnsureSuccessStatusCode();
-            var resProblem = response.ToElement<ProblemLibrary.Problem>();
+            var resProblem = response.ToElement<Problem>();
 
             // Problem powinien być pod wskazanym id.
             var response2 = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            var probRes = response2.ToElement<ProblemLibrary.Problem>();
+            var probRes = response2.ToElement<Problem>();
             Assert.Equal("abc", probRes.Name);
             Assert.Contains("cde", probRes.ContentHtml);
 
@@ -232,7 +233,7 @@ namespace ResourceAPITests.Problem
         [Fact]
         public async Task EditProblem()
         {
-            var problem = new ProblemLibrary.Problem
+            var problem = new Problem
             {
                 Name = "abc",
                 Content = "cde"
@@ -241,11 +242,11 @@ namespace ResourceAPITests.Problem
             // Utworzenie problemu powinno zwrócić wartość id.
             var response = await _client.PostAsync("/api/v1/problems/", problem.ToHttpContent());
             response.EnsureSuccessStatusCode();
-            var resProblem = response.ToElement<ProblemLibrary.Problem>();
+            var resProblem = response.ToElement<Problem>();
 
             // Bieżący problem powinien zawierać nowe wartości.
             var problem1Res = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            var problem1 = problem1Res.ToElement<ProblemLibrary.Problem>();
+            var problem1 = problem1Res.ToElement<Problem>();
             Assert.Equal("abc", problem1.Name);
             Assert.Contains("cde", problem1.ContentHtml);
 
@@ -258,7 +259,7 @@ namespace ResourceAPITests.Problem
 
             // Bieżący problem powinien zawierać nowe wartości.
             var problem2Res = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            var problem2 = problem2Res.ToElement<ProblemLibrary.Problem>();
+            var problem2 = problem2Res.ToElement<Problem>();
             Assert.Equal("xyz", problem2.Name);
             Assert.Contains("zzz", problem2.ContentHtml);
         }

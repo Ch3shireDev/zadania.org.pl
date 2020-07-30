@@ -6,6 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace ProblemLibrary
 {
+    /// <summary>
+    ///     Problemy otwarte zamieszczane przez użytkowników.
+    /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
     public class ProblemsController : ControllerBase
@@ -18,6 +21,12 @@ namespace ProblemLibrary
 
         private ILogger<ProblemsController> _logger;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="context"></param>
+        /// <param name="problemService"></param>
+        /// <param name="authorService"></param>
         public ProblemsController(ILogger<ProblemsController> logger, IProblemDbContext context,
             IProblemService problemService, IAuthorService authorService)
         {
@@ -27,6 +36,15 @@ namespace ProblemLibrary
             _authorService = authorService;
         }
 
+        /// <summary>
+        ///     Zwraca listę problemów.
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <param name="page"></param>
+        /// <param name="query"></param>
+        /// <param name="newest"></param>
+        /// <param name="highest"></param>
+        /// <returns></returns>
         [HttpGet]
         public OkObjectResult Browse(
             [FromQuery] string tags = null,
@@ -47,6 +65,10 @@ namespace ProblemLibrary
         }
 
 
+        /// <summary>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}")]
         public ActionResult Get(int id)
         {
@@ -55,6 +77,10 @@ namespace ProblemLibrary
             return Ok(problem);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="problem"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         public ActionResult Post(Problem problem)
@@ -67,6 +93,11 @@ namespace ProblemLibrary
         }
 
 
+        /// <summary>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="problem"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [Authorize]
         public ActionResult Put(int id, Problem problem)

@@ -9,7 +9,7 @@
 
         //bool SetParent(int parentId, int childId);
         Category GetProblems(int id);
-        Category GetMultipleChoiceTests(int cid1);
+        Category GetQuizTests(int cid1);
         Category GetExercises(int cid1);
     }
 }

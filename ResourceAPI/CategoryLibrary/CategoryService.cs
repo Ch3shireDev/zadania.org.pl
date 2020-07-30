@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using MultipleChoiceLibrary;
 using ProblemLibrary;
+using QuizLibrary;
 
 namespace CategoryLibrary
 {
@@ -29,8 +29,8 @@ namespace CategoryLibrary
                     Description = c.Description,
                     Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList(),
                     Problems = c.Problems.Select(cp => new Problem {Id = cp.Id, Name = cp.Name}).ToList(),
-                    MultipleChoiceTests = c.MultipleChoiceTests
-                        .Select(mt => new MultipleChoiceTest {Id = mt.Id, Name = mt.Name}).ToList()
+                    QuizTests = c.QuizTests
+                        .Select(mt => new Quiz {Id = mt.Id, Name = mt.Name}).ToList()
                 })
                 .FirstOrDefault(c => c.Id == id);
 
@@ -41,13 +41,13 @@ namespace CategoryLibrary
             return category.Render();
         }
 
-        public Category GetMultipleChoiceTests(int categoryId)
+        public Category GetQuizTests(int categoryId)
         {
             var category = _context.Categories.Select(c => new Category
             {
                 Id = c.Id,
                 ParentId = c.ParentId,
-                MultipleChoiceTests = c.MultipleChoiceTests.ToList()
+                QuizTests = c.QuizTests.ToList()
             }).FirstOrDefault(c => c.Id == categoryId);
             return category;
         }

@@ -1,3 +1,13 @@
 {
-  "help": "https://go.microsoft.com/fwlink/?linkid=866610"
+  "dependentFileProviders": {
+    "add": {
+      "fileToFile": {
+        "add": {
+          "ICategoryService.cs": [
+            "CategoryService.cs"
+          ]
+        }
+      }
+    }
+  }
 }

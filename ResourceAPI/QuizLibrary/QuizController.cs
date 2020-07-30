@@ -2,52 +2,52 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace MultipleChoiceLibrary
+namespace QuizLibrary
 {
-    [Route("api/v1/multiple-choice-tests")]
+    [Route("api/v1/quiz")]
     [ApiController]
-    public class MultipleChoiceController : ControllerBase
+    public class QuizController : ControllerBase
     {
-        private readonly IMultipleChoiceService _multipleChoiceService;
+        private readonly IQuizService _QuizService;
 
-        private ILogger<MultipleChoiceController> _logger;
+        private ILogger<QuizController> _logger;
 
-        public MultipleChoiceController(ILogger<MultipleChoiceController> logger,
-            IMultipleChoiceService multipleChoiceService)
+        public QuizController(ILogger<QuizController> logger,
+            IQuizService QuizService)
         {
             _logger = logger;
-            _multipleChoiceService = multipleChoiceService;
+            _QuizService = QuizService;
         }
 
 
         [HttpGet]
         public ActionResult Browse()
         {
-            var tests = _multipleChoiceService.Browse();
+            var tests = _QuizService.Browse();
             return Ok(tests);
         }
 
         [HttpPost]
-        public ActionResult Post(MultipleChoiceTest test)
+        public ActionResult Post(Quiz test)
         {
-            var id = _multipleChoiceService.Create(test);
-            return Ok(new MultipleChoiceTest {Id = id});
+            var id = _QuizService.Create(test);
+            return Ok(new Quiz {Id = id});
         }
 
 
         [HttpGet("{testId:int}")]
         public ActionResult GetTest(int testId)
         {
-            var test = _multipleChoiceService.GetTest(testId);
+            var test = _QuizService.GetTest(testId);
             if (test == null) return Forbid();
             return Ok(test);
         }
 
         [HttpPut("{testId:int}")]
         [Authorize]
-        public ActionResult PutTest(int testId, MultipleChoiceTest multipleChoiceTest)
+        public ActionResult PutTest(int testId, Quiz quiz)
         {
-            var result = _multipleChoiceService.EditTest(testId, multipleChoiceTest);
+            var result = _QuizService.EditTest(testId, quiz);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -56,7 +56,7 @@ namespace MultipleChoiceLibrary
         [Authorize]
         public ActionResult DeleteTest(int testId)
         {
-            var result = _multipleChoiceService.DeleteTest(testId);
+            var result = _QuizService.DeleteTest(testId);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -65,33 +65,33 @@ namespace MultipleChoiceLibrary
         [HttpGet]
         public ActionResult GetQuestion(int testId, int questionId)
         {
-            var question = _multipleChoiceService.GetQuestion(questionId);
+            var question = _QuizService.GetQuestion(questionId);
             if (question == null) return StatusCode(404);
             return Ok(question);
         }
 
         [HttpPost("{testId:int}/questions")]
-        public ActionResult PostQuestion(int testId, MultipleChoiceQuestion multipleChoiceQuestion)
+        public ActionResult PostQuestion(int testId, QuizQuestion QuizQuestion)
         {
-            var id = _multipleChoiceService.CreateQuestion(testId, multipleChoiceQuestion);
+            var id = _QuizService.CreateQuestion(testId, QuizQuestion);
             if (id == 0) return Forbid();
-            return Ok(new MultipleChoiceQuestion {Id = id, TestId = testId});
+            return Ok(new QuizQuestion {Id = id, TestId = testId});
         }
 
         [Route("{testId:int}/questions/{questionId:int}")]
         [HttpDelete]
         public ActionResult DeleteQuestion(int testId, int questionId)
         {
-            var result = _multipleChoiceService.DeleteQuestion(questionId);
+            var result = _QuizService.DeleteQuestion(questionId);
             if (result == false) return Forbid();
             return Ok();
         }
 
         [Route("{testId:int}/questions/{questionId:int}")]
         [HttpPut]
-        public ActionResult PutQuestion(int testId, int questionId, MultipleChoiceQuestion multipleChoiceQuestion)
+        public ActionResult PutQuestion(int testId, int questionId, QuizQuestion QuizQuestion)
         {
-            var result = _multipleChoiceService.EditQuestion(questionId, multipleChoiceQuestion);
+            var result = _QuizService.EditQuestion(questionId, QuizQuestion);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -100,26 +100,26 @@ namespace MultipleChoiceLibrary
         [HttpGet]
         public ActionResult GetAnswer(int testId, int questionId, int answerId)
         {
-            var answer = _multipleChoiceService.GetAnswer(answerId);
+            var answer = _QuizService.GetAnswer(answerId);
             if (answer == null) return NotFound();
             return Ok(answer);
         }
 
         [Route("{testId:int}/questions/{questionId:int}/answers")]
         [HttpPost]
-        public ActionResult PostAnswer(int testId, int questionId, MultipleChoiceAnswer multipleChoiceAnswer)
+        public ActionResult PostAnswer(int testId, int questionId, QuizAnswer QuizAnswer)
         {
-            var answerId = _multipleChoiceService.CreateAnswer(questionId, multipleChoiceAnswer);
+            var answerId = _QuizService.CreateAnswer(questionId, QuizAnswer);
             if (answerId == 0) return Forbid();
-            return Ok(new MultipleChoiceAnswer {Id = answerId, QuestionId = questionId});
+            return Ok(new QuizAnswer {Id = answerId, QuestionId = questionId});
         }
 
         [Route("{testId:int}/questions/{questionId:int}/answers/{answerId:int}")]
         [HttpPut]
         public ActionResult PutAnswer(int testId, int questionId, int answerId,
-            MultipleChoiceAnswer multipleChoiceAnswer)
+            QuizAnswer QuizAnswer)
         {
-            var result = _multipleChoiceService.EditAnswer(answerId, multipleChoiceAnswer);
+            var result = _QuizService.EditAnswer(answerId, QuizAnswer);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -128,7 +128,7 @@ namespace MultipleChoiceLibrary
         [HttpDelete]
         public ActionResult DeleteAnswer(int testId, int questionId, int answerId)
         {
-            var result = _multipleChoiceService.DeleteAnswer(answerId);
+            var result = _QuizService.DeleteAnswer(answerId);
             if (result == false) Forbid();
             return Ok();
         }

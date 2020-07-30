@@ -1,14 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
-		<ProjectReference Include="..\ExerciseLibrary\ExerciseLibrary.csproj" />
-		<ProjectReference Include="..\MultipleChoiceLibrary\MultipleChoiceLibrary.csproj" />
-		<ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />
-	</ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>CategoryLibrary.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
+    <OutputPath></OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CategoryLibrary.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
+    <ProjectReference Include="..\ExerciseLibrary\ExerciseLibrary.csproj" />
+    <ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />
+    <ProjectReference Include="..\QuizLibrary\QuizLibrary.csproj" />
+  </ItemGroup>
 
 </Project>

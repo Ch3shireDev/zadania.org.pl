@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using CategoryLibrary;
 using CommonLibrary;
@@ -11,8 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MultipleChoiceLibrary;
+using Microsoft.OpenApi.Models;
 using ProblemLibrary;
+using QuizLibrary;
 using ResourceAPI.ApiServices;
 
 namespace ResourceAPI
@@ -43,17 +45,18 @@ namespace ResourceAPI
 
             services.AddScoped<IProblemDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<ICategoryDbContext>(provider => provider.GetService<SqlContext>());
-            services.AddScoped<IMultipleChoiceDbContext>(provider => provider.GetService<SqlContext>());
+            services.AddScoped<IQuizDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IExerciseDbContext>(provider => provider.GetService<SqlContext>());
 
 
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IProblemService, ProblemService>();
-            services.AddScoped<IMultipleChoiceService, MultipleChoiceService>();
+            services.AddScoped<IQuizService, QuizService>();
             services.AddScoped<IExerciseService, ExerciseService>();
             services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddControllers();
+
 
             services.AddCors(o =>
                 o.AddDefaultPolicy(builder => { builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); }));
@@ -62,17 +65,38 @@ namespace ResourceAPI
 
             if (Environment.IsEnvironment("tests")) services.AddSingleton<IAuthorizationHandler, AllowAnonymous>();
 
+            services.AddRouting(options => options.LowercaseUrls = true);
+
             var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
             services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
 
-            var multipleChoiceLibraryAssembly = Assembly.Load("MultipleChoiceLibrary");
-            services.AddMvc().AddApplicationPart(multipleChoiceLibraryAssembly).AddControllersAsServices();
+            var QuizLibraryAssembly = Assembly.Load("QuizLibrary");
+            services.AddMvc().AddApplicationPart(QuizLibraryAssembly).AddControllersAsServices();
 
             var exerciseLibraryAssembly = Assembly.Load("ExerciseLibrary");
             services.AddMvc().AddApplicationPart(exerciseLibraryAssembly).AddControllersAsServices();
 
             var categoryLibraryAssembly = Assembly.Load("CategoryLibrary");
             services.AddMvc().AddApplicationPart(categoryLibraryAssembly).AddControllersAsServices();
+
+            services.AddSwaggerGen(c =>
+            {
+                //c.SwaggerGeneratorOptions.DescribeAllParametersInCamelCase = false;
+
+
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Zadania API",
+                    Version = "v1",
+                    Description = "API do strony [zadania.org.pl](https://zadania.org.pl)."
+                });
+
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "CategoryLibrary.xml"), true);
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ProblemLibrary.xml"), true);
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "QuizLibrary.xml"), true);
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "CommonLibrary.xml"), true);
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ExerciseLibrary.xml"), true);
+            });
         }
 
         protected virtual void ConfigureAuthentication(IServiceCollection services)
@@ -93,6 +117,7 @@ namespace ResourceAPI
 
         public virtual void Configure(IApplicationBuilder app)
         {
+            app.UseStaticFiles();
             app.UseResponseCompression();
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -104,6 +129,8 @@ namespace ResourceAPI
                 context.Database.EnsureCreated();
             }
 
+            app.UseSwagger(c => { c.SerializeAsV2 = true; });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Zadania API"));
 
             app.UseRouting();
             app.UseResponseCaching();

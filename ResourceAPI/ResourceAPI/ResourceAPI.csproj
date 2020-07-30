@@ -7,6 +7,15 @@
 		<RootNamespace>ResourceAPI</RootNamespace>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>1701;1702;1591</NoWarn>
+	  <DocumentationFile>ResourceAPI.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="ResourceAPI.xml" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="3.1.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
@@ -24,13 +33,14 @@
 		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="3.1.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
 		<PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.21" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\CategoryLibrary\CategoryLibrary.csproj" />
 	  <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
 	  <ProjectReference Include="..\ExerciseLibrary\ExerciseLibrary.csproj" />
-	  <ProjectReference Include="..\MultipleChoiceLibrary\MultipleChoiceLibrary.csproj" />
+	  <ProjectReference Include="..\QuizLibrary\QuizLibrary.csproj" />
 	  <ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />
 	</ItemGroup>
 

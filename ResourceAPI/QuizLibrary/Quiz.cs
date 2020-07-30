@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using CommonLibrary;
 
-namespace MultipleChoiceLibrary
+namespace QuizLibrary
 {
-    public class MultipleChoiceTest : Post
+    public class Quiz : Post
     {
         public string Name { get; set; }
-        public List<MultipleChoiceQuestion> Questions { get; set; }
+        public List<QuizQuestion> Questions { get; set; }
         public bool CanBeRandomized { get; set; }
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 
 namespace ExerciseLibrary
 {
+    /// <summary>
+    /// </summary>
     [Route("api/v1/exercises")]
     [ApiController]
     public class ExercisesController : ControllerBase
@@ -17,6 +19,9 @@ namespace ExerciseLibrary
             _exerciseService = exerciseService;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult GetExercises()
         {
@@ -24,6 +29,10 @@ namespace ExerciseLibrary
             return StatusCode(200, exercises);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="exercise"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult PostExercise(Exercise exercise)
         {

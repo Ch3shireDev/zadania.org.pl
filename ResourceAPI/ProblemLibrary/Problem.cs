@@ -5,6 +5,9 @@ using CommonLibrary;
 
 namespace ProblemLibrary
 {
+    /// <summary>
+    ///     Schemat problemu zamieszczanego przez użytkownika.
+    /// </summary>
     public class Problem : Post
     {
         [StringLength(64)] public string Name { get; set; }

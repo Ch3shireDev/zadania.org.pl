@@ -2,19 +2,19 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using CommonLibrary;
 
-namespace MultipleChoiceLibrary
+namespace QuizLibrary
 {
-    public class MultipleChoiceQuestion : Post
+    public class QuizQuestion : Post
     {
-        public List<MultipleChoiceAnswer> Answers { get; set; }
-        public MultipleChoiceTest Test { get; set; }
+        public List<QuizAnswer> Answers { get; set; }
+        public Quiz Test { get; set; }
 
         public int TestId { get; set; }
 
         //[NotMapped] public IEnumerable<string> AnswerLinks { get; set; }
         public string Solution { get; set; }
         [NotMapped] public string SolutionHtml { get; set; }
-        [NotMapped] public string Url => $"/api/v1/multiple-choice-tests/{TestId}/questions/{Id}";
+        [NotMapped] public string Url => $"/api/v1/quiz/{TestId}/questions/{Id}";
 
         public new void Render()
         {

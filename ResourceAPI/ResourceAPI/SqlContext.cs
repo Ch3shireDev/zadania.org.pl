@@ -2,13 +2,13 @@
 using CommonLibrary;
 using ExerciseLibrary;
 using Microsoft.EntityFrameworkCore;
-using MultipleChoiceLibrary;
 using ProblemLibrary;
+using QuizLibrary;
 
 namespace ResourceAPI
 {
     public class SqlContext : DbContext, IProblemDbContext, IExerciseDbContext, ICategoryDbContext,
-        IMultipleChoiceDbContext
+        IQuizDbContext
     {
         public SqlContext(DbContextOptions options) : base(options)
         {
@@ -21,14 +21,14 @@ namespace ResourceAPI
         public static string FileDirectory { get; set; } = "../../images";
         public DbSet<Category> Categories { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<MultipleChoiceTest> MultipleChoiceTests { get; set; }
-        public DbSet<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
-        public DbSet<MultipleChoiceAnswer> MultipleChoiceAnswers { get; set; }
 
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Problem> Problems { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<ProblemVote> ProblemVotes { get; set; }
+        public DbSet<Quiz> QuizTests { get; set; }
+        public DbSet<QuizQuestion> QuizQuestions { get; set; }
+        public DbSet<QuizAnswer> QuizAnswers { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

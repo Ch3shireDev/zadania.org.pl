@@ -5,13 +5,13 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <DocumentationFile>CommonLibrary.xml</DocumentationFile>
-	  <NoWarn>1701;1702;1591</NoWarn>
-	  <OutputPath></OutputPath>
+		<DocumentationFile>CommonLibrary.xml</DocumentationFile>
+		<NoWarn>1701;1702;1591</NoWarn>
+		<OutputPath></OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="CommonLibrary.xml" />
+		<None Remove="CommonLibrary.xml" />
 	</ItemGroup>
 
 </Project>

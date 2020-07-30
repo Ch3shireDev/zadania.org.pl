@@ -21,7 +21,7 @@ namespace ResourceAPI
         public static string FileDirectory { get; set; } = "../../images";
         public DbSet<Category> Categories { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
-
+        public DbSet<Script> ExerciseScripts { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Problem> Problems { get; set; }
         public DbSet<Tag> Tags { get; set; }

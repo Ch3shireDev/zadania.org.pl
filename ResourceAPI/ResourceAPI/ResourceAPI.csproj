@@ -8,12 +8,12 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <NoWarn>1701;1702;1591</NoWarn>
-	  <DocumentationFile>ResourceAPI.xml</DocumentationFile>
+		<NoWarn>1701;1702;1591</NoWarn>
+		<DocumentationFile>ResourceAPI.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="ResourceAPI.xml" />
+		<None Remove="ResourceAPI.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,11 +37,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\CategoryLibrary\CategoryLibrary.csproj" />
-	  <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
-	  <ProjectReference Include="..\ExerciseLibrary\ExerciseLibrary.csproj" />
-	  <ProjectReference Include="..\QuizLibrary\QuizLibrary.csproj" />
-	  <ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />
+		<ProjectReference Include="..\CategoryLibrary\CategoryLibrary.csproj" />
+		<ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
+		<ProjectReference Include="..\ExerciseLibrary\ExerciseLibrary.csproj" />
+		<ProjectReference Include="..\QuizLibrary\QuizLibrary.csproj" />
+		<ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />
 	</ItemGroup>
 
 

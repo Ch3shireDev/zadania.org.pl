@@ -30,6 +30,7 @@ namespace ProblemLibrary
         public new Problem Render()
         {
             ContentHtml = Tools.Render(Content, FileData);
+            Content = null;
             FileData = null;
             return this;
         }

@@ -16,7 +16,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ProblemLibrary;
 using QuizLibrary;
-using ResourceAPI.ApiServices;
 
 namespace ResourceAPI
 {
@@ -44,6 +43,7 @@ namespace ResourceAPI
                 else options.UseMySQL(Configuration.GetConnectionString("Default"));
             });
 
+            services.AddScoped<IAuthorDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IProblemDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<ICategoryDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IQuizDbContext>(provider => provider.GetService<SqlContext>());
@@ -67,6 +67,9 @@ namespace ResourceAPI
             if (Environment.IsEnvironment("tests")) services.AddSingleton<IAuthorizationHandler, AllowAnonymous>();
 
             services.AddRouting(options => options.LowercaseUrls = true);
+
+            var commonLibraryAssembly = Assembly.Load("CommonLibrary");
+            services.AddMvc().AddApplicationPart(commonLibraryAssembly).AddControllersAsServices();
 
             var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
             services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
@@ -125,11 +128,13 @@ namespace ResourceAPI
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<SqlContext>();
+
                 if (Environment.IsEnvironment("tests")) context.Database.EnsureDeleted();
 #if DEBUG
                 if (Environment.IsDevelopment()) context.Database.EnsureDeleted();
 #endif
                 context.Database.EnsureCreated();
+                context.Initialize();
             }
 
             app.UseSwagger(c => { c.SerializeAsV2 = true; });

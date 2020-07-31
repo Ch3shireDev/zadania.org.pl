@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ProblemLibrary;
 using ResourceAPI;
-using ResourceAPI.ApiServices;
 
 namespace ResourceAPIBenchmark
 {
@@ -33,7 +32,7 @@ namespace ResourceAPIBenchmark
             var options = new DbContextOptionsBuilder().UseMySQL(configuration.GetConnectionString("Default"));
             _context = new SqlContext(options.Options);
             _categoryService = new CategoryService(_context);
-            _problemService = new ProblemService(_context, mapper);
+            _problemService = new ProblemService(_context);
             _authorService = new AuthorService(_context);
             _controller = new ProblemsController(null, _context, _problemService, _authorService);
         }
@@ -49,7 +48,7 @@ namespace ResourceAPIBenchmark
         {
             for (var j = 0; j < 100; j++)
             for (var i = 1; i < 10; i++)
-                _problemService.ProblemById(i);
+                _problemService.Get(i);
         }
 
         //[Benchmark] public void GetProblemStandard()

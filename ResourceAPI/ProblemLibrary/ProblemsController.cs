@@ -1,8 +1,10 @@
 ﻿using System.Linq;
+using System.Security.Claims;
 using CommonLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ProblemLibrary
 {
@@ -36,6 +38,21 @@ namespace ProblemLibrary
             _authorService = authorService;
         }
 
+        protected int AuthorId
+        {
+            get
+            {
+                return 1;
+                var profileData = HttpContext?.Request.Headers["profile"] ?? string.Empty;
+                var profile = JsonConvert.DeserializeObject<UserData>(profileData);
+                var http_contextUser = HttpContext.User;
+                var idClaim = http_contextUser.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+                if (idClaim == null) return 0;
+                var id = _authorService.GetAuthor(idClaim.Value, profile);
+                return id;
+            }
+        }
+
         /// <summary>
         ///     Zwraca listę problemów.
         /// </summary>
@@ -64,13 +81,12 @@ namespace ProblemLibrary
             });
         }
 
-
         /// <summary>
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id:int}")]
-        public ActionResult Get(int id)
+        [HttpGet("{id}")]
+        public ActionResult Get([FromRoute] int id)
         {
             var problem = _problemService.Get(id);
             if (problem == null) return NotFound();
@@ -85,9 +101,9 @@ namespace ProblemLibrary
         [Authorize]
         public ActionResult Post(Problem problem)
         {
-            var author = _authorService.GetAuthor(1);
-            if (author == null) return StatusCode(403);
-            var problemId = _problemService.Create(problem);
+            //var author = _authorService.GetAuthor(1);
+            //if (author == null) return StatusCode(403);
+            var problemId = _problemService.Create(problem, AuthorId);
             if (problemId == 0) return StatusCode(403);
             return StatusCode(201, new Problem {Id = problemId});
         }
@@ -142,8 +158,8 @@ namespace ProblemLibrary
         {
             var problem = _problemService.Get(id);
             if (problem == null) return StatusCode(403);
-            var author = _authorService.GetAuthor(1);
-            if (author == null) return StatusCode(403);
+            //var author = _authorService.GetAuthor(1);
+            //if (author == null) return StatusCode(403);
 
             _problemService.VoteProblem(id, vote);
             return StatusCode(200);

@@ -4,6 +4,6 @@
     {
         //public Author GetAuthor(HttpContext context);
 
-        public Author GetAuthor(int id);
+        public int GetAuthor(string idClaim, UserData data);
     }
 }

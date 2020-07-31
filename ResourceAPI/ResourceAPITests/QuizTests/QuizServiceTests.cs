@@ -5,7 +5,6 @@ using CommonLibrary;
 using Microsoft.EntityFrameworkCore;
 using QuizLibrary;
 using ResourceAPI;
-using ResourceAPI.ApiServices;
 using Xunit;
 
 namespace ResourceAPITests.QuizTests

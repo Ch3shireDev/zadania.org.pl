@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using QuizLibrary;
 using ResourceAPI;
-using ResourceAPI.ApiServices;
 using Xunit;
 
 namespace ResourceAPITests.CategoryTests
@@ -24,7 +23,7 @@ namespace ResourceAPITests.CategoryTests
 
             _context = new SqlContext(optionsBuilder.Options);
             _categoryService = new CategoryService(_context);
-            _problemService = new ProblemService(_context, mapper);
+            _problemService = new ProblemService(_context);
             _QuizService = new QuizService(_context);
             _exerciseService = new ExerciseService(_context);
             _authorService = new AuthorService(_context);

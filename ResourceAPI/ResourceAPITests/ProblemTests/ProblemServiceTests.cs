@@ -6,7 +6,6 @@ using CommonLibrary;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using ResourceAPI;
-using ResourceAPI.ApiServices;
 using Xunit;
 
 namespace ResourceAPITests.ProblemTests
@@ -26,7 +25,7 @@ namespace ResourceAPITests.ProblemTests
                 c.AddMaps(problemLibraryAssembly);
             });
             var mapper = new Mapper(conf);
-            _problemService = new ProblemService(context, mapper);
+            _problemService = new ProblemService(context);
             _authorService = new AuthorService(context);
         }
 
@@ -224,7 +223,7 @@ namespace ResourceAPITests.ProblemTests
             var id = _problemService.Create(new Problem {Name = "xxx", Content = "yyy"});
 
             // Wartości powinny być takie jak utworzone.
-            var problem = _problemService.GetProblemView(id);
+            var problem = _problemService.Get(id);
             Assert.Equal(id, problem.Id);
             Assert.Equal("xxx", problem.Name);
             Assert.Contains("yyy", problem.ContentHtml);

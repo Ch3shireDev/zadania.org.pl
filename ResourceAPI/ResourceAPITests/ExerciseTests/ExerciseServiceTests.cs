@@ -4,7 +4,6 @@ using CommonLibrary;
 using ExerciseLibrary;
 using Microsoft.EntityFrameworkCore;
 using ResourceAPI;
-using ResourceAPI.ApiServices;
 using Xunit;
 
 namespace ResourceAPITests.ExerciseTests

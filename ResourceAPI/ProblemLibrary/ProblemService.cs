@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
 using CommonLibrary;
 
 namespace ProblemLibrary
@@ -8,12 +7,12 @@ namespace ProblemLibrary
     public class ProblemService : IProblemService
     {
         private readonly IProblemDbContext _context;
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
 
-        public ProblemService(IProblemDbContext context, IMapper mapper)
+        public ProblemService(IProblemDbContext context)
         {
             _context = context;
-            _mapper = mapper;
+            //_mapper = mapper;
         }
 
         public Problem ProblemById(int id)
@@ -22,14 +21,14 @@ namespace ProblemLibrary
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Content = p.Content
-                    //AuthorId = p.AuthorId,
-                    //AuthorName = p.Author.Name,
-                    //Created = p.Created,
-                    //Edited = p.Edited,
-                    //FileData = p.FileData,
+                    Content = p.Content,
+                    AuthorId = p.AuthorId,
+                    AuthorName = p.Author.Name,
+                    Created = p.Created,
+                    Edited = p.Edited,
+                    FileData = p.FileData,
                     //Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}),
-                    //Points = p.Points,
+                    Points = p.Points
                     //UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
                     //UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
                 })
@@ -37,18 +36,20 @@ namespace ProblemLibrary
             if (problem == null) return null;
 
             problem.IsSolved = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
-            //problem = problem.Render();
-            //problem.Content = null;
+            problem = problem.Render();
 
             return problem;
         }
 
-        public ProblemViewModel GetProblemView(int id)
-        {
-            var problem = ProblemById(id);
-            var problemView = _mapper.Map<ProblemViewModel>(problem);
-            return problemView;
-        }
+        //public ProblemViewModel GetProblemView(int id)
+        //{
+        //    var problem = _context.Problems.Select(p =>
+        //    new Problem()){
+
+        //    })
+        //    var problemView = _mapper.Map<ProblemViewModel>(problem);
+        //    return problemView;
+        //}
 
         public Answer GetAnswerById(int problemId, int answerId)
         {
@@ -114,46 +115,9 @@ namespace ProblemLibrary
             //var category = _categoryService.GetProblems(categoryId);
             //if (category == null) return 0;
 
-            //problem.Created = DateTime.Now;
-            //problem.Author = author;
-
-            //if (problem.FileData != null)
-            //    foreach (var file in problem.FileData)
-            //    {
-            //        file.Save();
-            //        var regex = @"!\[\]\(" + file.OldFileName + @"\)";
-            //        problem.Content = Regex.Replace(problem.Content, regex, $"![]({file.FileName})");
-            //    }
-
-            //problem.ProblemTags ??= new List<ProblemTag>();
-            //problem.Tags ??= new List<Tag>();
-
-            //foreach (var tag in problem.Tags)
-            //{
-            //    tag.Url = tag.GenerateUrl();
-            //    var existing = _context.Tags.Find(tag.Url) ?? tag;
-            //    var problemTag = new ProblemTag {Tag = existing, TagUrl = tag.Url};
-            //    problem.ProblemTags.Add(problemTag);
-            //}
-
-            //if (problem.Answers != null)
-            //    foreach (var answer in problem.Answers)
-            //    {
-            //        if (answer.FileData == null) continue;
-            //        foreach (var file in answer.FileData)
-            //        {
-            //            file.Save();
-            //            var regex = @"!\[\]\(" + file.OldFileName + @"\)";
-            //            answer.Content = Regex.Replace(answer.Content, regex, $"![]({file.FileName})");
-            //        }
-
-            //        answer.Author = author;
-            //    }
-
-            //problem.Tags = null;
-            //problem.CategoryId = categoryId;
             problem.AuthorId = authorId;
             _context.Problems.Add(problem);
+
             _context.SaveChanges();
             return problem.Id;
         }

@@ -13,10 +13,10 @@ namespace QuizLibrary
         private ILogger<QuizController> _logger;
 
         public QuizController(ILogger<QuizController> logger,
-            IQuizService QuizService)
+            IQuizService quizService)
         {
             _logger = logger;
-            _quizService = QuizService;
+            _quizService = quizService;
         }
 
 
@@ -35,7 +35,7 @@ namespace QuizLibrary
         }
 
 
-        [HttpGet("{testId:int}")]
+        [HttpGet("{testId}")]
         public ActionResult GetTest(int testId)
         {
             var test = _quizService.GetTest(testId);
@@ -43,7 +43,7 @@ namespace QuizLibrary
             return Ok(test);
         }
 
-        [HttpPut("{testId:int}")]
+        [HttpPut("{testId}")]
         [Authorize]
         public ActionResult PutTest(int testId, Quiz quiz)
         {
@@ -52,7 +52,7 @@ namespace QuizLibrary
             return Ok();
         }
 
-        [HttpDelete("{testId:int}")]
+        [HttpDelete("{testId}")]
         [Authorize]
         public ActionResult DeleteTest(int testId)
         {
@@ -61,7 +61,7 @@ namespace QuizLibrary
             return Ok();
         }
 
-        [Route("{testId:int}/questions/{questionId:int}")]
+        [Route("{testId}/questions/{questionId}")]
         [HttpGet]
         public ActionResult GetQuestion(int testId, int questionId)
         {
@@ -70,15 +70,15 @@ namespace QuizLibrary
             return Ok(question);
         }
 
-        [HttpPost("{testId:int}/questions")]
-        public ActionResult PostQuestion(int testId, QuizQuestion QuizQuestion)
+        [HttpPost("{testId}/questions")]
+        public ActionResult PostQuestion(int testId, QuizQuestion quizQuestion)
         {
-            var id = _quizService.CreateQuestion(testId, QuizQuestion);
+            var id = _quizService.CreateQuestion(testId, quizQuestion);
             if (id == 0) return Forbid();
             return Ok(new QuizQuestion {Id = id, TestId = testId});
         }
 
-        [Route("{testId:int}/questions/{questionId:int}")]
+        [Route("{testId}/questions/{questionId}")]
         [HttpDelete]
         public ActionResult DeleteQuestion(int testId, int questionId)
         {
@@ -87,16 +87,16 @@ namespace QuizLibrary
             return Ok();
         }
 
-        [Route("{testId:int}/questions/{questionId:int}")]
+        [Route("{testId}/questions/{questionId}")]
         [HttpPut]
-        public ActionResult PutQuestion(int testId, int questionId, QuizQuestion QuizQuestion)
+        public ActionResult PutQuestion(int testId, int questionId, QuizQuestion quizQuestion)
         {
-            var result = _quizService.EditQuestion(questionId, QuizQuestion);
+            var result = _quizService.EditQuestion(questionId, quizQuestion);
             if (result == false) return Forbid();
             return Ok();
         }
 
-        [Route("{testId:int}/questions/{questionId:int}/answers/{answerId:int}")]
+        [Route("{testId}/questions/{questionId}/answers/{answerId}")]
         [HttpGet]
         public ActionResult GetAnswer(int testId, int questionId, int answerId)
         {
@@ -105,16 +105,16 @@ namespace QuizLibrary
             return Ok(answer);
         }
 
-        [Route("{testId:int}/questions/{questionId:int}/answers")]
+        [Route("{testId}/questions/{questionId}/answers")]
         [HttpPost]
-        public ActionResult PostAnswer(int testId, int questionId, QuizAnswer QuizAnswer)
+        public ActionResult PostAnswer(int testId, int questionId, QuizAnswer quizAnswer)
         {
-            var answerId = _quizService.CreateAnswer(questionId, QuizAnswer);
+            var answerId = _quizService.CreateAnswer(questionId, quizAnswer);
             if (answerId == 0) return Forbid();
             return Ok(new QuizAnswer {Id = answerId, QuestionId = questionId});
         }
 
-        [Route("{testId:int}/questions/{questionId:int}/answers/{answerId:int}")]
+        [Route("{testId}/questions/{questionId}/answers/{answerId}")]
         [HttpPut]
         public ActionResult PutAnswer(int testId, int questionId, int answerId,
             QuizAnswer QuizAnswer)
@@ -124,7 +124,7 @@ namespace QuizLibrary
             return Ok();
         }
 
-        [Route("{testId:int}/questions/{questionId:int}/answers/{answerId:int}")]
+        [Route("{testId}/questions/{questionId}/answers/{answerId}")]
         [HttpDelete]
         public ActionResult DeleteAnswer(int testId, int questionId, int answerId)
         {

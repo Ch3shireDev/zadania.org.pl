@@ -21,5 +21,7 @@ namespace ProblemLibrary
         bool DeleteAnswer(int problemId, int answerId);
         void SetAnswerApproval(int problemId, int answerId1, bool isApproved = true);
         void VoteProblem(int id, Vote vote, int authorId = 1);
+
+        public ProblemViewModel GetProblemView(int id);
     }
 }

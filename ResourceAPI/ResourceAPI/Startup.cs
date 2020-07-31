@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using AutoMapper;
 using CategoryLibrary;
 using CommonLibrary;
 using ExerciseLibrary;
@@ -70,14 +71,16 @@ namespace ResourceAPI
             var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
             services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
 
-            var QuizLibraryAssembly = Assembly.Load("QuizLibrary");
-            services.AddMvc().AddApplicationPart(QuizLibraryAssembly).AddControllersAsServices();
+            var quizLibraryAssembly = Assembly.Load("QuizLibrary");
+            services.AddMvc().AddApplicationPart(quizLibraryAssembly).AddControllersAsServices();
 
             var exerciseLibraryAssembly = Assembly.Load("ExerciseLibrary");
             services.AddMvc().AddApplicationPart(exerciseLibraryAssembly).AddControllersAsServices();
 
             var categoryLibraryAssembly = Assembly.Load("CategoryLibrary");
             services.AddMvc().AddApplicationPart(categoryLibraryAssembly).AddControllersAsServices();
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddSwaggerGen(c =>
             {

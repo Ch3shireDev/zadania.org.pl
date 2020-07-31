@@ -15,6 +15,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="10.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
 		<ProjectReference Include="..\ExerciseLibrary\ExerciseLibrary.csproj" />
 		<ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />

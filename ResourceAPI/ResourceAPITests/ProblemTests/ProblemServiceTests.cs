@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
+using AutoMapper;
 using CommonLibrary;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
@@ -15,7 +17,16 @@ namespace ResourceAPITests.ProblemTests
         {
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
             var context = new SqlContext(optionsBuilder.Options);
-            _problemService = new ProblemService(context);
+
+            var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
+
+            var conf = new MapperConfiguration(c =>
+            {
+                c.AddProfile<ProblemProfile>();
+                c.AddMaps(problemLibraryAssembly);
+            });
+            var mapper = new Mapper(conf);
+            _problemService = new ProblemService(context, mapper);
             _authorService = new AuthorService(context);
         }
 
@@ -213,7 +224,7 @@ namespace ResourceAPITests.ProblemTests
             var id = _problemService.Create(new Problem {Name = "xxx", Content = "yyy"});
 
             // Wartości powinny być takie jak utworzone.
-            var problem = _problemService.Get(id);
+            var problem = _problemService.GetProblemView(id);
             Assert.Equal(id, problem.Id);
             Assert.Equal("xxx", problem.Name);
             Assert.Contains("yyy", problem.ContentHtml);

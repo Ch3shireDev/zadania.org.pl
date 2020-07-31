@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using CommonLibrary;
 
 namespace ProblemLibrary
@@ -7,10 +8,12 @@ namespace ProblemLibrary
     public class ProblemService : IProblemService
     {
         private readonly IProblemDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ProblemService(IProblemDbContext context)
+        public ProblemService(IProblemDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public Problem ProblemById(int id)
@@ -18,8 +21,8 @@ namespace ProblemLibrary
             var problem = _context.Problems.Select(p => new Problem
                 {
                     Id = p.Id,
-                    Name = p.Name
-                    //Content = p.Content,
+                    Name = p.Name,
+                    Content = p.Content
                     //AuthorId = p.AuthorId,
                     //AuthorName = p.Author.Name,
                     //Created = p.Created,
@@ -34,11 +37,18 @@ namespace ProblemLibrary
             if (problem == null) return null;
 
             problem.IsSolved = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
-            problem = problem.Render();
-            problem.Content = null;
+            //problem = problem.Render();
+            //problem.Content = null;
+
             return problem;
         }
 
+        public ProblemViewModel GetProblemView(int id)
+        {
+            var problem = ProblemById(id);
+            var problemView = _mapper.Map<ProblemViewModel>(problem);
+            return problemView;
+        }
 
         public Answer GetAnswerById(int problemId, int answerId)
         {

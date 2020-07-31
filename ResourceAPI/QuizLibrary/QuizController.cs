@@ -8,7 +8,7 @@ namespace QuizLibrary
     [ApiController]
     public class QuizController : ControllerBase
     {
-        private readonly IQuizService _QuizService;
+        private readonly IQuizService _quizService;
 
         private ILogger<QuizController> _logger;
 
@@ -16,21 +16,21 @@ namespace QuizLibrary
             IQuizService QuizService)
         {
             _logger = logger;
-            _QuizService = QuizService;
+            _quizService = QuizService;
         }
 
 
         [HttpGet]
         public ActionResult Browse()
         {
-            var tests = _QuizService.Browse();
+            var tests = _quizService.Browse();
             return Ok(tests);
         }
 
         [HttpPost]
         public ActionResult Post(Quiz test)
         {
-            var id = _QuizService.Create(test);
+            var id = _quizService.Create(test);
             return Ok(new Quiz {Id = id});
         }
 
@@ -38,7 +38,7 @@ namespace QuizLibrary
         [HttpGet("{testId:int}")]
         public ActionResult GetTest(int testId)
         {
-            var test = _QuizService.GetTest(testId);
+            var test = _quizService.GetTest(testId);
             if (test == null) return Forbid();
             return Ok(test);
         }
@@ -47,7 +47,7 @@ namespace QuizLibrary
         [Authorize]
         public ActionResult PutTest(int testId, Quiz quiz)
         {
-            var result = _QuizService.EditTest(testId, quiz);
+            var result = _quizService.EditTest(testId, quiz);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -56,7 +56,7 @@ namespace QuizLibrary
         [Authorize]
         public ActionResult DeleteTest(int testId)
         {
-            var result = _QuizService.DeleteTest(testId);
+            var result = _quizService.DeleteTest(testId);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -65,7 +65,7 @@ namespace QuizLibrary
         [HttpGet]
         public ActionResult GetQuestion(int testId, int questionId)
         {
-            var question = _QuizService.GetQuestion(questionId);
+            var question = _quizService.GetQuestion(questionId);
             if (question == null) return StatusCode(404);
             return Ok(question);
         }
@@ -73,7 +73,7 @@ namespace QuizLibrary
         [HttpPost("{testId:int}/questions")]
         public ActionResult PostQuestion(int testId, QuizQuestion QuizQuestion)
         {
-            var id = _QuizService.CreateQuestion(testId, QuizQuestion);
+            var id = _quizService.CreateQuestion(testId, QuizQuestion);
             if (id == 0) return Forbid();
             return Ok(new QuizQuestion {Id = id, TestId = testId});
         }
@@ -82,7 +82,7 @@ namespace QuizLibrary
         [HttpDelete]
         public ActionResult DeleteQuestion(int testId, int questionId)
         {
-            var result = _QuizService.DeleteQuestion(questionId);
+            var result = _quizService.DeleteQuestion(questionId);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -91,7 +91,7 @@ namespace QuizLibrary
         [HttpPut]
         public ActionResult PutQuestion(int testId, int questionId, QuizQuestion QuizQuestion)
         {
-            var result = _QuizService.EditQuestion(questionId, QuizQuestion);
+            var result = _quizService.EditQuestion(questionId, QuizQuestion);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -100,7 +100,7 @@ namespace QuizLibrary
         [HttpGet]
         public ActionResult GetAnswer(int testId, int questionId, int answerId)
         {
-            var answer = _QuizService.GetAnswer(answerId);
+            var answer = _quizService.GetAnswer(answerId);
             if (answer == null) return NotFound();
             return Ok(answer);
         }
@@ -109,7 +109,7 @@ namespace QuizLibrary
         [HttpPost]
         public ActionResult PostAnswer(int testId, int questionId, QuizAnswer QuizAnswer)
         {
-            var answerId = _QuizService.CreateAnswer(questionId, QuizAnswer);
+            var answerId = _quizService.CreateAnswer(questionId, QuizAnswer);
             if (answerId == 0) return Forbid();
             return Ok(new QuizAnswer {Id = answerId, QuestionId = questionId});
         }
@@ -119,7 +119,7 @@ namespace QuizLibrary
         public ActionResult PutAnswer(int testId, int questionId, int answerId,
             QuizAnswer QuizAnswer)
         {
-            var result = _QuizService.EditAnswer(answerId, QuizAnswer);
+            var result = _quizService.EditAnswer(answerId, QuizAnswer);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -128,7 +128,7 @@ namespace QuizLibrary
         [HttpDelete]
         public ActionResult DeleteAnswer(int testId, int questionId, int answerId)
         {
-            var result = _QuizService.DeleteAnswer(answerId);
+            var result = _quizService.DeleteAnswer(answerId);
             if (result == false) Forbid();
             return Ok();
         }

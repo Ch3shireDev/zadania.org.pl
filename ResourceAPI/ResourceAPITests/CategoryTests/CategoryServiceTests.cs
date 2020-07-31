@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AutoMapper;
 using CategoryLibrary;
 using CommonLibrary;
 using ExerciseLibrary;
@@ -17,9 +18,13 @@ namespace ResourceAPITests.CategoryTests
         public CategoryServiceTests()
         {
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
+
+            var conf = new MapperConfiguration(c => { });
+            var mapper = new Mapper(conf);
+
             _context = new SqlContext(optionsBuilder.Options);
             _categoryService = new CategoryService(_context);
-            _problemService = new ProblemService(_context);
+            _problemService = new ProblemService(_context, mapper);
             _QuizService = new QuizService(_context);
             _exerciseService = new ExerciseService(_context);
             _authorService = new AuthorService(_context);

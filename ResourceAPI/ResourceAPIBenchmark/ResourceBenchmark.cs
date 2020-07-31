@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using AutoMapper;
+using BenchmarkDotNet.Attributes;
 using CategoryLibrary;
 using CommonLibrary;
 using Microsoft.EntityFrameworkCore;
@@ -26,11 +27,13 @@ namespace ResourceAPIBenchmark
 
             var configuration = builder.Build();
 
+            var conf = new MapperConfiguration(c => { });
+            var mapper = new Mapper(conf);
 
             var options = new DbContextOptionsBuilder().UseMySQL(configuration.GetConnectionString("Default"));
             _context = new SqlContext(options.Options);
             _categoryService = new CategoryService(_context);
-            _problemService = new ProblemService(_context);
+            _problemService = new ProblemService(_context, mapper);
             _authorService = new AuthorService(_context);
             _controller = new ProblemsController(null, _context, _problemService, _authorService);
         }

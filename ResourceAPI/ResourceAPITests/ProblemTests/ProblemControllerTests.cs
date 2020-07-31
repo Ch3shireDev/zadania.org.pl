@@ -8,7 +8,7 @@ using Xunit;
 
 namespace ResourceAPITests.ProblemTests
 {
-    public class ProblemsControllerTests
+    public class ProblemControllerTests
     {
         private readonly HttpClient _client = new TestClientProvider().Client;
 

@@ -13,7 +13,7 @@ namespace ProblemLibrary
         IEnumerable<Problem> BrowseProblems(int page,
             out int totalPages, string tags = null, string query = null, bool newest = true, bool highest = false);
 
-        bool Edit(int problemId, Problem problem);
+        bool Edit(int problemId, Problem problem, int authorId = 1);
         bool Delete(int problemId);
         int CreateAnswer(int problemId, Answer answer, int authorId = 1);
         Answer GetAnswer(int problemId, int answerId);

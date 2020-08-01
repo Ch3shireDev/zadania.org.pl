@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace CommonLibrary
 {
@@ -25,6 +28,20 @@ namespace CommonLibrary
             }
 
             return content;
+        }
+
+        public static int GetAuthorId(IAuthorService authorService, HttpContext httpContext)
+        {
+            if (authorService == null) return 1;
+            if (httpContext == null) return 0;
+            var profileData = httpContext.Request.Headers["profile"];
+            if (profileData.Count == 0) return authorService.GetAuthor(null, null);
+            var profile = JsonConvert.DeserializeObject<UserData>(profileData);
+            var httpContextUser = httpContext.User;
+            var claim = httpContextUser.Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var idClaim = claim?.Value;
+            return idClaim == null ? 0 : authorService.GetAuthor(idClaim, profile);
         }
     }
 }

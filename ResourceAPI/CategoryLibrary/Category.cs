@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using CommonLibrary;
 using ExerciseLibrary;
 using ProblemLibrary;
@@ -23,12 +24,33 @@ namespace CategoryLibrary
         public IEnumerable<Exercise> Exercises { get; set; } = new List<Exercise>();
 
         public IEnumerable<Quiz> QuizTests { get; set; } = new List<Quiz>();
+        public int AuthorId { get; set; }
 
         public Category Render()
         {
             DescriptionHtml = Tools.Render(Description, FileData);
             FileData = null;
             return this;
+        }
+
+        public CategoryView AsView()
+        {
+            var categoryView = new CategoryView
+            {
+                Id = Id,
+                Name = Name,
+                Description = Tools.Render(Description, FileData),
+                Url = Url,
+                ParentUrl = $"/api/v1/categories/{ParentId}",
+                Categories = Categories.Select(c => c.AsLink()).ToArray(),
+                Problems = Problems.Select(p => p.AsLink()).ToArray()
+            };
+            return categoryView;
+        }
+
+        public CategoryLink AsLink()
+        {
+            return new CategoryLink {Id = Id, Name = Name, Url = Url};
         }
     }
 }

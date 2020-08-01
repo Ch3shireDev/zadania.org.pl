@@ -2,8 +2,8 @@
 {
     public interface ICategoryService
     {
-        int Create(int parentId, Category category);
-        bool Update(int parentId, Category category);
+        Category Create(Category category, int parentId = 1, int authorId = 1);
+        Category Update(Category category, int categoryId);
 
         bool Delete(int id);
 

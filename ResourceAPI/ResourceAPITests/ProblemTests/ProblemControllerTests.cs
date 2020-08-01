@@ -127,7 +127,7 @@ namespace ResourceAPITests.ProblemTests
 
             // Problem powinien wylądować w kategorii 1, Root.
             var catRes = await _client.GetAsync("/api/v1/categories/1");
-            var cat = catRes.ToElement<Category>();
+            var cat = catRes.ToElement<CategoryView>();
             Assert.Equal("abc", cat.Problems.First().Name);
 
             return resProblem.Id;

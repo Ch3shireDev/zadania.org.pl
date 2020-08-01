@@ -39,7 +39,6 @@ namespace ResourceAPI
                 if (Environment.IsEnvironment("tests"))
                     options.UseInMemoryDatabase(guid).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 else if (Environment.IsDevelopment()) options.UseSqlite("Filename=sqlite.db");
-                //options.UseMySQL(Configuration.GetConnectionString("Local"));
                 else options.UseMySQL(Configuration.GetConnectionString("Default"));
             });
 
@@ -49,8 +48,16 @@ namespace ResourceAPI
             services.AddScoped<IQuizDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IExerciseDbContext>(provider => provider.GetService<SqlContext>());
 
+            if (Environment.IsEnvironment("tests"))
+            {
+                services.AddScoped<IAuthorService, MockAuthorService>();
+                services.AddSingleton<IAuthorizationHandler, AllowAnonymous>();
+            }
+            else
+            {
+                services.AddScoped<IAuthorService, AuthorService>();
+            }
 
-            services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IQuizService, QuizService>();
             services.AddScoped<IExerciseService, ExerciseService>();
@@ -64,32 +71,28 @@ namespace ResourceAPI
 
             ConfigureAuthentication(services);
 
-            if (Environment.IsEnvironment("tests")) services.AddSingleton<IAuthorizationHandler, AllowAnonymous>();
+            if (Environment.IsEnvironment("tests"))
+            {
+            }
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
             var commonLibraryAssembly = Assembly.Load("CommonLibrary");
-            services.AddMvc().AddApplicationPart(commonLibraryAssembly).AddControllersAsServices();
-
             var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
-            services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
-
             var quizLibraryAssembly = Assembly.Load("QuizLibrary");
-            services.AddMvc().AddApplicationPart(quizLibraryAssembly).AddControllersAsServices();
-
             var exerciseLibraryAssembly = Assembly.Load("ExerciseLibrary");
-            services.AddMvc().AddApplicationPart(exerciseLibraryAssembly).AddControllersAsServices();
-
             var categoryLibraryAssembly = Assembly.Load("CategoryLibrary");
+
+            services.AddMvc().AddApplicationPart(commonLibraryAssembly).AddControllersAsServices();
+            services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
+            services.AddMvc().AddApplicationPart(quizLibraryAssembly).AddControllersAsServices();
+            services.AddMvc().AddApplicationPart(exerciseLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(categoryLibraryAssembly).AddControllersAsServices();
 
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSwaggerGen(c =>
             {
-                //c.SwaggerGeneratorOptions.DescribeAllParametersInCamelCase = false;
-
-
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Zadania API",

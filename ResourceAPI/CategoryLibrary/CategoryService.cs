@@ -63,29 +63,30 @@ namespace CategoryLibrary
             return category;
         }
 
-        public int Create(int id, Category category)
+        public Category Create(Category category, int parentId, int authorId)
         {
-            var rootCategory = GetProblems(id);
-            if (rootCategory == null) return 0;
+            var rootCategory = GetProblems(parentId);
+            if (rootCategory == null) return null;
             var newCategory = new Category
             {
                 Name = category.Name,
                 Description = category.Description,
-                ParentId = id
+                ParentId = parentId,
+                AuthorId = authorId
             };
             _context.Categories.Add(newCategory);
             _context.SaveChanges();
-            return newCategory.Id;
+            return newCategory;
         }
 
-        public bool Update(int id, Category category)
+        public Category Update(Category category, int id)
         {
             var baseElement = _context.Categories.FirstOrDefault(c => c.Id == id);
-            if (baseElement == null) return false;
+            if (baseElement == null) return null;
             baseElement.Name = category.Name;
             _context.Categories.Update(baseElement);
             _context.SaveChanges();
-            return true;
+            return baseElement;
         }
 
         public bool Delete(int id)

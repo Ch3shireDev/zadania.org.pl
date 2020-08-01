@@ -167,7 +167,7 @@ namespace ProblemLibrary
             return problems;
         }
 
-        public bool Edit(int problemId, Problem problem)
+        public bool Edit(int problemId, Problem problem, int authorId)
         {
             var element = _context.Problems.FirstOrDefault(p => p.Id == problemId);
             if (element == null) return false;
@@ -192,7 +192,7 @@ namespace ProblemLibrary
             var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return 0;
 
-            //var author = _context.Authors.FirstOrDefault(a => a.Id == authorId);
+            //var author = _context.Authors.FirstOrDefault(a => a.Id == AuthorId);
             //if (author == null) return 0;
 
             var element = new Answer
@@ -270,10 +270,10 @@ namespace ProblemLibrary
         public void VoteProblem(int problemId, Vote vote, int authorId)
         {
             //var problemVote =
-            //    _context.ProblemVotes.FirstOrDefault(pv => pv.AuthorId == authorId && pv.ProblemId == problemId);
+            //    _context.ProblemVotes.FirstOrDefault(pv => pv.AuthorId == AuthorId && pv.ProblemId == problemId);
             //if (problemVote == null)
             //{
-            //    problemVote = new ProblemVote { AuthorId = authorId, ProblemId = problemId };
+            //    problemVote = new ProblemVote { AuthorId = AuthorId, ProblemId = problemId };
             //    _context.ProblemVotes.Add(problemVote);
             //}
             //else

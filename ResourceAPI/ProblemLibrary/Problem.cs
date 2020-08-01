@@ -34,5 +34,14 @@ namespace ProblemLibrary
             FileData = null;
             return this;
         }
+
+        public ProblemLink AsLink()
+        {
+            return new ProblemLink
+            {
+                Name = Name,
+                Url = Url
+            };
+        }
     }
 }

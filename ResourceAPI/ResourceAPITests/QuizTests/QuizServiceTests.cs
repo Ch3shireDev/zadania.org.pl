@@ -104,7 +104,7 @@ namespace ResourceAPITests.QuizTests
         [Fact]
         public void DeleteTest()
         {
-            var id = _categoryService.Create(1, new Category {Name = "xyz"});
+            var id = _categoryService.Create(new Category {Name = "xyz"}).Id;
 
             var test = _QuizService.CreateTest(id, new Quiz {Name = "abc"});
 

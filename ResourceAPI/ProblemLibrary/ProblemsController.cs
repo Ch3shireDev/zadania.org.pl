@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using System.Security.Claims;
 using CommonLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace ProblemLibrary
 {
@@ -16,11 +14,8 @@ namespace ProblemLibrary
     public class ProblemsController : ControllerBase
     {
         private readonly IAuthorService _authorService;
-
         private readonly IProblemDbContext _context;
-
         private readonly IProblemService _problemService;
-
         private ILogger<ProblemsController> _logger;
 
         /// <summary>
@@ -30,7 +25,7 @@ namespace ProblemLibrary
         /// <param name="problemService"></param>
         /// <param name="authorService"></param>
         public ProblemsController(ILogger<ProblemsController> logger, IProblemDbContext context,
-            IProblemService problemService, IAuthorService authorService)
+            IProblemService problemService, IAuthorService authorService = null)
         {
             _logger = logger;
             _context = context;
@@ -38,20 +33,7 @@ namespace ProblemLibrary
             _authorService = authorService;
         }
 
-        protected int AuthorId
-        {
-            get
-            {
-                return 1;
-                var profileData = HttpContext?.Request.Headers["profile"] ?? string.Empty;
-                var profile = JsonConvert.DeserializeObject<UserData>(profileData);
-                var http_contextUser = HttpContext.User;
-                var idClaim = http_contextUser.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
-                if (idClaim == null) return 0;
-                var id = _authorService.GetAuthor(idClaim.Value, profile);
-                return id;
-            }
-        }
+        protected int AuthorId => Tools.GetAuthorId(_authorService, HttpContext);
 
         /// <summary>
         ///     Zwraca listę problemów.
@@ -118,7 +100,7 @@ namespace ProblemLibrary
         [Authorize]
         public ActionResult Put(int id, Problem problem)
         {
-            var result = _problemService.Edit(id, problem);
+            var result = _problemService.Edit(id, problem, AuthorId);
             if (!result) return BadRequest();
             return Ok();
         }

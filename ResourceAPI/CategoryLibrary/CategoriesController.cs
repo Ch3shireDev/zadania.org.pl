@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommonLibrary;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CategoryLibrary
 {
@@ -9,88 +10,113 @@ namespace CategoryLibrary
     [ApiController]
     public class CategoriesController : ControllerBase
     {
+        private readonly IAuthorService _authorService;
         private readonly ICategoryService _categoryService;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService, IAuthorService authorService)
         {
             _categoryService = categoryService;
+            _authorService = authorService;
         }
+
+        public int AuthorId => Tools.GetAuthorId(_authorService, HttpContext);
 
         /// <summary>
-        ///     Pobiera element główny kategorii.
+        ///     Pobiera element kategorii o podanym id. W przypadku braku id zwraca kategorię główną.
         /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public ActionResult GetRoot()
-        {
-            var categories = _categoryService.GetProblems(1);
-            return Ok(categories);
-        }
-
-        [HttpPost]
-        public ActionResult PostRoot(Category category)
-        {
-            var element = new Category
-            {
-                Name = category.Name,
-                Description = category.Description
-            };
-
-            var categoryId = _categoryService.Create(1, element);
-            return Ok(new Category {Id = categoryId});
-        }
-
+        /// <param name="id">Identyfikator kategorii.</param>
+        /// <returns>Element kategorii wraz z listą linków do elementów typu Problem, Exercise, Quiz.</returns>
         [HttpGet("{id}")]
-        public ActionResult Get(int id)
+        [HttpGet]
+        public ActionResult Get(int id = 1)
         {
             var category = _categoryService.GetProblems(id);
             if (category == null) return NotFound();
-            return Ok(category);
+            return Ok(category.AsView());
         }
 
+        /// <summary>
+        ///     Tworzy nową podkategorię w kategorii o podanym identyfikatorze.
+        /// </summary>
+        /// <param name="id">Identyfikator kategorii nadrzędnej.</param>
+        /// <param name="category">Nowa kategoria potomna.</param>
+        /// <returns></returns>
         [HttpPost("{id}")]
-        public ActionResult Post(int id, Category category)
+        [HttpPost]
+        public ActionResult Post(CategoryUserModel category, int id = 1)
         {
-            var cid = _categoryService.Create(id, category);
-            if (cid != 0) return Ok(new Category {Id = cid});
+            var newCategory = _categoryService.Create(category.AsModel(), id, AuthorId);
+            if (newCategory != null) return Ok(newCategory.AsLink());
             return NotFound();
         }
 
+        /// <summary>
+        ///     Edytuje kategorię o danym identyfikatorze na podaną przez użytkownika.
+        /// </summary>
+        /// <param name="id">Identyfikator kategorii.</param>
+        /// <param name="category">Nowa struktura kategorii.</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        public ActionResult Edit(int id, Category category)
+        public ActionResult Put(int id, CategoryUserModel category)
         {
-            if (_categoryService.Update(id, category)) return Ok();
-            return NotFound();
+            var element = _categoryService.Update(category.AsModel(), id);
+            if (element == null)
+                return NotFound();
+            return Ok(element.AsLink());
         }
 
+        /// <summary>
+        ///     Kasuje kategorię o podanym identyfikatorze wraz ze wszystkimi elementami potomnymi.
+        /// </summary>
+        /// <param name="id">Identyfikator kategorii.</param>
+        /// <returns>Kod statusu html.</returns>
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
+            if (id == 1) return Forbid();
             if (_categoryService.Delete(id)) return Ok();
             return NotFound();
         }
 
+        /// <summary>
+        ///     Zwraca linki problemów związanych z kategorią.
+        /// </summary>
+        /// <param name="id">Identyfikator kategorii.</param>
+        /// <returns>Lista linków problemów.</returns>
         [HttpGet("{id}/problems")]
         public ActionResult GetProblems(int id)
         {
             var category = _categoryService.GetProblems(id);
             if (category == null) return NotFound();
+            // TODO: Zamienić kategorię na faktyczną listę linków problemów.
             return Ok(category);
         }
 
+        /// <summary>
+        ///     Zwraca linki exercises zwiazanych z kategorią.
+        /// </summary>
+        /// <param name="id">Identyfikator kategorii.</param>
+        /// <returns>Lista linków ćwiczeń.</returns>
         [HttpGet("{id}/exercises")]
         public ActionResult GetExercises(int id)
         {
             var category = _categoryService.GetExercises(id);
             if (category == null) return NotFound();
+            // TODO: Zamienić kategorię na faktyczną listę linków exercises.
             return Ok(category);
         }
 
+        /// <summary>
+        ///     Zwraca linki quizów związanych z kategorią.
+        /// </summary>
+        /// <param name="id">Identyfikator kategorii.</param>
+        /// <returns>Lista linków quizów.</returns>
         [HttpGet("{id}/quiz")]
         public ActionResult GetQuizTests(int id)
         {
             var category = _categoryService.GetQuizTests(id);
             if (category == null) return NotFound();
+            // TODO: Zamienić kategorię na faktyczną listę linków quiów.
             return Ok(category);
         }
     }

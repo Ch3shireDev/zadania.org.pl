@@ -18,12 +18,12 @@ namespace CategoryLibrary
         [NotMapped] public string DescriptionHtml { get; set; }
         public Category Parent { get; set; }
         public int? ParentId { get; set; }
-        public IEnumerable<Category> Categories { get; set; }
+        public IEnumerable<Category> Categories { get; set; } = new List<Category>();
         public IEnumerable<Problem> Problems { get; set; } = new List<Problem>();
 
         public IEnumerable<Exercise> Exercises { get; set; } = new List<Exercise>();
 
-        public IEnumerable<Quiz> QuizTests { get; set; } = new List<Quiz>();
+        public IEnumerable<Quiz> Quizzes { get; set; } = new List<Quiz>();
         public int AuthorId { get; set; }
 
         public Category Render()
@@ -42,8 +42,11 @@ namespace CategoryLibrary
                 Description = Tools.Render(Description, FileData),
                 Url = Url,
                 ParentUrl = $"/api/v1/categories/{ParentId}",
+                CategoriesCount = Categories.Count(),
                 Categories = Categories.Select(c => c.AsLink()).ToArray(),
-                Problems = Problems.Select(p => p.AsLink()).ToArray()
+                ProblemsCount = Problems.Count(),
+                ExercisesCount = Exercises.Count(),
+                QuizzesCount = Quizzes.Count()
             };
             return categoryView;
         }

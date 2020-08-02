@@ -27,16 +27,25 @@ namespace CategoryLibrary
         /// <param name="id">Identyfikator kategorii.</param>
         /// <returns>Element kategorii wraz z listą linków do elementów typu Problem, Exercise, Quiz.</returns>
         [HttpGet("{id}")]
-        [HttpGet]
+        //[HttpGet]
         public ActionResult Get(int id = 1)
         {
-            var category = _categoryService.GetProblems(id);
+            var category = _categoryService.GetCategory(id);
             if (category == null) return NotFound();
             return Ok(category.AsView());
         }
 
+        //[HttpGet("{id}/categories")]
+        //public ActionResult GetCategories(int id = 1)
+        //{
+        //    var categories = _categoryService.GetCategories(id);
+        //    if (categories == null) return NotFound();
+        //    return Ok(categories);
+        //}
+
         /// <summary>
-        ///     Tworzy nową podkategorię w kategorii o podanym identyfikatorze.
+        ///     Tworzy nową kategorię potomną do kategorii o podanym identyfikatorze. W przypadku braku identyfikatora tworzy
+        ///     podkategorię w kategorii głównej.
         /// </summary>
         /// <param name="id">Identyfikator kategorii nadrzędnej.</param>
         /// <param name="category">Nowa kategoria potomna.</param>
@@ -86,10 +95,9 @@ namespace CategoryLibrary
         [HttpGet("{id}/problems")]
         public ActionResult GetProblems(int id)
         {
-            var category = _categoryService.GetProblems(id);
-            if (category == null) return NotFound();
-            // TODO: Zamienić kategorię na faktyczną listę linków problemów.
-            return Ok(category);
+            var problems = _categoryService.GetProblems(id);
+            if (problems == null) return NotFound();
+            return Ok(problems);
         }
 
         /// <summary>
@@ -100,10 +108,9 @@ namespace CategoryLibrary
         [HttpGet("{id}/exercises")]
         public ActionResult GetExercises(int id)
         {
-            var category = _categoryService.GetExercises(id);
-            if (category == null) return NotFound();
-            // TODO: Zamienić kategorię na faktyczną listę linków exercises.
-            return Ok(category);
+            var exercises = _categoryService.GetExercises(id);
+            if (exercises == null) return NotFound();
+            return Ok(exercises);
         }
 
         /// <summary>
@@ -111,13 +118,12 @@ namespace CategoryLibrary
         /// </summary>
         /// <param name="id">Identyfikator kategorii.</param>
         /// <returns>Lista linków quizów.</returns>
-        [HttpGet("{id}/quiz")]
+        [HttpGet("{id}/quizzes")]
         public ActionResult GetQuizTests(int id)
         {
-            var category = _categoryService.GetQuizTests(id);
-            if (category == null) return NotFound();
-            // TODO: Zamienić kategorię na faktyczną listę linków quiów.
-            return Ok(category);
+            var quizzes = _categoryService.GetQuizzes(id);
+            if (quizzes == null) return NotFound();
+            return Ok(quizzes);
         }
     }
 }

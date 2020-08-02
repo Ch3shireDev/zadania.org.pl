@@ -1,6 +1,6 @@
-﻿namespace ProblemLibrary
+﻿namespace QuizLibrary
 {
-    public class ProblemLink
+    public class QuizLink
     {
         public int Id { get; set; }
         public string Name { get; set; }

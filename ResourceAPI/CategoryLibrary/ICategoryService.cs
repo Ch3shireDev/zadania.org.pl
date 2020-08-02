@@ -1,4 +1,9 @@
-﻿namespace CategoryLibrary
+﻿using System.Collections.Generic;
+using ExerciseLibrary;
+using ProblemLibrary;
+using QuizLibrary;
+
+namespace CategoryLibrary
 {
     public interface ICategoryService
     {
@@ -8,8 +13,11 @@
         bool Delete(int id);
 
         //bool SetParent(int parentId, int childId);
-        Category GetProblems(int id);
-        Category GetQuizTests(int cid1);
-        Category GetExercises(int cid1);
+        IEnumerable<ProblemLink> GetProblems(int id);
+        IEnumerable<QuizLink> GetQuizzes(int cid1);
+        IEnumerable<ExerciseLink> GetExercises(int cid1);
+
+        Category GetCategory(int id);
+        //IEnumerable<CategoryLink> GetCategories(int id);
     }
 }

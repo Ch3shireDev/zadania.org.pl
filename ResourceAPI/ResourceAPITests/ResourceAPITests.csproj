@@ -6,9 +6,16 @@
 		<IsPackable>false</IsPackable>
 
 		<AssemblyName>ResourceAPITests</AssemblyName>
+
+		<Configurations>Debug;Release;SwaggerDebug</Configurations>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<NoWarn>1701;1702;1591</NoWarn>
+		<WarningLevel>0</WarningLevel>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SwaggerDebug|AnyCPU'">
 		<NoWarn>1701;1702;1591</NoWarn>
 		<WarningLevel>0</WarningLevel>
 	</PropertyGroup>

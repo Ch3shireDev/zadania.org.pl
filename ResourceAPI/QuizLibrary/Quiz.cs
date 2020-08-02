@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using CommonLibrary;
 
 namespace QuizLibrary
@@ -8,5 +9,16 @@ namespace QuizLibrary
         public string Name { get; set; }
         public List<QuizQuestion> Questions { get; set; }
         public bool CanBeRandomized { get; set; }
+        [NotMapped] public string Url => $"/api/v1/quizzes/{Id}";
+
+        public QuizLink AsLink()
+        {
+            return new QuizLink
+            {
+                Id = Id,
+                Url = Url,
+                Name = Name
+            };
+        }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ExerciseLibrary;
+using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using QuizLibrary;
 
@@ -17,50 +20,23 @@ namespace CategoryLibrary
             _context.SaveChanges();
         }
 
-        public Category GetProblems(int id)
+        public IEnumerable<ProblemLink> GetProblems(int id)
         {
-            var category = _context.Categories
-                .Select(c => new Category
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    ParentId = c.ParentId,
-                    FileData = c.FileData,
-                    Description = c.Description,
-                    Categories = c.Categories.Select(cc => new Category {Id = cc.Id, Name = cc.Name}).ToList(),
-                    Problems = c.Problems.Select(cp => new Problem {Id = cp.Id, Name = cp.Name}).ToList(),
-                    QuizTests = c.QuizTests
-                        .Select(mt => new Quiz {Id = mt.Id, Name = mt.Name}).ToList()
-                })
+            var category = _context.Categories.Include(c => c.Problems)
                 .FirstOrDefault(c => c.Id == id);
-
-            if (category == null) return null;
-
-            category.Categories = _context.Categories.Where(c => c.ParentId == id)
-                .Select(c => new Category {Id = c.Id, Name = c.Name}).ToList();
-            return category.Render();
+            return category?.Problems.Select(p => p.AsLink()).ToArray();
         }
 
-        public Category GetQuizTests(int categoryId)
+        public IEnumerable<QuizLink> GetQuizzes(int categoryId)
         {
-            var category = _context.Categories.Select(c => new Category
-            {
-                Id = c.Id,
-                ParentId = c.ParentId,
-                QuizTests = c.QuizTests.ToList()
-            }).FirstOrDefault(c => c.Id == categoryId);
-            return category;
+            var category = _context.Categories.Include(c => c.Quizzes).FirstOrDefault(c => c.Id == categoryId);
+            return category?.Quizzes.Select(q => q.AsLink()).ToArray();
         }
 
-        public Category GetExercises(int categoryId)
+        public IEnumerable<ExerciseLink> GetExercises(int categoryId)
         {
-            var category = _context.Categories.Select(c => new Category
-            {
-                Id = c.Id,
-                ParentId = c.ParentId,
-                Exercises = c.Exercises.ToList()
-            }).FirstOrDefault(c => c.Id == categoryId);
-            return category;
+            var category = _context.Categories.Include(c => c.Exercises).FirstOrDefault(c => c.Id == categoryId);
+            return category?.Exercises.Select(e => e.AsLink()).ToArray();
         }
 
         public Category Create(Category category, int parentId, int authorId)
@@ -96,6 +72,19 @@ namespace CategoryLibrary
             _context.Categories.Remove(category);
             _context.SaveChanges();
             return true;
+        }
+
+        public Category GetCategory(int id)
+        {
+            var category = _context.Categories.Include(c => c.Categories).FirstOrDefault(c => c.Id == id);
+            return category;
+        }
+
+        public IEnumerable<CategoryLink> GetCategories(int id)
+        {
+            var categories = _context.Categories.Select(c => new {c.Id, Categories = c.Categories.ToList()})
+                .FirstOrDefault(c => c.Id == id);
+            return categories?.Categories.Select(c => c.AsLink());
         }
     }
 }

@@ -39,6 +39,7 @@ namespace ProblemLibrary
         {
             return new ProblemLink
             {
+                Id = Id,
                 Name = Name,
                 Url = Url
             };

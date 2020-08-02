@@ -5,9 +5,15 @@
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 		<AssemblyName>ResourceAPI</AssemblyName>
 		<RootNamespace>ResourceAPI</RootNamespace>
+		<Configurations>Debug;Release;SwaggerDebug</Configurations>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<NoWarn>1701;1702;1591</NoWarn>
+		<DocumentationFile>ResourceAPI.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SwaggerDebug|AnyCPU'">
 		<NoWarn>1701;1702;1591</NoWarn>
 		<DocumentationFile>ResourceAPI.xml</DocumentationFile>
 	</PropertyGroup>

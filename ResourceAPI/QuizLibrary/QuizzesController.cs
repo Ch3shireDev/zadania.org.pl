@@ -4,15 +4,15 @@ using Microsoft.Extensions.Logging;
 
 namespace QuizLibrary
 {
-    [Route("api/v1/quiz")]
+    [Route("api/v1/quizzes")]
     [ApiController]
-    public class QuizController : ControllerBase
+    public class QuizzesController : ControllerBase
     {
         private readonly IQuizService _quizService;
 
-        private ILogger<QuizController> _logger;
+        private ILogger<QuizzesController> _logger;
 
-        public QuizController(ILogger<QuizController> logger,
+        public QuizzesController(ILogger<QuizzesController> logger,
             IQuizService quizService)
         {
             _logger = logger;
@@ -28,9 +28,9 @@ namespace QuizLibrary
         }
 
         [HttpPost]
-        public ActionResult Post(Quiz test)
+        public ActionResult Post(QuizUserModel test)
         {
-            var id = _quizService.Create(test);
+            var id = _quizService.Create(test.ToModel());
             return Ok(new Quiz {Id = id});
         }
 
@@ -40,7 +40,7 @@ namespace QuizLibrary
         {
             var test = _quizService.GetTest(testId);
             if (test == null) return Forbid();
-            return Ok(test);
+            return Ok(test.ToView());
         }
 
         [HttpPut("{testId}")]

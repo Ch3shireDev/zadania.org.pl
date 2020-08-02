@@ -1,4 +1,5 @@
 ﻿using CommonLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CategoryLibrary
@@ -22,30 +23,30 @@ namespace CategoryLibrary
         public int AuthorId => Tools.GetAuthorId(_authorService, HttpContext);
 
         /// <summary>
-        ///     Pobiera element kategorii o podanym id. W przypadku braku id zwraca kategorię główną.
+        ///     Pobiera element kategorii o podanym id.
         /// </summary>
         /// <param name="id">Identyfikator kategorii.</param>
-        /// <returns>Element kategorii wraz z listą linków do elementów typu Problem, Exercise, Quiz.</returns>
+        /// <returns>Element kategorii wraz z listą linków do podkategorii.</returns>
         [HttpGet("{id}")]
-        //[HttpGet]
         public ActionResult Get(int id = 1)
         {
             var category = _categoryService.GetCategory(id);
             if (category == null) return NotFound();
-            return Ok(category.AsView());
+            return Ok(category.ToView());
         }
 
-        //[HttpGet("{id}/categories")]
-        //public ActionResult GetCategories(int id = 1)
-        //{
-        //    var categories = _categoryService.GetCategories(id);
-        //    if (categories == null) return NotFound();
-        //    return Ok(categories);
-        //}
+        /// <summary>
+        ///     Zwraca kategorię główną wraz z linkami do podkategorii.
+        /// </summary>
+        /// <returns>Kategoria główna.</returns>
+        [HttpGet]
+        public ActionResult GetRoot()
+        {
+            return Get();
+        }
 
         /// <summary>
-        ///     Tworzy nową kategorię potomną do kategorii o podanym identyfikatorze. W przypadku braku identyfikatora tworzy
-        ///     podkategorię w kategorii głównej.
+        ///     Tworzy nową kategorię potomną do kategorii o podanym identyfikatorze.
         /// </summary>
         /// <param name="id">Identyfikator kategorii nadrzędnej.</param>
         /// <param name="category">Nowa kategoria potomna.</param>
@@ -54,8 +55,8 @@ namespace CategoryLibrary
         [HttpPost]
         public ActionResult Post(CategoryUserModel category, int id = 1)
         {
-            var newCategory = _categoryService.Create(category.AsModel(), id, AuthorId);
-            if (newCategory != null) return Ok(newCategory.AsLink());
+            var newCategory = _categoryService.Create(category.ToModel(), id, AuthorId);
+            if (newCategory != null) return Ok(newCategory.ToLink());
             return NotFound();
         }
 
@@ -66,12 +67,12 @@ namespace CategoryLibrary
         /// <param name="category">Nowa struktura kategorii.</param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Authorize]
         public ActionResult Put(int id, CategoryUserModel category)
         {
-            var element = _categoryService.Update(category.AsModel(), id);
-            if (element == null)
-                return NotFound();
-            return Ok(element.AsLink());
+            var element = _categoryService.Update(category.ToModel(), id, AuthorId);
+            if (element == null) return NotFound();
+            return Ok(element.ToLink());
         }
 
         /// <summary>
@@ -80,10 +81,11 @@ namespace CategoryLibrary
         /// <param name="id">Identyfikator kategorii.</param>
         /// <returns>Kod statusu html.</returns>
         [HttpDelete("{id}")]
+        [Authorize]
         public ActionResult Delete(int id)
         {
             if (id == 1) return Forbid();
-            if (_categoryService.Delete(id)) return Ok();
+            if (_categoryService.Delete(id, AuthorId)) return Ok();
             return NotFound();
         }
 

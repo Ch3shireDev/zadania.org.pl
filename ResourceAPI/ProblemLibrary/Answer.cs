@@ -7,7 +7,6 @@ namespace ProblemLibrary
     public class Answer : Post
     {
         public Problem Problem { get; set; }
-        [NotMapped] public string Url => $"/api/v1/problems/{ProblemId}/answers/{Id}";
         public int ProblemId { get; set; }
         public bool IsApproved { get; set; }
         public ICollection<Comment> Comments { get; set; }
@@ -16,16 +15,31 @@ namespace ProblemLibrary
         [NotMapped] public string AuthorName { get; set; }
         [NotMapped] public string UserId { get; set; }
 
-        public Answer Serializable(int depth = 0)
-        {
-            if (depth == 0) Problem = null;
-            return this;
-        }
-
         public new Answer Render()
         {
             ContentHtml = Tools.Render(Content, FileData);
             return this;
+        }
+
+        public AnswerView ToView()
+        {
+            return new AnswerView
+            {
+                Id = Id,
+                ProblemId = ProblemId,
+                IsApproved = IsApproved,
+                Content = Tools.Render(Content, FileData)
+            };
+        }
+
+        public AnswerLink ToLink()
+        {
+            return new AnswerLink
+            {
+                Id = Id,
+                ProblemId = ProblemId,
+                IsApproved = IsApproved
+            };
         }
     }
 }

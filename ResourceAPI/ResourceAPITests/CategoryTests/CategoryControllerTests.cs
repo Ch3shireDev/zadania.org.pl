@@ -106,11 +106,11 @@ namespace ResourceAPITests.CategoryTests
                 new Category {Name = "aaa"}.ToHttpContent());
             var cid = res0.ToElement<CategoryLink>().Id;
 
-            await Client.PostAsync("/api/v1/quiz",
+            await Client.PostAsync("/api/v1/quizzes",
                 new Quiz {Name = "xxx", CategoryId = cid}.ToHttpContent());
-            await Client.PostAsync("/api/v1/quiz",
+            await Client.PostAsync("/api/v1/quizzes",
                 new Quiz {Name = "yyy", CategoryId = cid}.ToHttpContent());
-            await Client.PostAsync("/api/v1/quiz",
+            await Client.PostAsync("/api/v1/quizzes",
                 new Quiz {Name = "zzz", CategoryId = cid}.ToHttpContent());
 
             var res = await Client.GetAsync($"/api/v1/categories/{cid}/quizzes");

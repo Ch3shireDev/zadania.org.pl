@@ -24,13 +24,13 @@ namespace CategoryLibrary
         {
             var category = _context.Categories.Include(c => c.Problems)
                 .FirstOrDefault(c => c.Id == id);
-            return category?.Problems.Select(p => p.AsLink()).ToArray();
+            return category?.Problems.Select(p => p.ToLink()).ToArray();
         }
 
         public IEnumerable<QuizLink> GetQuizzes(int categoryId)
         {
             var category = _context.Categories.Include(c => c.Quizzes).FirstOrDefault(c => c.Id == categoryId);
-            return category?.Quizzes.Select(q => q.AsLink()).ToArray();
+            return category?.Quizzes.Select(q => q.ToLink()).ToArray();
         }
 
         public IEnumerable<ExerciseLink> GetExercises(int categoryId)
@@ -55,9 +55,9 @@ namespace CategoryLibrary
             return newCategory;
         }
 
-        public Category Update(Category category, int id)
+        public Category Update(Category category, int id, int authorId)
         {
-            var baseElement = _context.Categories.FirstOrDefault(c => c.Id == id);
+            var baseElement = _context.Categories.FirstOrDefault(c => c.Id == id && c.AuthorId == authorId);
             if (baseElement == null) return null;
             baseElement.Name = category.Name;
             _context.Categories.Update(baseElement);
@@ -65,7 +65,7 @@ namespace CategoryLibrary
             return baseElement;
         }
 
-        public bool Delete(int id)
+        public bool Delete(int id, int authorId)
         {
             var category = _context.Categories.FirstOrDefault(c => c.Id == id);
             if (category == null) return false;
@@ -78,13 +78,6 @@ namespace CategoryLibrary
         {
             var category = _context.Categories.Include(c => c.Categories).FirstOrDefault(c => c.Id == id);
             return category;
-        }
-
-        public IEnumerable<CategoryLink> GetCategories(int id)
-        {
-            var categories = _context.Categories.Select(c => new {c.Id, Categories = c.Categories.ToList()})
-                .FirstOrDefault(c => c.Id == id);
-            return categories?.Categories.Select(c => c.AsLink());
         }
     }
 }

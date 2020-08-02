@@ -81,7 +81,7 @@
 //            var i = 0;
 //            foreach (var problem in problems)
 //            {
-//                _problemService.Create(problem);
+//                _problemService.Create(problem).Id;
 //                i++;
 //                if (i % 100 == 0)
 //                {
@@ -121,7 +121,7 @@
 //            {
 //                problem.Name = $"Zadanie {n++}";
 //                problem.Tags = new List<Tag> { new Tag { Name = "OAK" }, new Tag { Name = "Informatyka" } };
-//                _problemService.Create(problem);
+//                _problemService.Create(problem).Id;
 //            }
 
 //            _context.SaveChanges();

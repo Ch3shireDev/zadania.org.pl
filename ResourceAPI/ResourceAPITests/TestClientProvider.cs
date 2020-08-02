@@ -10,7 +10,7 @@ namespace ResourceAPITests
         public TestClientProvider()
         {
             var builder = new WebHostBuilder().UseStartup<Startup>();
-            builder.UseEnvironment("tests");
+            builder.UseEnvironment("Development");
             var server = new TestServer(builder);
             Client = server.CreateClient();
         }

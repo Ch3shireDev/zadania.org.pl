@@ -11,13 +11,22 @@ namespace QuizLibrary
         public bool CanBeRandomized { get; set; }
         [NotMapped] public string Url => $"/api/v1/quizzes/{Id}";
 
-        public QuizLink AsLink()
+        public QuizLink ToLink()
         {
             return new QuizLink
             {
                 Id = Id,
-                Url = Url,
                 Name = Name
+            };
+        }
+
+        public QuizView ToView()
+        {
+            return new QuizView
+            {
+                Id = Id,
+                Name = Name,
+                Content = Tools.Render(Content, FileData)
             };
         }
     }

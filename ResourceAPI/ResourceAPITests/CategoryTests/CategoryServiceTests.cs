@@ -44,9 +44,9 @@ namespace ResourceAPITests.CategoryTests
             _categoryService.Create(new Category {Name = "xyz"}, id);
             var id2 = _categoryService.Create(new Category {Name = "xyz"}, id).Id;
 
-            var pid0 = _problemService.Create(new Problem {Name = "xxx1", CategoryId = id2});
-            var pid1 = _problemService.Create(new Problem {Name = "xxx2", CategoryId = id2});
-            var pid2 = _problemService.Create(new Problem {Name = "xxx3", CategoryId = id2});
+            var pid0 = _problemService.Create(new Problem {Name = "xxx1", CategoryId = id2}).Id;
+            var pid1 = _problemService.Create(new Problem {Name = "xxx2", CategoryId = id2}).Id;
+            var pid2 = _problemService.Create(new Problem {Name = "xxx3", CategoryId = id2}).Id;
 
             var problems = _categoryService.GetProblems(id2);
 
@@ -210,9 +210,9 @@ namespace ResourceAPITests.CategoryTests
         {
             var cid1 = _categoryService.Create(new Category {Name = "xxxx"}).Id;
 
-            var pid1 = _problemService.Create(new Problem {Name = "aaa", CategoryId = cid1});
-            var pid2 = _problemService.Create(new Problem {Name = "bbb", CategoryId = cid1});
-            var pid3 = _problemService.Create(new Problem {Name = "ccc", CategoryId = cid1});
+            var pid1 = _problemService.Create(new Problem {Name = "aaa", CategoryId = cid1}).Id;
+            var pid2 = _problemService.Create(new Problem {Name = "bbb", CategoryId = cid1}).Id;
+            var pid3 = _problemService.Create(new Problem {Name = "ccc", CategoryId = cid1}).Id;
 
             var category = _categoryService.GetProblems(cid1);
 

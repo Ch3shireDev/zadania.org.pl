@@ -16,6 +16,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SwaggerDebug|AnyCPU'">
 		<NoWarn>1701;1702;1591</NoWarn>
 		<DocumentationFile>ResourceAPI.xml</DocumentationFile>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -9,6 +9,6 @@ namespace QuizLibrary
         public QuizQuestion Question { get; set; }
         public int QuestionId { get; set; }
         public int TestId { get; set; }
-        [NotMapped] public string Url => $"/api/v1/quiz/{TestId}/questions/{QuestionId}/answers/{Id}";
+        [NotMapped] public string Url => $"/api/v1/quizzes/{TestId}/questions/{QuestionId}/answers/{Id}";
     }
 }

@@ -8,9 +8,8 @@ namespace CategoryLibrary
     public interface ICategoryService
     {
         Category Create(Category category, int parentId = 1, int authorId = 1);
-        Category Update(Category category, int categoryId);
-
-        bool Delete(int id);
+        Category Update(Category category, int categoryId, int authorId = 1);
+        bool Delete(int id, int authorId = 1);
 
         //bool SetParent(int parentId, int childId);
         IEnumerable<ProblemLink> GetProblems(int id);

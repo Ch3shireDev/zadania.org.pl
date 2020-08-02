@@ -16,21 +16,21 @@ namespace ResourceAPITests.QuizTests
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
             _context = new SqlContext(optionsBuilder.Options);
             _categoryService = new CategoryService(_context);
-            _QuizService = new QuizService(_context);
+            _quizService = new QuizService(_context);
             _authorService = new AuthorService(_context);
         }
 
         private readonly SqlContext _context;
         private readonly ICategoryService _categoryService;
-        private readonly IQuizService _QuizService;
+        private readonly IQuizService _quizService;
         private IAuthorService _authorService;
 
         [Fact]
         public int CreateAnswer()
         {
             var questionId = CreateQuestion();
-            var answerId = _QuizService.CreateAnswer(questionId, new QuizAnswer {Content = "xxx"});
-            var answer = _QuizService.GetAnswer(answerId);
+            var answerId = _quizService.CreateAnswer(questionId, new QuizAnswer {Content = "xxx"});
+            var answer = _quizService.GetAnswer(answerId);
             Assert.Contains("xxx", answer.ContentHtml);
             return answerId;
         }
@@ -42,22 +42,22 @@ namespace ResourceAPITests.QuizTests
 
             // Tworzymy pytanie do testu.
             var questionId =
-                _QuizService.CreateQuestion(testId, new QuizQuestion {Content = "xxx"});
+                _quizService.CreateQuestion(testId, new QuizQuestion {Content = "xxx"});
 
             // Pobieramy test.
-            var test = _QuizService.GetTest(testId);
+            var test = _quizService.GetTest(testId);
 
             // Bierzemy pytanie z testu.
             var question = test.Questions.First();
 
             // Sprawdzamy, czy wartości są poprawne.
             Assert.Equal(questionId, question.Id);
-            Assert.Contains("xxx", question.ContentHtml);
+            Assert.Contains("xxx", question.Content);
 
             // Pobieramy pytanie na drugi sposób.
-            var question2 = _QuizService.GetQuestion(questionId);
+            var question2 = _quizService.GetQuestion(questionId);
             Assert.Equal(questionId, question2.Id);
-            Assert.Contains("xxx", question2.ContentHtml);
+            Assert.Contains("xxx", question2.Content);
 
             return questionId;
         }
@@ -66,15 +66,15 @@ namespace ResourceAPITests.QuizTests
         public int CreateTest()
         {
             // Tworzymy test.
-            var testId = _QuizService.CreateTest(1, new Quiz {Name = "abc", Content = "cde"});
+            var testId = _quizService.CreateTest(1, new Quiz {Name = "abc", Content = "cde"});
 
             // Pobieramy test.
-            var test = _QuizService.GetTest(testId);
+            var test = _quizService.GetTest(testId);
 
             // Sprawdzamy czy wartości Id i zawartość są poprawne.
             Assert.Equal(testId, test.Id);
             Assert.Equal("abc", test.Name);
-            Assert.Contains("cde", test.ContentHtml);
+            Assert.Contains("cde", test.Content);
 
             return testId;
         }
@@ -83,10 +83,10 @@ namespace ResourceAPITests.QuizTests
         public void DeleteAnswer()
         {
             var answerId = CreateAnswer();
-            var answer1 = _QuizService.GetAnswer(answerId);
+            var answer1 = _quizService.GetAnswer(answerId);
             Assert.NotNull(answer1);
-            _QuizService.DeleteAnswer(answerId);
-            var answer2 = _QuizService.GetAnswer(answerId);
+            _quizService.DeleteAnswer(answerId);
+            var answer2 = _quizService.GetAnswer(answerId);
             Assert.Null(answer2);
         }
 
@@ -94,10 +94,10 @@ namespace ResourceAPITests.QuizTests
         public void DeleteQuestion()
         {
             var questionId = CreateQuestion();
-            var question1 = _QuizService.GetQuestion(questionId);
+            var question1 = _quizService.GetQuestion(questionId);
             Assert.NotNull(question1);
-            _QuizService.DeleteQuestion(questionId);
-            var question2 = _QuizService.GetQuestion(questionId);
+            _quizService.DeleteQuestion(questionId);
+            var question2 = _quizService.GetQuestion(questionId);
             Assert.Null(question2);
         }
 
@@ -106,22 +106,22 @@ namespace ResourceAPITests.QuizTests
         {
             var id = _categoryService.Create(new Category {Name = "xyz"}).Id;
 
-            var test = _QuizService.CreateTest(id, new Quiz {Name = "abc"});
+            var test = _quizService.CreateTest(id, new Quiz {Name = "abc"});
 
-            var qid1 = _QuizService.CreateQuestion(test, new QuizQuestion {Content = "xyz"});
-            var qid2 = _QuizService.CreateQuestion(test, new QuizQuestion {Content = "xyz"});
-            var qid3 = _QuizService.CreateQuestion(test, new QuizQuestion {Content = "xyz"});
+            var qid1 = _quizService.CreateQuestion(test, new QuizQuestion {Content = "xyz"});
+            var qid2 = _quizService.CreateQuestion(test, new QuizQuestion {Content = "xyz"});
+            var qid3 = _quizService.CreateQuestion(test, new QuizQuestion {Content = "xyz"});
 
-            var aid = _QuizService.CreateAnswer(qid1, new QuizAnswer {Content = "aaa"});
+            var aid = _quizService.CreateAnswer(qid1, new QuizAnswer {Content = "aaa"});
 
-            var qnum = _QuizService.GetTest(test).Questions.Count;
+            var qnum = _quizService.GetTest(test).Questions.Count;
             Assert.Equal(3, qnum);
 
             var testNum = _context.QuizTests.Count();
             var qNum = _context.QuizQuestions.Count();
             var aNum = _context.QuizAnswers.Count();
 
-            _QuizService.DeleteTest(test);
+            _quizService.DeleteTest(test);
 
             var testNum2 = _context.QuizTests.Count();
             var qNum2 = _context.QuizQuestions.Count();
@@ -136,10 +136,10 @@ namespace ResourceAPITests.QuizTests
         public void EditAnswer()
         {
             var answerId = CreateAnswer();
-            var answer = _QuizService.GetAnswer(answerId);
+            var answer = _quizService.GetAnswer(answerId);
             answer.Content = "xxxxxxx";
-            _QuizService.EditAnswer(answerId, answer);
-            var answer2 = _QuizService.GetAnswer(answerId);
+            _quizService.EditAnswer(answerId, answer);
+            var answer2 = _quizService.GetAnswer(answerId);
             Assert.Contains("xxxxxx", answer2.ContentHtml);
         }
 
@@ -147,23 +147,23 @@ namespace ResourceAPITests.QuizTests
         public void EditQuestion()
         {
             var questionId = CreateQuestion();
-            var question1 = _QuizService.GetQuestion(questionId);
+            var question1 = _quizService.GetQuestion(questionId);
             question1.Content = "xxxxxx";
-            _QuizService.EditQuestion(questionId, question1);
+            _quizService.EditQuestion(questionId, question1);
         }
 
         [Fact]
         public void EditTest()
         {
-            var testId = _QuizService.CreateTest(1, new Quiz {Name = "abc"});
-            var question = _QuizService.CreateQuestion(testId, new QuizQuestion {Content = "xxx"});
+            var testId = _quizService.CreateTest(1, new Quiz {Name = "abc"});
+            var question = _quizService.CreateQuestion(testId, new QuizQuestion {Content = "xxx"});
 
-            var test1 = _QuizService.GetTest(testId);
+            var test1 = _quizService.GetTest(testId);
             Assert.Equal("abc", test1.Name);
 
-            _QuizService.EditTest(testId, new Quiz {Name = "cde"});
+            _quizService.EditTest(testId, new Quiz {Name = "cde"});
 
-            var test2 = _QuizService.GetTest(testId);
+            var test2 = _quizService.GetTest(testId);
             Assert.Equal("cde", test2.Name);
         }
     }

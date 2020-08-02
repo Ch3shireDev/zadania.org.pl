@@ -6,7 +6,7 @@ namespace ProblemLibrary
     {
         public ProblemProfile()
         {
-            CreateMap<Problem, ProblemViewModel>()
+            CreateMap<Problem, ProblemView>()
                 //.ForAllMembers(o=>{})
                 .ForMember(dest => dest.Id, x => x.MapFrom(y => y.Id))
                 .ForMember(
@@ -14,7 +14,7 @@ namespace ProblemLibrary
                     x => x.MapFrom(y => y.Name)
                 )
                 .ForMember(
-                    dest => dest.ContentHtml,
+                    dest => dest.Content,
                     x => x.MapFrom(y =>
                         y.Render().ContentHtml
                     )

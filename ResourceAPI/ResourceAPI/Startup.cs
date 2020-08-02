@@ -36,9 +36,8 @@ namespace ResourceAPI
             services.AddResponseCompression();
             services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
-                if (Environment.IsEnvironment("tests"))
+                if (Environment.IsDevelopment())
                     options.UseInMemoryDatabase(guid).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                else if (Environment.IsDevelopment()) options.UseSqlite("Filename=sqlite.db");
                 else options.UseMySQL(Configuration.GetConnectionString("Default"));
             });
 
@@ -48,7 +47,7 @@ namespace ResourceAPI
             services.AddScoped<IQuizDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IExerciseDbContext>(provider => provider.GetService<SqlContext>());
 
-            if (Environment.IsEnvironment("tests"))
+            if (Environment.IsDevelopment())
             {
                 services.AddScoped<IAuthorService, MockAuthorService>();
                 services.AddSingleton<IAuthorizationHandler, AllowAnonymous>();
@@ -70,10 +69,6 @@ namespace ResourceAPI
                 o.AddDefaultPolicy(builder => { builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); }));
 
             ConfigureAuthentication(services);
-
-            if (Environment.IsEnvironment("tests"))
-            {
-            }
 
             services.AddRouting(options => options.LowercaseUrls = true);
 

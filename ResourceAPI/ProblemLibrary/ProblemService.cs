@@ -7,70 +7,10 @@ namespace ProblemLibrary
     public class ProblemService : IProblemService
     {
         private readonly IProblemDbContext _context;
-        //private readonly IMapper _mapper;
 
         public ProblemService(IProblemDbContext context)
         {
             _context = context;
-            //_mapper = mapper;
-        }
-
-        public Problem ProblemById(int id)
-        {
-            var problem = _context.Problems.Select(p => new Problem
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Content = p.Content,
-                    AuthorId = p.AuthorId,
-                    AuthorName = p.Author.Name,
-                    Created = p.Created,
-                    Edited = p.Edited,
-                    FileData = p.FileData,
-                    //Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}),
-                    Points = p.Points
-                    //UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                    //UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
-                })
-                .FirstOrDefault(p => p.Id == id);
-            if (problem == null) return null;
-
-            problem.IsSolved = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
-            problem = problem.Render();
-
-            return problem;
-        }
-
-        //public ProblemViewModel GetProblemView(int id)
-        //{
-        //    var problem = _context.Problems.Select(p =>
-        //    new Problem()){
-
-        //    })
-        //    var problemView = _mapper.Map<ProblemViewModel>(problem);
-        //    return problemView;
-        //}
-
-        public Answer GetAnswerById(int problemId, int answerId)
-        {
-            var answer = _context.Answers.Select(a => new
-                Answer
-                {
-                    Id = a.Id,
-                    ProblemId = a.ProblemId,
-                    IsApproved = a.IsApproved,
-                    Content = a.Content,
-                    Points = a.Points,
-                    Edited = a.Edited,
-                    Created = a.Created,
-                    AuthorId = a.AuthorId,
-                    AuthorName = a.Author.Name,
-                    UserId = a.Author.UserId,
-                    FileData = a.FileData
-                }).FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
-            if (answer == null) return null;
-            answer = answer.Render();
-            return answer;
         }
 
         public Problem Get(int problemId)
@@ -88,25 +28,17 @@ namespace ProblemLibrary
                         Answers = p.Answers.Select(a => new Answer
                                 {Id = a.Id, Content = a.Content, AuthorName = a.AuthorName, IsApproved = a.IsApproved})
                             .ToList()
-                        //Answers = p.Answers.Select(a => new Answer {Id = a.Id, ProblemId = a.ProblemId}).ToList(),
-                        //Created = p.Created,
-                        //Edited = p.Edited,
-                        //FileData = p.FileData,
-                        //Tags = p.ProblemTags.Select(pt => new Tag {Name = pt.Tag.Name, Url = pt.Tag.Url}).ToArray(),
-                        //Points = p.Points,
-                        //UserUpvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Upvote),
-                        //UserDownvoted = p.ProblemVotes.Any(pv => pv.Vote == Vote.Downvote)
                     })
                     .FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return null;
 
             problem.IsSolved = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
-            problem = problem.Render();
+            //problem = problem.Render();
             problem.Answers = problem.Answers.Select(a => a.Render()).ToList();
             return problem;
         }
 
-        public int Create(Problem problem, int authorId = 1)
+        public Problem Create(Problem problem, int authorId = 1)
         {
             if (problem.CategoryId == 0) problem.CategoryId = 1;
             //if (!withAnswers) problem.Answers = null;
@@ -119,7 +51,7 @@ namespace ProblemLibrary
             _context.Problems.Add(problem);
 
             _context.SaveChanges();
-            return problem.Id;
+            return problem;
         }
 
         public IEnumerable<Problem> BrowseProblems(int page,
@@ -159,7 +91,7 @@ namespace ProblemLibrary
             if (lastRecordIndex < num) subQuery = subQuery.Take(10);
 
             var problems = subQuery.Select(p => new Problem {Id = p.Id}).ToArray()
-                    .Select(p => ProblemById(p.Id)).ToArray()
+                    .Select(p => Get(p.Id)).ToArray()
                 ;
 
             totalPages = num % 10 == 0 ? num / 10 : num / 10 + 1;
@@ -167,7 +99,7 @@ namespace ProblemLibrary
             return problems;
         }
 
-        public bool Edit(int problemId, Problem problem, int authorId)
+        public bool Edit(Problem problem, int problemId, int authorId)
         {
             var element = _context.Problems.FirstOrDefault(p => p.Id == problemId);
             if (element == null) return false;
@@ -178,9 +110,9 @@ namespace ProblemLibrary
             return true;
         }
 
-        public bool Delete(int problemId)
+        public bool Delete(int problemId, int authorId = 1)
         {
-            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
+            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId && p.AuthorId == authorId);
             if (problem == null) return false;
             _context.Problems.Remove(problem);
             _context.SaveChanges();
@@ -191,9 +123,6 @@ namespace ProblemLibrary
         {
             var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return 0;
-
-            //var author = _context.Authors.FirstOrDefault(a => a.Id == AuthorId);
-            //if (author == null) return 0;
 
             var element = new Answer
             {
@@ -211,7 +140,7 @@ namespace ProblemLibrary
         public Answer GetAnswer(int problemId, int answerId)
         {
             var answer = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
-            return answer?.Render();
+            return answer;
         }
 
         public bool EditAnswer(int problemId, int answerId, Answer answer, int authorId = 1)
@@ -224,9 +153,10 @@ namespace ProblemLibrary
             return true;
         }
 
-        public bool DeleteAnswer(int problemId, int answerId)
+        public bool DeleteAnswer(int problemId, int answerId, int authorId)
         {
-            var element = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
+            var element = _context.Answers.FirstOrDefault(a =>
+                a.ProblemId == problemId && a.Id == answerId && a.AuthorId == authorId);
             if (element == null) return false;
             _context.Answers.Remove(element);
             _context.SaveChanges();

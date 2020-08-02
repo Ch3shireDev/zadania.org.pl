@@ -18,6 +18,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SwaggerDebug|AnyCPU'">
 		<NoWarn>1701;1702;1591</NoWarn>
 		<WarningLevel>0</WarningLevel>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

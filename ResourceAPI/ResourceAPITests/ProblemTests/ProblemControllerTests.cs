@@ -12,17 +12,17 @@ namespace ResourceAPITests.ProblemTests
     {
         private readonly HttpClient _client = new TestClientProvider().Client;
 
-        private async Task<Problem> GetProblem(int problemId)
+        private async Task<ProblemView> GetProblem(int problemId)
         {
             var problemRes = await _client.GetAsync($"/api/v1/problems/{problemId}");
-            var problem = problemRes.ToElement<Problem>();
+            var problem = problemRes.ToElement<ProblemView>();
             return problem;
         }
 
         [Fact]
-        public async Task ApproveAnswer()
+        public async Task AnswerApprove()
         {
-            var problemId = await CreateProblem();
+            var problemId = await ProblemCreate();
 
             var answer1 =
                 await _client.PostAsync($"/api/v1/problems/{problemId}/answers", new Answer {Content = "xxx"});
@@ -71,17 +71,9 @@ namespace ResourceAPITests.ProblemTests
         }
 
         [Fact]
-        public async Task BrowseProblems()
+        public async Task AnswerCreate()
         {
-            var response = await _client.GetAsync("/api/v1/problems/");
-            response.EnsureSuccessStatusCode();
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task CreateAnswer()
-        {
-            var problemId = await CreateProblem();
+            var problemId = await ProblemCreate();
             var answer1 =
                 await _client.PostAsync($"/api/v1/problems/{problemId}/answers", new Answer {Content = "xxx"});
             var answer2 =
@@ -98,44 +90,16 @@ namespace ResourceAPITests.ProblemTests
             Assert.Contains(true, answers.Select(a => a.Id == answer3.Id));
 
             // Wewnątrz pobranego problemu powinny być wartości utworzonych wcześniej odpowiedzi.
-            var contents = answers.Select(p => p.ContentHtml).ToList();
+            var contents = answers.Select(p => p.Content).ToList();
             Assert.Contains(true, contents.Select(c => c.Contains("xxx")));
             Assert.Contains(true, contents.Select(c => c.Contains("yyy")));
             Assert.Contains(true, contents.Select(c => c.Contains("zzz")));
         }
 
         [Fact]
-        public async Task<int> CreateProblem()
+        public async Task AnswerDelete()
         {
-            var problem = new Problem
-            {
-                Name = "abc",
-                Content = "cde"
-            };
-
-            // Utworzenie problemu powinno zwrócić wartość id.
-            var response = await _client.PostAsync("/api/v1/problems/", problem.ToHttpContent());
-            response.EnsureSuccessStatusCode();
-            var resProblem = response.ToElement<Problem>();
-
-            // Problem powinien być pod wskazanym id.
-            var response2 = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            var probRes = response2.ToElement<Problem>();
-            Assert.Equal("abc", probRes.Name);
-            Assert.Contains("cde", probRes.ContentHtml);
-
-            // Problem powinien wylądować w kategorii 1, Root.
-            var catRes = await _client.GetAsync("/api/v1/categories/1");
-            var cat = catRes.ToElement<CategoryView>();
-            //Assert.Equal("abc", cat.Problems.First().Name);
-
-            return resProblem.Id;
-        }
-
-        [Fact]
-        public async Task DeleteAnswer()
-        {
-            var problemId = await CreateProblem();
+            var problemId = await ProblemCreate();
 
             var answer1 =
                 await _client.PostAsync($"/api/v1/problems/{problemId}/answers", new Answer {Content = "xxx"});
@@ -153,9 +117,9 @@ namespace ResourceAPITests.ProblemTests
             Assert.Contains(true, problem1.Answers.Select(a => a.Id == answer3.Id));
 
             // Sprawdzamy czy odpowiedzi mają zawartości jakich się spodziewamy.
-            Assert.Contains(true, problem1.Answers.Select(a => a.ContentHtml.Contains("xxx")));
-            Assert.Contains(true, problem1.Answers.Select(a => a.ContentHtml.Contains("yyy")));
-            Assert.Contains(true, problem1.Answers.Select(a => a.ContentHtml.Contains("zzz")));
+            Assert.Contains(true, problem1.Answers.Select(a => a.Content.Contains("xxx")));
+            Assert.Contains(true, problem1.Answers.Select(a => a.Content.Contains("yyy")));
+            Assert.Contains(true, problem1.Answers.Select(a => a.Content.Contains("zzz")));
 
             // Usuwamy odpowiedź.
             await _client.DeleteAsync($"/api/v1/problems/{problemId}/answers/{answer1.Id}");
@@ -172,13 +136,44 @@ namespace ResourceAPITests.ProblemTests
             var problem3 = await GetProblem(problemId);
 
             // Sprawdzamy czy odpowiedzi mają zawartości jakich się spodziewamy.
-            Assert.Empty(problem3.Answers.Select(a => a.ContentHtml).Where(c => c.Contains("xxx")));
-            Assert.Contains(true, problem3.Answers.Select(a => a.ContentHtml.Contains("yyy")));
-            Assert.Contains(true, problem3.Answers.Select(a => a.ContentHtml.Contains("zzz")));
+            Assert.Empty(problem3.Answers.Select(a => a.Content).Where(c => c.Contains("xxx")));
+            Assert.Contains(true, problem3.Answers.Select(a => a.Content.Contains("yyy")));
+            Assert.Contains(true, problem3.Answers.Select(a => a.Content.Contains("zzz")));
         }
 
         [Fact]
-        public async Task DeleteProblem()
+        public async Task AnswerEdit()
+        {
+            // Tworzymy środowisko.
+            var problemId = await ProblemCreate();
+            var answer1 =
+                await _client.PostAsync($"/api/v1/problems/{problemId}/answers", new Answer {Content = "xxx"});
+
+            // Pobieramy problem i sprawdzamy czy udzielona odpowiedź spełnia warunki.
+            var problem1 = await GetProblem(problemId);
+            Assert.Contains(true, problem1.Answers.Select(a => a.Id == answer1.Id));
+            Assert.Contains(true, problem1.Answers.Select(a => a.Content.Contains("xxx")));
+
+            // Wysyłamy edycję na serwer.
+            await _client.PutAsync($"/api/v1/problems/{problemId}/answers/{answer1.Id}",
+                new Answer {Content = "yyy"}.ToHttpContent());
+
+            // Odpowiedź powinna mieć dalej to samo id, ale zmienioną zawartość.
+            var problem2 = await GetProblem(problemId);
+            Assert.Contains(true, problem2.Answers.Select(a => a.Id == answer1.Id));
+            Assert.Contains(true, problem2.Answers.Select(a => a.Content.Contains("yyy")));
+        }
+
+        [Fact]
+        public async Task ProblemBrowse()
+        {
+            var response = await _client.GetAsync("/api/v1/problems/");
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task<int> ProblemCreate()
         {
             var problem = new Problem
             {
@@ -189,13 +184,41 @@ namespace ResourceAPITests.ProblemTests
             // Utworzenie problemu powinno zwrócić wartość id.
             var response = await _client.PostAsync("/api/v1/problems/", problem.ToHttpContent());
             response.EnsureSuccessStatusCode();
-            var resProblem = response.ToElement<Problem>();
+            var resProblem = response.ToElement<ProblemView>();
 
             // Problem powinien być pod wskazanym id.
             var response2 = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            var probRes = response2.ToElement<Problem>();
+            var probRes = response2.ToElement<ProblemView>();
             Assert.Equal("abc", probRes.Name);
-            Assert.Contains("cde", probRes.ContentHtml);
+            Assert.Contains("cde", probRes.Content);
+
+            // Problem powinien wylądować w kategorii 1, Root.
+            var catRes = await _client.GetAsync("/api/v1/categories/1");
+            var cat = catRes.ToElement<CategoryView>();
+            //Assert.Equal("abc", cat.Problems.First().Name);
+
+            return resProblem.Id;
+        }
+
+        [Fact]
+        public async Task ProblemDelete()
+        {
+            var problem = new Problem
+            {
+                Name = "abc",
+                Content = "cde"
+            };
+
+            // Utworzenie problemu powinno zwrócić wartość id.
+            var response = await _client.PostAsync("/api/v1/problems/", problem.ToHttpContent());
+            response.EnsureSuccessStatusCode();
+            var resProblem = response.ToElement<ProblemView>();
+
+            // Problem powinien być pod wskazanym id.
+            var response2 = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
+            var probRes = response2.ToElement<ProblemView>();
+            Assert.Equal("abc", probRes.Name);
+            Assert.Contains("cde", probRes.Content);
 
             // Kasujemy zasób.
             var resDel = await _client.DeleteAsync($"/api/v1/problems/{resProblem.Id}");
@@ -207,30 +230,7 @@ namespace ResourceAPITests.ProblemTests
         }
 
         [Fact]
-        public async Task EditAnswer()
-        {
-            // Tworzymy środowisko.
-            var problemId = await CreateProblem();
-            var answer1 =
-                await _client.PostAsync($"/api/v1/problems/{problemId}/answers", new Answer {Content = "xxx"});
-
-            // Pobieramy problem i sprawdzamy czy udzielona odpowiedź spełnia warunki.
-            var problem1 = await GetProblem(problemId);
-            Assert.Contains(true, problem1.Answers.Select(a => a.Id == answer1.Id));
-            Assert.Contains(true, problem1.Answers.Select(a => a.ContentHtml.Contains("xxx")));
-
-            // Wysyłamy edycję na serwer.
-            await _client.PutAsync($"/api/v1/problems/{problemId}/answers/{answer1.Id}",
-                new Answer {Content = "yyy"}.ToHttpContent());
-
-            // Odpowiedź powinna mieć dalej to samo id, ale zmienioną zawartość.
-            var problem2 = await GetProblem(problemId);
-            Assert.Contains(true, problem2.Answers.Select(a => a.Id == answer1.Id));
-            Assert.Contains(true, problem2.Answers.Select(a => a.ContentHtml.Contains("yyy")));
-        }
-
-        [Fact]
-        public async Task EditProblem()
+        public async Task ProblemEdit()
         {
             var problem = new Problem
             {
@@ -241,13 +241,13 @@ namespace ResourceAPITests.ProblemTests
             // Utworzenie problemu powinno zwrócić wartość id.
             var response = await _client.PostAsync("/api/v1/problems/", problem.ToHttpContent());
             response.EnsureSuccessStatusCode();
-            var resProblem = response.ToElement<Problem>();
+            var resProblem = response.ToElement<ProblemView>();
 
             // Bieżący problem powinien zawierać nowe wartości.
             var problem1Res = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            var problem1 = problem1Res.ToElement<Problem>();
+            var problem1 = problem1Res.ToElement<ProblemView>();
             Assert.Equal("abc", problem1.Name);
-            Assert.Contains("cde", problem1.ContentHtml);
+            Assert.Contains("cde", problem1.Content);
 
             // Zmieniamy parametry problemu.
             problem.Name = "xyz";
@@ -258,9 +258,9 @@ namespace ResourceAPITests.ProblemTests
 
             // Bieżący problem powinien zawierać nowe wartości.
             var problem2Res = await _client.GetAsync($"/api/v1/problems/{resProblem.Id}");
-            var problem2 = problem2Res.ToElement<Problem>();
+            var problem2 = problem2Res.ToElement<ProblemView>();
             Assert.Equal("xyz", problem2.Name);
-            Assert.Contains("zzz", problem2.ContentHtml);
+            Assert.Contains("zzz", problem2.Content);
         }
     }
 }

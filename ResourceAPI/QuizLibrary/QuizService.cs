@@ -24,7 +24,7 @@ namespace QuizLibrary
                 Questions = t.Questions.Select(q => new QuizQuestion {Id = q.Id}).ToList()
             }).FirstOrDefault(t => t.Id == testId);
             if (test == null) return null;
-            test.Render();
+            //test.Render();
             if (includeQuestions)
                 test.Questions = test.Questions.Select(q => GetQuestion(q.Id, includeAnswers)).ToList();
             return test;
@@ -152,6 +152,8 @@ namespace QuizLibrary
 
         public int Create(Quiz quiz, int authorId = 1)
         {
+            if (quiz.CategoryId == 0) quiz.CategoryId = 1;
+
             var element = new Quiz
             {
                 Name = quiz.Name,

@@ -5,7 +5,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public Category AsModel()
+        public Category ToModel()
         {
             return new Category
             {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using CommonLibrary;
+﻿using CommonLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,6 +18,7 @@ namespace ProblemLibrary
         private ILogger<ProblemsController> _logger;
 
         /// <summary>
+        ///     Konstruktor kontrolera.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="context"></param>
@@ -36,13 +36,13 @@ namespace ProblemLibrary
         protected int AuthorId => Tools.GetAuthorId(_authorService, HttpContext);
 
         /// <summary>
-        ///     Zwraca listę problemów.
+        ///     Zwraca listę problemów spełniających dane warunki.
         /// </summary>
-        /// <param name="tags"></param>
-        /// <param name="page"></param>
-        /// <param name="query"></param>
-        /// <param name="newest"></param>
-        /// <param name="highest"></param>
+        /// <param name="tags">Tag problemu.</param>
+        /// <param name="page">Nr strony.</param>
+        /// <param name="query">Zapytanie.</param>
+        /// <param name="newest">Czy sortować po najnowszych.</param>
+        /// <param name="highest">Czy sortować po najwyżej punktowanych.</param>
         /// <returns></returns>
         [HttpGet]
         public OkObjectResult Browse(
@@ -64,123 +64,153 @@ namespace ProblemLibrary
         }
 
         /// <summary>
+        ///     Zwraca problem o podanym id.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Id problemu.</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult Get([FromRoute] int id)
+        public ActionResult Get(int id)
         {
             var problem = _problemService.Get(id);
             if (problem == null) return NotFound();
-            return Ok(problem);
+            return Ok(problem.ToView());
         }
 
         /// <summary>
+        ///     Tworzy nowy problem na podstawie danych wysłanych przez użytkownika.
         /// </summary>
-        /// <param name="problem"></param>
+        /// <param name="problem">Dane nowego problemu.</param>
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public ActionResult Post(Problem problem)
+        public ActionResult Post(ProblemUserModel problem)
         {
-            //var author = _authorService.GetAuthor(1);
-            //if (author == null) return StatusCode(403);
-            var problemId = _problemService.Create(problem, AuthorId);
-            if (problemId == 0) return StatusCode(403);
-            return StatusCode(201, new Problem {Id = problemId});
+            var newProblem = _problemService.Create(problem.ToModel(), AuthorId);
+            if (newProblem == null) return StatusCode(403);
+            return StatusCode(201, newProblem.ToView());
         }
 
 
         /// <summary>
+        ///     Zmienia wartości problemu na podstawie danych podanych przez użytkownika.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="problem"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
         [Authorize]
-        public ActionResult Put(int id, Problem problem)
+        public ActionResult Put(int id, ProblemUserModel problem)
         {
-            var result = _problemService.Edit(id, problem, AuthorId);
+            var result = _problemService.Edit(problem.ToModel(), id, AuthorId);
             if (!result) return BadRequest();
             return Ok();
         }
 
+        /// <summary>
+        ///     Usuwa dany problem na podstawie podanego identyfikatora.
+        /// </summary>
+        /// <param name="id">Identyfikator problemu.</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [Authorize]
         public ActionResult Delete(int id)
         {
-            var result = _problemService.Delete(id);
+            var result = _problemService.Delete(id, AuthorId);
+            if (result == false) return NotFound();
             return Ok();
         }
 
-        [HttpGet("{id}/points")]
-        public ActionResult Points(int id)
-        {
-            var points = _context.Problems.First(problem => problem.Id == id).Points;
-            return StatusCode(200, new {points});
-        }
+        //[HttpGet("{id}/points")]
+        //public ActionResult Points(int id)
+        //{
+        //    var points = _context.Problems.First(problem => problem.Id == id).Points;
+        //    return StatusCode(200, new {points});
+        //}
 
 
         [HttpPost("{id}/upvote")]
         [Authorize]
         public ActionResult UpvoteProblem(int id)
         {
-            return VoteProblem(id, Vote.Upvote);
+            _problemService.VoteProblem(id, Vote.Upvote);
+            return Ok();
         }
 
         [HttpPost("{id}/downvote")]
         [Authorize]
         public ActionResult DownvoteProblem(int id)
         {
-            return VoteProblem(id, Vote.Downvote);
+            _problemService.VoteProblem(id, Vote.Downvote);
+            return Ok();
         }
 
-        [NonAction]
-        public ActionResult VoteProblem(int id, Vote vote)
-        {
-            var problem = _problemService.Get(id);
-            if (problem == null) return StatusCode(403);
-            //var author = _authorService.GetAuthor(1);
-            //if (author == null) return StatusCode(403);
-
-            _problemService.VoteProblem(id, vote);
-            return StatusCode(200);
-        }
-
+        /// <summary>
+        ///     Zwraca odpowiedź o podanego problemu o podanym identyfikatorze.
+        /// </summary>
+        /// <param name="problemId">Identyfikator problemu.</param>
+        /// <param name="answerId">Identyfikator odpowiedzi.</param>
+        /// <returns>Odpowiedź.</returns>
         [HttpGet("{problemId}/answers/{answerId}")]
         public ActionResult GetAnswer(int problemId, int answerId)
         {
             var answer = _problemService.GetAnswer(problemId, answerId);
             if (answer == null) return NotFound();
-            return Ok(answer);
+            return Ok(answer.ToView());
         }
 
+        /// <summary>
+        ///     Tworzy nową odpowiedź dla wybranego problemu.
+        /// </summary>
+        /// <param name="problemId">Identyfikator problemu.</param>
+        /// <param name="answer">Odpowiedź.</param>
+        /// <returns></returns>
         [HttpPost("{problemId}/answers")]
-        public ActionResult PostAnswer(int problemId, Answer answer)
+        public ActionResult PostAnswer(int problemId, AnswerUserModel answer)
         {
-            var answerId = _problemService.CreateAnswer(problemId, answer);
+            var answerId = _problemService.CreateAnswer(problemId, answer.ToModel());
             if (answerId == 0) return Forbid();
             return Ok(new Answer {Id = answerId});
         }
 
+        /// <summary>
+        ///     Aktualizuje odpowiedź na podstawie podanych przez użytkownika danych.
+        /// </summary>
+        /// <param name="problemId">Identyfikator problemu.</param>
+        /// <param name="answerId">Identyfikator odpowiedzi.</param>
+        /// <param name="answer">Odpowiedź.</param>
+        /// <returns></returns>
         [HttpPut("{problemId}/answers/{answerId}")]
-        public ActionResult PutAnswer(int problemId, int answerId, Answer answer)
+        public ActionResult PutAnswer(int problemId, int answerId, AnswerUserModel answer)
         {
-            var result = _problemService.EditAnswer(problemId, answerId, answer);
+            var result = _problemService.EditAnswer(problemId, answerId, answer.ToModel());
             if (result == false) return Forbid();
             return Ok();
         }
 
+        /// <summary>
+        ///     Kasuje odpowiedź o danym identyfikatorze.
+        /// </summary>
+        /// <param name="problemId">Identyfikator problemu.</param>
+        /// <param name="answerId">Identyfikator odpowiedzi.</param>
+        /// <returns></returns>
         [HttpDelete("{problemId}/answers/{answerId}")]
+        [Authorize]
         public ActionResult DeleteAnswer(int problemId, int answerId)
         {
-            var result = _problemService.DeleteAnswer(problemId, answerId);
+            var result = _problemService.DeleteAnswer(problemId, answerId, AuthorId);
             if (result == false) return Forbid();
             return Ok();
         }
 
+        /// <summary>
+        ///     Aktualizuje wybrane pola odpowiedzi.
+        /// </summary>
+        /// <param name="problemId">Identyfikator problemu.</param>
+        /// <param name="answerId">Identyfikator odpowiedzi.</param>
+        /// <param name="answer">Odpowiedź.</param>
+        /// <returns></returns>
         [HttpPatch("{problemId}/answers/{answerId}")]
-        public ActionResult PatchAnswer(int problemId, int answerId, Answer answer)
+        public ActionResult PatchAnswer(int problemId, int answerId, AnswerUserModel answer)
         {
             _problemService.SetAnswerApproval(problemId, answerId, answer.IsApproved);
             return Ok();

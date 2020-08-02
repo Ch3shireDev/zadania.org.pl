@@ -37,7 +37,7 @@ namespace ResourceAPITests.ProblemTests
         public void ApproveAnswersTest()
         {
             // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx", Content = "yyy"});
+            var id = _problemService.Create(new Problem {Name = "xxx", Content = "yyy"}).Id;
 
             // Tworzymy nową odpowiedź.
             var answerId1 = _problemService.CreateAnswer(id, new Answer {Content = "xxx"});
@@ -103,7 +103,7 @@ namespace ResourceAPITests.ProblemTests
         public void CreateAnswerTest()
         {
             // Tworzymy nowy problem.
-            var problemId = _problemService.Create(new Problem {Name = "xxx"});
+            var problemId = _problemService.Create(new Problem {Name = "xxx"}).Id;
 
             // Tworzymy nowe odpowiedzi.
             var aid1 = _problemService.CreateAnswer(problemId, new Answer {Content = "aaa"});
@@ -119,7 +119,7 @@ namespace ResourceAPITests.ProblemTests
         [Fact]
         public void CreateProblemTest()
         {
-            var id = _problemService.Create(new Problem {Name = "xxx"});
+            var id = _problemService.Create(new Problem {Name = "xxx"}).Id;
             var problem = _problemService.Get(id);
             Assert.Equal(id, problem.Id);
         }
@@ -128,7 +128,7 @@ namespace ResourceAPITests.ProblemTests
         public void DeleteAnswerTest()
         {
             // Tworzymy nowy problem.
-            var problemId = _problemService.Create(new Problem {Name = "xxx"});
+            var problemId = _problemService.Create(new Problem {Name = "xxx"}).Id;
 
             // Tworzymy nowe odpowiedzi.
             var answer1Id = _problemService.CreateAnswer(problemId, new Answer {Content = "aaa"});
@@ -158,7 +158,7 @@ namespace ResourceAPITests.ProblemTests
         public void DeleteProblemTest()
         {
             // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx"});
+            var id = _problemService.Create(new Problem {Name = "xxx"}).Id;
 
             // Wartości powinny być takie jak utworzone.
             var problem = _problemService.Get(id);
@@ -174,7 +174,7 @@ namespace ResourceAPITests.ProblemTests
         public void EditAnswerTest()
         {
             // Tworzymy nowy problem.
-            var problemId = _problemService.Create(new Problem {Name = "xxx"});
+            var problemId = _problemService.Create(new Problem {Name = "xxx"}).Id;
 
             // Tworzymy nowe odpowiedzi.
             var answerId = _problemService.CreateAnswer(problemId, new Answer {Content = "aaa"});
@@ -182,7 +182,7 @@ namespace ResourceAPITests.ProblemTests
             // Pobieramy odpowiedź.
             var answer1 = _problemService.GetAnswer(problemId, answerId);
             Assert.Equal(answerId, answer1.Id);
-            Assert.Contains("aaa", answer1.ContentHtml);
+            Assert.Contains("aaa", answer1.Content);
 
             // Edytujemy odpowiedź.
             _problemService.EditAnswer(problemId, answerId, new Answer {Content = "bbb"});
@@ -190,7 +190,7 @@ namespace ResourceAPITests.ProblemTests
             // Porównujemy nową opdowiedź ze zmienioną zawartością.
             var answer2 = _problemService.GetAnswer(problemId, answerId);
             Assert.Equal(answerId, answer2.Id);
-            Assert.Contains("bbb", answer2.ContentHtml);
+            Assert.Contains("bbb", answer2.Content);
         }
 
 
@@ -198,7 +198,7 @@ namespace ResourceAPITests.ProblemTests
         public void EditProblemTest()
         {
             // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx"});
+            var id = _problemService.Create(new Problem {Name = "xxx"}).Id;
 
             // Wartości powinny być takie jak utworzone.
             var problem = _problemService.Get(id);
@@ -207,7 +207,7 @@ namespace ResourceAPITests.ProblemTests
 
             // Edytujemy wartości problemu.
             problem.Name = "yyy";
-            var res = _problemService.Edit(id, problem);
+            var res = _problemService.Edit(problem, id);
             Assert.True(res);
 
             // Nowe wartości powinny być odpowiednie do wprowadzonych.
@@ -220,13 +220,13 @@ namespace ResourceAPITests.ProblemTests
         public void GetProblemTest()
         {
             // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx", Content = "yyy"});
+            var id = _problemService.Create(new Problem {Name = "xxx", Content = "yyy"}).Id;
 
             // Wartości powinny być takie jak utworzone.
             var problem = _problemService.Get(id);
             Assert.Equal(id, problem.Id);
             Assert.Equal("xxx", problem.Name);
-            Assert.Contains("yyy", problem.ContentHtml);
+            Assert.Contains("yyy", problem.Content);
         }
     }
 }

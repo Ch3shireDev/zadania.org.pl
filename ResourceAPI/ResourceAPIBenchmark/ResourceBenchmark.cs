@@ -14,9 +14,9 @@ namespace ResourceAPIBenchmark
         private readonly IAuthorService _authorService;
         private readonly ICategoryService _categoryService;
         private readonly SqlContext _context;
-        private readonly IProblemService _problemService;
 
-        private ProblemsController _controller;
+        private readonly ProblemsController _controller;
+        private readonly IProblemService _problemService;
 
         public ResourceBenchmark()
 

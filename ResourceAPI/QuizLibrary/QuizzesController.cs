@@ -8,9 +8,8 @@ namespace QuizLibrary
     [ApiController]
     public class QuizzesController : ControllerBase
     {
+        private readonly ILogger<QuizzesController> _logger;
         private readonly IQuizService _quizService;
-
-        private ILogger<QuizzesController> _logger;
 
         public QuizzesController(ILogger<QuizzesController> logger,
             IQuizService quizService)

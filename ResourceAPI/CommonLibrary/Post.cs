@@ -9,8 +9,10 @@ namespace CommonLibrary
         public int Id { get; set; }
         public string Content { get; set; }
         [NotMapped] public string ContentHtml { get; set; }
+
         public int Points { get; set; }
-        [NotMapped] public Vote UserVote { get; set; }
+
+        //[NotMapped] public Vote UserVote { get; set; }
         [NotMapped] public bool UserUpvoted { get; set; }
         [NotMapped] public bool UserDownvoted { get; set; }
         public int AuthorId { get; set; }

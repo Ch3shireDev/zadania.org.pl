@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CommonLibrary;
 
 namespace ProblemLibrary
 {
@@ -19,8 +18,9 @@ namespace ProblemLibrary
         Answer GetAnswer(int problemId, int answerId);
         bool EditAnswer(int problemId, int answerId, Answer answer, int authorId = 1);
         bool DeleteAnswer(int problemId, int answerId, int authorId = 1);
+
         void SetAnswerApproval(int problemId, int answerId1, bool isApproved = true);
-        void VoteProblem(int id, Vote vote, int authorId = 1);
+        //void VoteProblem(int id, Vote vote, int authorId = 1);
 
         //public ProblemView GetProblemView(int id);
     }

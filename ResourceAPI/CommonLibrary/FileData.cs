@@ -60,14 +60,7 @@ namespace CommonLibrary
         public void Load()
         {
             throw new NotImplementedException();
-            try
-            {
-                //FileBytes = File.ReadAllBytes(Path.Combine(SqlContext.FileDirectory, FileDir, FileName));
-            }
-            catch (Exception)
-            {
-                // 
-            }
+            //FileBytes = File.ReadAllBytes(Path.Combine(SqlContext.FileDirectory, FileDir, FileName));
         }
     }
 }

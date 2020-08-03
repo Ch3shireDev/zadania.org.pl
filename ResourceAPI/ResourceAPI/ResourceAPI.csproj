@@ -51,6 +51,7 @@
 		<ProjectReference Include="..\ExerciseLibrary\ExerciseLibrary.csproj" />
 		<ProjectReference Include="..\QuizLibrary\QuizLibrary.csproj" />
 		<ProjectReference Include="..\ProblemLibrary\ProblemLibrary.csproj" />
+		<ProjectReference Include="..\VoteLibrary\VoteLibrary.csproj" />
 	</ItemGroup>
 
 

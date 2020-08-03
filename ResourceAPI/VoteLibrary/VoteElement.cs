@@ -1,4 +1,4 @@
-﻿namespace CommonLibrary
+﻿namespace VoteLibrary
 {
     public class VoteElement
     {

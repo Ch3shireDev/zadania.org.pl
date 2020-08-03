@@ -1,23 +1,8 @@
-﻿using CommonLibrary;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-namespace ResourceAPI.Controllers
+﻿namespace VoteLibrary
 {
-    public interface IVoteDbInterface
-    {
-        public DbSet<VoteElement> Votes { get; set; }
-    }
-
-    public interface IVoteService
-    {
-        void VoteProblem(int id, int dir);
-    }
-
     public class VoteService : IVoteService
     {
-        public VoteService(IVoteDbInterface context)
+        public VoteService(IVoteDbContext context)
         {
         }
 
@@ -65,40 +50,5 @@ namespace ResourceAPI.Controllers
         //        yield return new ProblemTag { Problem = problem, Tag = existing, TagUrl = tag.Url };
         //    }
         //}
-    }
-
-    [ApiController]
-    [Route("/api/v1/vote")]
-    public class VoteController : Controller
-    {
-        private IVoteService _voteService;
-
-        public VoteController(IVoteService voteService)
-        {
-            _voteService = voteService;
-        }
-        //[HttpGet("{id}/points")]
-        //public ActionResult Points(int id)
-        //{
-        //    var points = _context.Problems.First(problem => problem.Id == id).Points;
-        //    return StatusCode(200, new {points});
-        //}
-
-
-        [HttpPost("{id}/upvote")]
-        [Authorize]
-        public ActionResult UpvoteProblem(int id)
-        {
-            //_problemService.VoteProblem(id, Vote.Upvote);
-            return Ok();
-        }
-
-        [HttpPost("{id}/downvote")]
-        [Authorize]
-        public ActionResult DownvoteProblem(int id)
-        {
-            //_problemService.VoteProblem(id, Vote.Downvote);
-            return Ok();
-        }
     }
 }

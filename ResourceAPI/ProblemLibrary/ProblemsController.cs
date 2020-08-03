@@ -14,8 +14,8 @@ namespace ProblemLibrary
     {
         private readonly IAuthorService _authorService;
         private readonly IProblemDbContext _context;
+        private readonly ILogger<ProblemsController> _logger;
         private readonly IProblemService _problemService;
-        private ILogger<ProblemsController> _logger;
 
         /// <summary>
         ///     Konstruktor kontrolera.

@@ -11,7 +11,7 @@ namespace ProblemLibrary
         public bool IsApproved { get; set; }
         public ICollection<Comment> Comments { get; set; }
 
-        public ICollection<AnswerVote> AnswerVotes { get; set; }
+        //public ICollection<AnswerVote> AnswerVotes { get; set; }
         [NotMapped] public string AuthorName { get; set; }
         [NotMapped] public string UserId { get; set; }
 

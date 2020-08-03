@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CommonLibrary
 {
@@ -17,6 +16,6 @@ namespace CommonLibrary
         //public List<Answer> Answers { get; set; } = new List<Answer>();
         //public List<ProblemVote> ProblemVotes { get; set; } = new List<ProblemVote>();
         //public List<AnswerVote> AnswerVotes { get; set; } = new List<AnswerVote>();
-        public List<VoteElement> VotedProblems { get; set; } = new List<VoteElement>();
+        //public List<VoteElement> VotedProblems { get; set; } = new List<VoteElement>();
     }
 }

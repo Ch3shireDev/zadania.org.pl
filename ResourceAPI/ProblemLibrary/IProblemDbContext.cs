@@ -8,7 +8,7 @@ namespace ProblemLibrary
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Tag> Tags { get; set; }
 
-        public DbSet<ProblemVote> ProblemVotes { get; set; }
+        //public DbSet<ProblemVote> Votes { get; set; }
 
         int SaveChanges(bool acceptAllChangesOnSuccess = true);
     }

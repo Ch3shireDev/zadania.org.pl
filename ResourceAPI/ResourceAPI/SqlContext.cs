@@ -5,19 +5,22 @@ using ExerciseLibrary;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using QuizLibrary;
+using VoteLibrary;
 
 namespace ResourceAPI
 {
     public class SqlContext : DbContext, IProblemDbContext, IExerciseDbContext, ICategoryDbContext,
-        IQuizDbContext, IAuthorDbContext
+        IQuizDbContext, IAuthorDbContext, IVoteDbContext
     {
         public SqlContext(DbContextOptions options) : base(options)
         {
         }
 
         public DbSet<Comment> Comments { get; set; }
+
         public DbSet<ProblemTag> ProblemTags { get; set; }
-        public DbSet<AnswerVote> AnswerVotes { get; set; }
+
+        //public DbSet<AnswerVote> AnswerVotes { get; set; }
         public static string FileDirectory { get; set; } = "../../images";
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -26,10 +29,10 @@ namespace ResourceAPI
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Problem> Problems { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<ProblemVote> ProblemVotes { get; set; }
         public DbSet<Quiz> QuizTests { get; set; }
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
         public DbSet<QuizAnswer> QuizAnswers { get; set; }
+        public DbSet<VoteElement> Votes { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -62,12 +65,12 @@ namespace ResourceAPI
                 .OnDelete(DeleteBehavior.Cascade)
                 ;
 
-            modelBuilder.Entity<ProblemVote>().HasKey(pv => new {pv.ProblemId, pv.AuthorId});
-            modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Problem).WithMany(p => p.ProblemVotes);
-            //modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Author).WithMany(a => a.ProblemVotes);
+            //modelBuilder.Entity<ProblemVote>().HasKey(pv => new {pv.ProblemId, pv.AuthorId});
+            //modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Problem).WithMany(p => p.ProblemVotes);
+            //modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Author).WithMany(a => a.Votes);
 
-            modelBuilder.Entity<AnswerVote>().HasKey(pv => new {pv.AnswerId, pv.AuthorId});
-            modelBuilder.Entity<AnswerVote>().HasOne(av => av.Answer).WithMany(a => a.AnswerVotes);
+            //modelBuilder.Entity<AnswerVote>().HasKey(pv => new {pv.AnswerId, pv.AuthorId});
+            //modelBuilder.Entity<AnswerVote>().HasOne(av => av.Answer).WithMany(a => a.AnswerVotes);
             //modelBuilder.Entity<AnswerVote>().HasOne(av => av.Author).WithMany(a => a.AnswerVotes);
         }
 

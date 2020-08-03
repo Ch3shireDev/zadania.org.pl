@@ -19,7 +19,7 @@ namespace ProblemLibrary
 
         public ICollection<ProblemTag> ProblemTags { get; set; }
 
-        public ICollection<ProblemVote> ProblemVotes { get; set; }
+        //public ICollection<ProblemVote> ProblemVotes { get; set; }
 
         [NotMapped] public bool IsSolved { get; set; }
         public ICollection<Comment> Comments { get; set; }

@@ -120,29 +120,6 @@ namespace ProblemLibrary
             return Ok();
         }
 
-        //[HttpGet("{id}/points")]
-        //public ActionResult Points(int id)
-        //{
-        //    var points = _context.Problems.First(problem => problem.Id == id).Points;
-        //    return StatusCode(200, new {points});
-        //}
-
-
-        [HttpPost("{id}/upvote")]
-        [Authorize]
-        public ActionResult UpvoteProblem(int id)
-        {
-            _problemService.VoteProblem(id, Vote.Upvote);
-            return Ok();
-        }
-
-        [HttpPost("{id}/downvote")]
-        [Authorize]
-        public ActionResult DownvoteProblem(int id)
-        {
-            _problemService.VoteProblem(id, Vote.Downvote);
-            return Ok();
-        }
 
         /// <summary>
         ///     Zwraca odpowiedź o podanego problemu o podanym identyfikatorze.

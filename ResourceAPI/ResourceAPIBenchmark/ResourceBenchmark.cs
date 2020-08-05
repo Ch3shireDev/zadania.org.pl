@@ -2,7 +2,6 @@
 using BenchmarkDotNet.Attributes;
 using CategoryLibrary;
 using CommonLibrary;
-using CommonLibrary.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ProblemLibrary;

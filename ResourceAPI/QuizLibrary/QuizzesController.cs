@@ -1,5 +1,4 @@
-﻿using CommonLibrary.Interfaces;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 namespace QuizLibrary
 {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CommonLibrary.Interfaces;
 using ExerciseLibrary;
 using ProblemLibrary;
 using QuizLibrary;
@@ -26,25 +25,6 @@ namespace CategoryLibrary
             _context.Categories.Remove(category);
             _context.SaveChanges();
             return true;
-        }
-
-        public IEnumerable<ProblemLink> GetProblems(int id)
-        {
-            var category = _context.Categories.Include(c => c.Problems)
-                .FirstOrDefault(c => c.Id == id);
-            return category?.Problems.Select(p => p.ToLink()).ToArray();
-        }
-
-        public IEnumerable<QuizLink> GetQuizzes(int categoryId)
-        {
-            var category = _context.Categories.Include(c => c.Quizzes).FirstOrDefault(c => c.Id == categoryId);
-            return category?.Quizzes.Select(q => q.ToLink()).ToArray();
-        }
-
-        public IEnumerable<ExerciseLink> GetExercises(int categoryId)
-        {
-            var category = _context.Categories.Include(c => c.Exercises).FirstOrDefault(c => c.Id == categoryId);
-            return category?.Exercises.Select(e => e.AsLink()).ToArray();
         }
 
         public Category Create(Category category, int parentId, int authorId)
@@ -77,6 +57,25 @@ namespace CategoryLibrary
         {
             var category = _context.Categories.Include(c => c.Categories).FirstOrDefault(c => c.Id == id);
             return category;
+        }
+
+        public IEnumerable<ProblemLink> GetProblems(int id)
+        {
+            var category = _context.Categories.Include(c => c.Problems)
+                .FirstOrDefault(c => c.Id == id);
+            return category?.Problems.Select(p => p.ToLink()).ToArray();
+        }
+
+        public IEnumerable<QuizLink> GetQuizzes(int categoryId)
+        {
+            var category = _context.Categories.Include(c => c.Quizzes).FirstOrDefault(c => c.Id == categoryId);
+            return category?.Quizzes.Select(q => q.ToLink()).ToArray();
+        }
+
+        public IEnumerable<ExerciseLink> GetExercises(int categoryId)
+        {
+            var category = _context.Categories.Include(c => c.Exercises).FirstOrDefault(c => c.Id == categoryId);
+            return category?.Exercises.Select(e => e.AsLink()).ToArray();
         }
     }
 }

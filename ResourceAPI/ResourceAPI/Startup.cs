@@ -4,7 +4,6 @@ using System.Reflection;
 using AutoMapper;
 using CategoryLibrary;
 using CommonLibrary;
-using CommonLibrary.Interfaces;
 using ExerciseLibrary;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +16,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ProblemLibrary;
 using QuizLibrary;
-using VoteLibrary;
 
 namespace ResourceAPI
 {

@@ -1,13 +1,10 @@
 ﻿using System.Linq;
 using CategoryLibrary;
 using CommonLibrary;
-using CommonLibrary.Interfaces;
 using ExerciseLibrary;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using QuizLibrary;
-using TagLibrary;
-using VoteLibrary;
 
 namespace ResourceAPI
 {
@@ -24,6 +21,8 @@ namespace ResourceAPI
 
         //public DbSet<AnswerVote> AnswerVotes { get; set; }
         public static string FileDirectory { get; set; } = "../../images";
+        public DbSet<VoteElement> Votes { get; set; }
+        public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Script> ExerciseScripts { get; set; }
@@ -33,8 +32,6 @@ namespace ResourceAPI
         public DbSet<Quiz> QuizTests { get; set; }
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
         public DbSet<QuizAnswer> QuizAnswers { get; set; }
-        public DbSet<VoteElement> Votes { get; set; }
-        public DbSet<Author> Authors { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

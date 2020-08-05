@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 
-namespace FileLibrary
+namespace FileDataLibrary
 {
     public class FileData
     {

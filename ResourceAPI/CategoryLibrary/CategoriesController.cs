@@ -1,4 +1,5 @@
 ﻿using CommonLibrary;
+using CommonLibrary.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,14 +51,13 @@ namespace CategoryLibrary
         /// </summary>
         /// <param name="id">Identyfikator kategorii nadrzędnej.</param>
         /// <param name="category">Nowa kategoria potomna.</param>
-        /// <returns></returns>
         [HttpPost("{id}")]
         [HttpPost]
         public ActionResult Post(CategoryUserModel category, int id = 1)
         {
-            var newCategory = _categoryService.Create(category.ToModel(), id, AuthorId);
-            if (newCategory != null) return Ok(newCategory.ToLink());
-            return NotFound();
+            var newCategory = _categoryService.Create(category.ToModel(), id, AuthorId).ToLink();
+            if (newCategory != null) return Created(newCategory.Url, newCategory);
+            return Forbid();
         }
 
         /// <summary>

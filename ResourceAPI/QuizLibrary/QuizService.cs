@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CommonLibrary.Interfaces;
 
 namespace QuizLibrary
 {
@@ -10,6 +11,33 @@ namespace QuizLibrary
         public QuizService(IQuizDbContext context)
         {
             _context = context;
+        }
+
+        public bool DeleteTest(int testId)
+        {
+            var test = _context.QuizTests.FirstOrDefault(t => t.Id == testId);
+            if (test == null) return false;
+            _context.QuizTests.Remove(test);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteAnswer(int answerId)
+        {
+            var answer = _context.QuizAnswers.FirstOrDefault(a => a.Id == answerId);
+            if (answer == null) return false;
+            _context.QuizAnswers.Remove(answer);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteQuestion(int questionId)
+        {
+            var question = _context.QuizQuestions.FirstOrDefault(q => q.Id == questionId);
+            if (question == null) return false;
+            _context.QuizQuestions.Remove(question);
+            _context.SaveChanges();
+            return true;
         }
 
         public Quiz GetTest(int testId, bool includeQuestions = true, bool includeAnswers = true)
@@ -115,15 +143,6 @@ namespace QuizLibrary
             return newAnswer.Id;
         }
 
-        public bool DeleteTest(int testId)
-        {
-            var test = _context.QuizTests.FirstOrDefault(t => t.Id == testId);
-            if (test == null) return false;
-            _context.QuizTests.Remove(test);
-            _context.SaveChanges();
-            return true;
-        }
-
         public bool EditAnswer(int answerId, QuizAnswer answer)
         {
             var element = _context.QuizAnswers.FirstOrDefault(a => a.Id == answerId);
@@ -174,24 +193,6 @@ namespace QuizLibrary
             element.Content = quiz.Content;
             element.CategoryId = quiz.CategoryId;
             _context.QuizTests.Update(element);
-            _context.SaveChanges();
-            return true;
-        }
-
-        public bool DeleteAnswer(int answerId)
-        {
-            var answer = _context.QuizAnswers.FirstOrDefault(a => a.Id == answerId);
-            if (answer == null) return false;
-            _context.QuizAnswers.Remove(answer);
-            _context.SaveChanges();
-            return true;
-        }
-
-        public bool DeleteQuestion(int questionId)
-        {
-            var question = _context.QuizQuestions.FirstOrDefault(q => q.Id == questionId);
-            if (question == null) return false;
-            _context.QuizQuestions.Remove(question);
             _context.SaveChanges();
             return true;
         }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using CommonLibrary.Interfaces;
 using ExerciseLibrary;
-using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using QuizLibrary;
 
@@ -18,6 +17,15 @@ namespace CategoryLibrary
             var category = new Category {Name = "Root"};
             _context.Categories.Add(category);
             _context.SaveChanges();
+        }
+
+        public bool Delete(int id, int authorId)
+        {
+            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            if (category == null) return false;
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+            return true;
         }
 
         public IEnumerable<ProblemLink> GetProblems(int id)
@@ -63,15 +71,6 @@ namespace CategoryLibrary
             _context.Categories.Update(baseElement);
             _context.SaveChanges();
             return baseElement;
-        }
-
-        public bool Delete(int id, int authorId)
-        {
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
-            if (category == null) return false;
-            _context.Categories.Remove(category);
-            _context.SaveChanges();
-            return true;
         }
 
         public Category GetCategory(int id)

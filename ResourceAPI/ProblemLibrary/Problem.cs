@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using CommonLibrary;
+using TagLibrary;
 
 namespace ProblemLibrary
 {
@@ -17,7 +18,7 @@ namespace ProblemLibrary
 
         [NotMapped] public IEnumerable<Tag> Tags { get; set; }
 
-        public ICollection<ProblemTag> ProblemTags { get; set; }
+        //public ICollection<ProblemTag> ProblemTags { get; set; }
 
         //public ICollection<ProblemVote> ProblemVotes { get; set; }
 

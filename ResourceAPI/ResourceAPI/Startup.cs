@@ -4,6 +4,7 @@ using System.Reflection;
 using AutoMapper;
 using CategoryLibrary;
 using CommonLibrary;
+using CommonLibrary.Interfaces;
 using ExerciseLibrary;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

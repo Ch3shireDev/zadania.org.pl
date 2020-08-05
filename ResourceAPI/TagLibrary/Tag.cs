@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
-namespace ProblemLibrary
+namespace TagLibrary
 {
     public class Tag
     {
@@ -13,7 +12,7 @@ namespace ProblemLibrary
 
         [NotMapped] public int PostCount { get; set; }
 
-        public ICollection<ProblemTag> ProblemTags { get; set; }
+        //public ICollection<ProblemTag> ProblemTags { get; set; }
 
         public string GenerateUrl()
         {
@@ -32,7 +31,7 @@ namespace ProblemLibrary
 
         public Tag Serializable(int depth = 0)
         {
-            ProblemTags = null;
+            //ProblemTags = null;
             return this;
         }
     }

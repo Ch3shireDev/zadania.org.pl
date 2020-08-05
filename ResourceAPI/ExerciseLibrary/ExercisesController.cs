@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommonLibrary.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace ExerciseLibrary

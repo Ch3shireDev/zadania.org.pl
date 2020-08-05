@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CommonLibrary.Interfaces;
 
 namespace ExerciseLibrary
 {
@@ -10,6 +11,24 @@ namespace ExerciseLibrary
         public ExerciseService(IExerciseDbContext context)
         {
             _context = context;
+        }
+
+        public bool Delete(int exerciseId)
+        {
+            var exercise = _context.Exercises.FirstOrDefault(e => e.Id == exerciseId);
+            if (exercise == null) return false;
+            _context.Exercises.Remove(exercise);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteScript(int exerciseId, int scriptId)
+        {
+            var element = _context.ExerciseScripts.FirstOrDefault(s => s.Id == scriptId);
+            if (element == null) return false;
+            _context.ExerciseScripts.Remove(element);
+            _context.SaveChanges();
+            return true;
         }
 
         public IEnumerable<Exercise> Browse()
@@ -43,15 +62,6 @@ namespace ExerciseLibrary
             }).FirstOrDefault(e => e.Id == exerciseId);
             exercise?.Render();
             return exercise;
-        }
-
-        public bool Delete(int exerciseId)
-        {
-            var exercise = _context.Exercises.FirstOrDefault(e => e.Id == exerciseId);
-            if (exercise == null) return false;
-            _context.Exercises.Remove(exercise);
-            _context.SaveChanges();
-            return true;
         }
 
         public bool Edit(int exerciseId, Exercise exercise)
@@ -100,15 +110,6 @@ namespace ExerciseLibrary
             element.Name = script.Name;
             element.Content = script.Content;
             _context.ExerciseScripts.Update(element);
-            _context.SaveChanges();
-            return true;
-        }
-
-        public bool DeleteScript(int exerciseId, int scriptId)
-        {
-            var element = _context.ExerciseScripts.FirstOrDefault(s => s.Id == scriptId);
-            if (element == null) return false;
-            _context.ExerciseScripts.Remove(element);
             _context.SaveChanges();
             return true;
         }

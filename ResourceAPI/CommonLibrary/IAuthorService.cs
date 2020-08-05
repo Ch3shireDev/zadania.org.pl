@@ -1,4 +1,4 @@
-﻿namespace CommonLibrary
+﻿namespace CommonLibrary.Interfaces
 {
     public interface IAuthorService
     {

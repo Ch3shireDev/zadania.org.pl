@@ -30,6 +30,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
+		<ProjectReference Include="..\FileDataLibrary\FileDataLibrary.csproj" />
 	</ItemGroup>
 
 </Project>

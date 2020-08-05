@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using CommonLibrary;
+using CommonLibrary.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using ResourceAPI;

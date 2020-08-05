@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace CommonLibrary
+namespace CommonLibrary.Interfaces
 {
     public interface IAuthorDbContext
     {

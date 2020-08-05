@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using CommonLibrary.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace QuizLibrary

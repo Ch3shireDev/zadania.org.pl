@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CommonLibrary.Interfaces;
 
 namespace ProblemLibrary
 {
@@ -10,6 +11,59 @@ namespace ProblemLibrary
         public ProblemService(IProblemDbContext context)
         {
             _context = context;
+        }
+
+        public bool Delete(int problemId, int authorId = 1)
+        {
+            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId && p.AuthorId == authorId);
+            if (problem == null) return false;
+            _context.Problems.Remove(problem);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteAnswer(int problemId, int answerId, int authorId)
+        {
+            var element = _context.Answers.FirstOrDefault(a =>
+                a.ProblemId == problemId && a.Id == answerId && a.AuthorId == authorId);
+            if (element == null) return false;
+            _context.Answers.Remove(element);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public void SetAnswerApproval(int problemId, int answerId, bool isApproved = true)
+        {
+            var answer = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
+            if (answer == null) return;
+            if (answer.IsApproved == isApproved) return;
+
+            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
+            if (problem == null) return;
+
+            if (isApproved)
+            {
+                var answers = _context.Answers.Where(a => a.ProblemId == problemId).ToList();
+                foreach (var element in answers) element.IsApproved = element.Id == answerId;
+                _context.Answers.UpdateRange(answers);
+                if (!problem.IsSolved)
+                {
+                    problem.IsSolved = true;
+                    _context.Problems.Update(problem);
+                }
+            }
+            else
+            {
+                answer.IsApproved = false;
+                _context.Answers.Update(answer);
+                if (problem.IsSolved)
+                {
+                    problem.IsSolved = false;
+                    _context.Problems.Update(problem);
+                }
+            }
+
+            _context.SaveChanges();
         }
 
         public Problem Get(int problemId)
@@ -59,13 +113,13 @@ namespace ProblemLibrary
             var tag = tags;
             var problemsQuery = _context.Problems.AsQueryable();
 
-            if (tags != null)
-                problemsQuery = problemsQuery
-                    .Where(p => p.ProblemTags.Select(pt => pt.Tag.Url).Any(t => t == tag));
+            //if (tags != null)
+            //    problemsQuery = problemsQuery
+            //        .Where(p => p.ProblemTags.Select(pt => pt.Tag.Url).Any(t => t == tag));
 
-            if (query != null)
-                problemsQuery = problemsQuery.Where(p =>
-                    p.Content.Contains(query) || p.ProblemTags.Any(pt => pt.Tag.Name.Contains(query)));
+            //if (query != null)
+            //    problemsQuery = problemsQuery.Where(p =>
+            //        p.Content.Contains(query) || p.ProblemTags.Any(pt => pt.Tag.Name.Contains(query)));
 
 
             var resultQuery = problemsQuery.AsQueryable();
@@ -109,15 +163,6 @@ namespace ProblemLibrary
             return true;
         }
 
-        public bool Delete(int problemId, int authorId = 1)
-        {
-            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId && p.AuthorId == authorId);
-            if (problem == null) return false;
-            _context.Problems.Remove(problem);
-            _context.SaveChanges();
-            return true;
-        }
-
         public int CreateAnswer(int problemId, Answer answer, int authorId = 1)
         {
             var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
@@ -150,50 +195,6 @@ namespace ProblemLibrary
             _context.Answers.Update(element);
             _context.SaveChanges();
             return true;
-        }
-
-        public bool DeleteAnswer(int problemId, int answerId, int authorId)
-        {
-            var element = _context.Answers.FirstOrDefault(a =>
-                a.ProblemId == problemId && a.Id == answerId && a.AuthorId == authorId);
-            if (element == null) return false;
-            _context.Answers.Remove(element);
-            _context.SaveChanges();
-            return true;
-        }
-
-        public void SetAnswerApproval(int problemId, int answerId, bool isApproved = true)
-        {
-            var answer = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
-            if (answer == null) return;
-            if (answer.IsApproved == isApproved) return;
-
-            var problem = _context.Problems.FirstOrDefault(p => p.Id == problemId);
-            if (problem == null) return;
-
-            if (isApproved)
-            {
-                var answers = _context.Answers.Where(a => a.ProblemId == problemId).ToList();
-                foreach (var element in answers) element.IsApproved = element.Id == answerId;
-                _context.Answers.UpdateRange(answers);
-                if (!problem.IsSolved)
-                {
-                    problem.IsSolved = true;
-                    _context.Problems.Update(problem);
-                }
-            }
-            else
-            {
-                answer.IsApproved = false;
-                _context.Answers.Update(answer);
-                if (problem.IsSolved)
-                {
-                    problem.IsSolved = false;
-                    _context.Problems.Update(problem);
-                }
-            }
-
-            _context.SaveChanges();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using AutoMapper;
 using CategoryLibrary;
 using CommonLibrary;
+using CommonLibrary.Interfaces;
 using ExerciseLibrary;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;

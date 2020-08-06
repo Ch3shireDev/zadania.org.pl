@@ -27,7 +27,7 @@ namespace ProblemLibrary
 
         public new Problem Render()
         {
-            ContentHtml = Tools.Render(Content, FileData);
+            ContentHtml = Tools.Render(Content, FileDataView);
             Content = null;
             FileData = null;
             return this;
@@ -48,14 +48,14 @@ namespace ProblemLibrary
             {
                 Id = Id,
                 Name = Name,
-                Content = Tools.Render(Content, FileData),
+                Content = Tools.Render(Content, FileDataView),
                 IsSolved = IsSolved,
                 Answers = Answers.Select(a => new AnswerView
                 {
                     Id = a.Id,
                     ProblemId = a.ProblemId,
                     IsApproved = a.IsApproved,
-                    Content = Tools.Render(a.Content, a.FileData)
+                    Content = Tools.Render(a.Content, a.FileDataView)
                 })
             };
         }

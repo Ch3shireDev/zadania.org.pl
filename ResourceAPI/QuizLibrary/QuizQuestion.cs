@@ -18,8 +18,8 @@ namespace QuizLibrary
 
         public new void Render()
         {
-            ContentHtml = Tools.Render(Content, FileData);
-            SolutionHtml = Tools.Render(Solution, FileData);
+            ContentHtml = Tools.Render(Content, FileDataView);
+            SolutionHtml = Tools.Render(Solution, FileDataView);
         }
     }
 }

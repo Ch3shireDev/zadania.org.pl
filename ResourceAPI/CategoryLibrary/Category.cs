@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using CommonLibrary;
 using ExerciseLibrary;
@@ -11,7 +12,9 @@ namespace CategoryLibrary
     public class Category
     {
         public int Id { get; set; }
-        public ICollection<FileData> FileData { get; set; } = new List<FileData>();
+
+        [NotMapped] public ICollection<FileDataView> FileData { get; set; } = new List<FileDataView>();
+
         public string Name { get; set; }
         public string Description { get; set; }
         public Category Parent { get; set; }
@@ -28,9 +31,8 @@ namespace CategoryLibrary
             {
                 Id = Id,
                 Name = Name,
+                ParentId = ParentId,
                 Description = Tools.Render(Description, FileData),
-                //Url = Url,
-                ParentUrl = $"/api/v1/categories/{ParentId}",
                 CategoriesCount = Categories.Count(),
                 Categories = Categories.Select(c => c.ToLink()).ToArray(),
                 ProblemsCount = Problems.Count(),

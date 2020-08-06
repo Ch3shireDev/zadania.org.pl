@@ -2,6 +2,7 @@
 using CategoryLibrary;
 using CommonLibrary;
 using ExerciseLibrary;
+using FileDataLibrary;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using QuizLibrary;
@@ -9,28 +10,19 @@ using QuizLibrary;
 namespace ResourceAPI
 {
     public class SqlContext : DbContext, IProblemDbContext, IExerciseDbContext, ICategoryDbContext,
-            IQuizDbContext, IAuthorDbContext
-        //, IVoteDbContext
+        IQuizDbContext, IAuthorDbContext, IFileDataDbContext
     {
         public SqlContext(DbContextOptions options) : base(options)
         {
         }
 
-        public DbSet<Comment> Comments { get; set; }
-
-        //public DbSet<ProblemTag> ProblemTags { get; set; }
-
-        //public DbSet<AnswerVote> AnswerVotes { get; set; }
-        //public DbSet<VoteElement> Votes { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Script> ExerciseScripts { get; set; }
+        public DbSet<FileData> FileData { get; set; }
         public DbSet<Answer> Answers { get; set; }
-
         public DbSet<Problem> Problems { get; set; }
-
-        //public DbSet<Tag> Tags { get; set; }
         public DbSet<Quiz> QuizTests { get; set; }
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
         public DbSet<QuizAnswer> QuizAnswers { get; set; }

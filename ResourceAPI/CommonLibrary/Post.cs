@@ -23,12 +23,14 @@ namespace CommonLibrary
 
         public ICollection<FileData> FileData { get; set; }
 
+        [NotMapped] public ICollection<FileDataView> FileDataView { get; set; }
+
         //public Category.Category Category { get; set; }
         public int CategoryId { get; set; }
 
         public void Render()
         {
-            ContentHtml = Tools.Render(Content, FileData);
+            ContentHtml = Tools.Render(Content, FileDataView);
         }
     }
 }

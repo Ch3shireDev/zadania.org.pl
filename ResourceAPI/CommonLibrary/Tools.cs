@@ -11,7 +11,7 @@ namespace CommonLibrary
 {
     public static class Tools
     {
-        public static string Render(string contentRaw, ICollection<FileData> fileData)
+        public static string Render(string contentRaw, ICollection<FileDataView> fileData)
         {
             if (contentRaw == null) return null;
             var html = contentRaw;
@@ -22,7 +22,6 @@ namespace CommonLibrary
             if (fileData == null) return content;
             foreach (var file in fileData)
             {
-                if (file.FileBytes == null) file.Load();
                 if (file.FileBytes == null) continue;
                 var data = $"data:image/gif;base64,{Convert.ToBase64String(file.FileBytes)}";
                 content = content.Replace(file.FileName, data);

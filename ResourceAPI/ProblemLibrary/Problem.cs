@@ -15,7 +15,7 @@ namespace ProblemLibrary
 
         public IList<Answer> Answers { get; set; } = new List<Answer>();
 
-        [NotMapped] public IEnumerable<Tag> Tags { get; set; }
+        //[NotMapped] public IEnumerable<Tag> Tags { get; set; }
 
         //public ICollection<ProblemTag> ProblemTags { get; set; }
 

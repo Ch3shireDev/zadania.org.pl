@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ExerciseLibrary;
+using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using QuizLibrary;
 

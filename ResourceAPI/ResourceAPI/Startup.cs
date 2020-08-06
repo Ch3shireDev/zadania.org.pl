@@ -46,7 +46,7 @@ namespace ResourceAPI
             services.AddScoped<ICategoryDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IQuizDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IExerciseDbContext>(provider => provider.GetService<SqlContext>());
-            services.AddScoped<IVoteDbContext>(provider => provider.GetService<SqlContext>());
+            //services.AddScoped<IVoteDbContext>(provider => provider.GetService<SqlContext>());
 
             if (Environment.IsDevelopment())
             {
@@ -62,7 +62,7 @@ namespace ResourceAPI
             services.AddScoped<IQuizService, QuizService>();
             services.AddScoped<IExerciseService, ExerciseService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IVoteService, VoteService>();
+            //services.AddScoped<IVoteService, VoteService>();
 
             services.AddControllers();
 
@@ -79,14 +79,14 @@ namespace ResourceAPI
             var quizLibraryAssembly = Assembly.Load("QuizLibrary");
             var exerciseLibraryAssembly = Assembly.Load("ExerciseLibrary");
             var categoryLibraryAssembly = Assembly.Load("CategoryLibrary");
-            var voteLibraryAssembly = Assembly.Load("VoteLibrary");
+            //var voteLibraryAssembly = Assembly.Load("VoteLibrary");
 
             services.AddMvc().AddApplicationPart(commonLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(quizLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(exerciseLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(categoryLibraryAssembly).AddControllersAsServices();
-            services.AddMvc().AddApplicationPart(voteLibraryAssembly).AddControllersAsServices();
+            //services.AddMvc().AddApplicationPart(voteLibraryAssembly).AddControllersAsServices();
 
             services.AddAutoMapper(typeof(Startup));
 

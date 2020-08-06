@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using ExerciseLibrary;
+using ProblemLibrary;
+using QuizLibrary;
 
 namespace CategoryLibrary
 {

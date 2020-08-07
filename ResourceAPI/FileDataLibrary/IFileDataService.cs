@@ -4,6 +4,7 @@
     {
         public FileData Create(FileDataView fileData);
         public FileDataView Get(int id);
-        public void Remove(int id);
+        public void Delete(int id);
+        string GetAbsolutePath(FileData data);
     }
 }

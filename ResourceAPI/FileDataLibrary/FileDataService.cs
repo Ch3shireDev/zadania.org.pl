@@ -21,8 +21,8 @@ namespace FileDataLibrary
 
             var element = new FileData
             {
-                FileName = fileData.FileName,
-                SerializedFileName = Path.GetFileName(path),
+                OriginalFileName = fileData.FileName,
+                FileName = Path.GetFileName(path),
                 FileDir = Path.GetDirectoryName(path)
             };
 
@@ -39,11 +39,11 @@ namespace FileDataLibrary
             return new FileDataView
             {
                 FileBytes = GetFile(element),
-                FileName = element.FileName
+                FileName = element.OriginalFileName
             };
         }
 
-        public void Remove(int id)
+        public void Delete(int id)
         {
             var element = _context.FileData.FirstOrDefault(f => f.Id == id);
             if (element == null) return;
@@ -52,9 +52,16 @@ namespace FileDataLibrary
             _context.SaveChanges();
         }
 
+        public string GetAbsolutePath(FileData data)
+        {
+            var relativePath = Path.Join(data.FileDir, data.FileName);
+            var absolutePath = Path.GetFullPath(relativePath);
+            return absolutePath;
+        }
+
         private byte[] GetFile(FileData fileData)
         {
-            return File.ReadAllBytes(Path.Combine(fileData.FileDir, fileData.SerializedFileName));
+            return File.ReadAllBytes(Path.Combine(fileData.FileDir, fileData.FileName));
         }
 
         private string CreateFile(byte[] fileBytes)
@@ -85,7 +92,7 @@ namespace FileDataLibrary
 
         private void DeleteFile(FileData element)
         {
-            var fpath = Path.Combine(FileDirectory, element.FileDir, element.FileName);
+            var fpath = GetAbsolutePath(element);
             if (!File.Exists(fpath)) return;
             File.Delete(fpath);
         }

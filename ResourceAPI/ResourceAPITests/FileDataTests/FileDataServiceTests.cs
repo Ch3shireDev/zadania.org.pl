@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Text;
 using AutoMapper;
 using FileDataLibrary;
@@ -24,7 +26,7 @@ namespace ResourceAPITests.FileDataTests
         private readonly IFileDataService _categoryService;
 
         [Fact]
-        public void Test()
+        public void CreateElement()
         {
             var element = new FileDataView
             {
@@ -33,12 +35,16 @@ namespace ResourceAPITests.FileDataTests
             };
 
             var data = _categoryService.Create(element);
-
             var file = _categoryService.Get(data.Id);
-
             var str = Encoding.UTF8.GetString(file.FileBytes);
-
             Assert.Equal("abc", str);
+
+            var fpath = _categoryService.GetAbsolutePath(data);
+            Assert.True(File.Exists(fpath));
+            Assert.NotNull(_context.FileData.FirstOrDefault(f => f.Id == data.Id));
+            _categoryService.Delete(data.Id);
+            Assert.False(File.Exists(fpath));
+            Assert.Null(_context.FileData.FirstOrDefault(f => f.Id == data.Id));
         }
     }
 }

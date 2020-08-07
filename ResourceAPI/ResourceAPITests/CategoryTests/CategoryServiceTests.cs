@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using AutoMapper;
 using CategoryLibrary;
 using CommonLibrary;
 using ExerciseLibrary;
+using FileDataLibrary;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using QuizLibrary;
@@ -18,13 +18,10 @@ namespace ResourceAPITests.CategoryTests
         {
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
 
-            var conf = new MapperConfiguration(c => { });
-            var mapper = new Mapper(conf);
-
             _context = new SqlContext(optionsBuilder.Options);
             _categoryService = new CategoryService(_context);
             _problemService = new ProblemService(_context);
-            _QuizService = new QuizService(_context);
+            _quizService = new QuizService(_context);
             _exerciseService = new ExerciseService(_context);
             _authorService = new AuthorService(_context);
         }
@@ -34,7 +31,7 @@ namespace ResourceAPITests.CategoryTests
         private readonly ICategoryService _categoryService;
         private readonly IProblemService _problemService;
         private readonly IAuthorService _authorService;
-        private readonly IQuizService _QuizService;
+        private readonly IQuizService _quizService;
 
         [Fact]
         public void AddProblemsTest()
@@ -67,9 +64,9 @@ namespace ResourceAPITests.CategoryTests
             _categoryService.Create(new Category {Name = "xyz"}, id);
             var id2 = _categoryService.Create(new Category {Name = "xyz"}, id).Id;
 
-            var pid0 = _QuizService.CreateTest(id2, new Quiz {Name = "xxx1"});
-            var pid1 = _QuizService.CreateTest(id2, new Quiz {Name = "xxx2"});
-            var pid2 = _QuizService.CreateTest(id2, new Quiz {Name = "xxx3"});
+            var pid0 = _quizService.CreateTest(id2, new Quiz {Name = "xxx1"});
+            var pid1 = _quizService.CreateTest(id2, new Quiz {Name = "xxx2"});
+            var pid2 = _quizService.CreateTest(id2, new Quiz {Name = "xxx3"});
 
             var quizzes = _categoryService.GetQuizzes(id2);
 
@@ -96,8 +93,6 @@ namespace ResourceAPITests.CategoryTests
         [Fact]
         public void CascadeDeleteTest()
         {
-            //Thread.Sleep(1500);
-
             var first = _categoryService.Create(new Category()).Id;
             var second = _categoryService.Create(new Category(), first).Id;
             var third = _categoryService.Create(new Category(), second).Id;
@@ -129,6 +124,28 @@ namespace ResourceAPITests.CategoryTests
             //Assert.Equal(child.Name, name);
         }
 
+        [Fact]
+        public void CreateCategoryWithFiles()
+        {
+            var element = new CategoryUserModel
+            {
+                Name = "abc",
+                Description = "cde ![](abc.png)",
+                Files = new[]
+                {
+                    new FileDataView {FileName = "abc.png", FileBytes = Convert.FromBase64String("aaaa")}
+                }
+            };
+
+            var category = _categoryService.Create(element.ToModel());
+            var newCategory = _categoryService.GetCategory(category.Id);
+
+            Assert.Equal(1, newCategory.FileData.Count);
+            var fileData = newCategory.FileData.First();
+            Assert.Equal("abc.png", fileData.FileName);
+            Assert.Equal("aaaa", Convert.ToBase64String(fileData.FileBytes));
+        }
+
 
         [Fact]
         public void CreateTest()
@@ -136,7 +153,7 @@ namespace ResourceAPITests.CategoryTests
             var id = _categoryService.Create(new Category {Name = "xyz"}).Id;
             var initNum = _context.Categories.FirstOrDefault(c => c.Id == id)?.Quizzes.ToList().Count;
 
-            var test = _QuizService.CreateTest(id, new Quiz {Name = "abc"});
+            var test = _quizService.CreateTest(id, new Quiz {Name = "abc"});
             var num = _context.Categories.FirstOrDefault(c => c.Id == id)?.Quizzes.ToList().Count;
             Assert.Equal(initNum + 1, num);
         }
@@ -230,9 +247,9 @@ namespace ResourceAPITests.CategoryTests
         {
             var cid1 = _categoryService.Create(new Category {Name = "xxxx"}).Id;
 
-            var pid1 = _QuizService.Create(new Quiz {Name = "aaa", CategoryId = cid1});
-            var pid2 = _QuizService.Create(new Quiz {Name = "bbb", CategoryId = cid1});
-            var pid3 = _QuizService.Create(new Quiz {Name = "ccc", CategoryId = cid1});
+            var pid1 = _quizService.Create(new Quiz {Name = "aaa", CategoryId = cid1});
+            var pid2 = _quizService.Create(new Quiz {Name = "bbb", CategoryId = cid1});
+            var pid3 = _quizService.Create(new Quiz {Name = "ccc", CategoryId = cid1});
 
             var quizzes = _categoryService.GetQuizzes(cid1);
 
@@ -252,11 +269,9 @@ namespace ResourceAPITests.CategoryTests
             var cid2 = _categoryService.Create(new Category {Name = "yyyy"}, cid1).Id;
 
             var c1 = _categoryService.GetCategory(cid1);
-            //Assert.Equal("xxxx", c1.Name);
             var cid3 = c1.Categories.First().Id;
             Assert.Equal(cid2, cid3);
             var c2 = _categoryService.GetProblems(cid3);
-            //Assert.Equal("yyyy", c2.Name);
         }
     }
 }

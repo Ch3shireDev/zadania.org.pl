@@ -5,6 +5,7 @@ using AutoMapper;
 using CategoryLibrary;
 using CommonLibrary;
 using ExerciseLibrary;
+using FileDataLibrary;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -36,8 +37,8 @@ namespace ResourceAPI
             services.AddResponseCompression();
             services.AddDbContext<SqlContext>((serviceProvider, options) =>
             {
-                if (Environment.IsDevelopment())
-                    options.UseInMemoryDatabase(guid).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                if (Environment.IsDevelopment()) options.UseInMemoryDatabase(guid);
+                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 else options.UseMySQL(Configuration.GetConnectionString("Default"));
             });
 
@@ -46,7 +47,7 @@ namespace ResourceAPI
             services.AddScoped<ICategoryDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IQuizDbContext>(provider => provider.GetService<SqlContext>());
             services.AddScoped<IExerciseDbContext>(provider => provider.GetService<SqlContext>());
-            //services.AddScoped<IVoteDbContext>(provider => provider.GetService<SqlContext>());
+            services.AddScoped<IFileDataDbContext>(provider => provider.GetService<SqlContext>());
 
             if (Environment.IsDevelopment())
             {
@@ -58,11 +59,11 @@ namespace ResourceAPI
                 services.AddScoped<IAuthorService, AuthorService>();
             }
 
+            services.AddScoped<IFileDataService, FileDataService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IQuizService, QuizService>();
             services.AddScoped<IExerciseService, ExerciseService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            //services.AddScoped<IVoteService, VoteService>();
 
             services.AddControllers();
 
@@ -74,19 +75,19 @@ namespace ResourceAPI
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            var fileDataLibraryAssembly = Assembly.Load("FileDataLibrary");
             var commonLibraryAssembly = Assembly.Load("CommonLibrary");
             var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
             var quizLibraryAssembly = Assembly.Load("QuizLibrary");
             var exerciseLibraryAssembly = Assembly.Load("ExerciseLibrary");
             var categoryLibraryAssembly = Assembly.Load("CategoryLibrary");
-            //var voteLibraryAssembly = Assembly.Load("VoteLibrary");
 
+            services.AddMvc().AddApplicationPart(fileDataLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(commonLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(problemLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(quizLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(exerciseLibraryAssembly).AddControllersAsServices();
             services.AddMvc().AddApplicationPart(categoryLibraryAssembly).AddControllersAsServices();
-            //services.AddMvc().AddApplicationPart(voteLibraryAssembly).AddControllersAsServices();
 
             services.AddAutoMapper(typeof(Startup));
 

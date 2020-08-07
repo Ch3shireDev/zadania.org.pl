@@ -15,26 +15,16 @@ namespace CommonLibrary
 
         public int GetAuthor(string nameIdentifier, UserData profile)
         {
-            //var profileData = context.Request.Headers["profile"][0];
-            //var profile = JsonConvert.DeserializeObject<UserData>(profileData);
-            //return _authorService.GetAuthor(, profile);
-
-            //var httpContextUser = context.User;
-            //var idClaim = httpContextUser.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
-            //if (idClaim == null) return null;
-            //var nameIdentifier = idClaim.Value;
-
-            if (!_context.Authors.Any(a => a.UserId == nameIdentifier))
+            if (_context.Authors.Any(a => a.UserId == nameIdentifier))
+                return _context.Authors.First(a => a.UserId == nameIdentifier).Id;
+            var newProfile = new Author
             {
-                var newProfile = new Author
-                {
-                    UserId = nameIdentifier,
-                    Name = profile.Name,
-                    Email = profile.Email
-                };
-                _context.Authors.Add(newProfile);
-                _context.SaveChanges();
-            }
+                UserId = nameIdentifier,
+                Name = profile.Name,
+                Email = profile.Email
+            };
+            _context.Authors.Add(newProfile);
+            _context.SaveChanges();
 
             return _context.Authors.First(a => a.UserId == nameIdentifier).Id;
         }

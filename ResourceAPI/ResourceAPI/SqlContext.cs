@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CategoryLibrary;
 using CommonLibrary;
 using ExerciseLibrary;
@@ -27,6 +28,23 @@ namespace ResourceAPI
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
         public DbSet<QuizAnswer> QuizAnswers { get; set; }
 
+        public override int SaveChanges()
+        {
+            var entries = ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is Post && (
+                    e.State == EntityState.Added
+                    || e.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries)
+            {
+                ((Post) entityEntry.Entity).Edited = DateTime.Now;
+
+                if (entityEntry.State == EntityState.Added) ((Post) entityEntry.Entity).Created = DateTime.Now;
+            }
+
+            return base.SaveChanges();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -34,37 +52,12 @@ namespace ResourceAPI
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<ProblemTag>()
-            //    .HasKey(pc => new {pc.TagUrl, pc.ProblemId});
-
-            //modelBuilder.Entity<ProblemTag>()
-            //    .HasOne(pc => pc.Problem)
-            //    .WithMany(p => p.ProblemTags);
-
-            //modelBuilder.Entity<ProblemTag>()
-            //    .HasOne(category => category.Tag)
-            //    .WithMany(tag => tag.ProblemTags)
-            //    .HasForeignKey(pc => pc.TagUrl);
-
-            //modelBuilder.Entity<ProblemTag>()
-            //    .HasOne(pt => pt.Problem)
-            //    .WithMany(p => p.ProblemTags)
-            //    .HasForeignKey(pt => pt.ProblemId);
-
             modelBuilder.Entity<Category>()
                 .HasOne(c => c.Parent)
                 .WithMany("Categories")
                 .HasForeignKey("ParentId")
                 .OnDelete(DeleteBehavior.Cascade)
                 ;
-
-            //modelBuilder.Entity<ProblemVote>().HasKey(pv => new {pv.ProblemId, pv.AuthorId});
-            //modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Problem).WithMany(p => p.ProblemVotes);
-            //modelBuilder.Entity<ProblemVote>().HasOne(pv => pv.Author).WithMany(a => a.Votes);
-
-            //modelBuilder.Entity<AnswerVote>().HasKey(pv => new {pv.AnswerId, pv.AuthorId});
-            //modelBuilder.Entity<AnswerVote>().HasOne(av => av.Answer).WithMany(a => a.AnswerVotes);
-            //modelBuilder.Entity<AnswerVote>().HasOne(av => av.Author).WithMany(a => a.AnswerVotes);
         }
 
         public void Initialize()

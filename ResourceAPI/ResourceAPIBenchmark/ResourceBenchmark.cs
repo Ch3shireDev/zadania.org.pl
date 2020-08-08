@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using CategoryLibrary;
 using CommonLibrary;
+using FileDataLibrary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ProblemLibrary;
@@ -31,8 +32,9 @@ namespace ResourceAPIBenchmark
 
             var options = new DbContextOptionsBuilder().UseMySQL(configuration.GetConnectionString("Default"));
             _context = new SqlContext(options.Options);
+            var fileDataService = new FileDataService(_context);
             _categoryService = new CategoryService(_context);
-            _problemService = new ProblemService(_context);
+            _problemService = new ProblemService(_context, fileDataService);
             _authorService = new AuthorService(_context);
             _controller = new ProblemsController(null, _context, _problemService, _authorService);
         }

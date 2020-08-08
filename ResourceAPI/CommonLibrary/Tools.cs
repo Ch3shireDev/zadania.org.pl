@@ -11,7 +11,7 @@ namespace CommonLibrary
 {
     public static class Tools
     {
-        public static string Render(string contentRaw, ICollection<FileDataView> fileData)
+        public static string Render(string contentRaw, IEnumerable<FileDataView> fileData)
         {
             if (contentRaw == null) return null;
             var html = contentRaw;

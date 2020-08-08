@@ -19,8 +19,9 @@ namespace ResourceAPITests.CategoryTests
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
 
             _context = new SqlContext(optionsBuilder.Options);
+            var fileDataService = new FileDataService(_context);
             _categoryService = new CategoryService(_context);
-            _problemService = new ProblemService(_context);
+            _problemService = new ProblemService(_context, fileDataService);
             _quizService = new QuizService(_context);
             _exerciseService = new ExerciseService(_context);
             _authorService = new AuthorService(_context);
@@ -123,29 +124,6 @@ namespace ResourceAPITests.CategoryTests
             Assert.NotNull(child);
             //Assert.Equal(child.Name, name);
         }
-
-        [Fact]
-        public void CreateCategoryWithFiles()
-        {
-            var element = new CategoryUserModel
-            {
-                Name = "abc",
-                Description = "cde ![](abc.png)",
-                Files = new[]
-                {
-                    new FileDataView {FileName = "abc.png", FileBytes = Convert.FromBase64String("aaaa")}
-                }
-            };
-
-            var category = _categoryService.Create(element.ToModel());
-            var newCategory = _categoryService.GetCategory(category.Id);
-
-            Assert.Equal(1, newCategory.FileData.Count);
-            var fileData = newCategory.FileData.First();
-            Assert.Equal("abc.png", fileData.FileName);
-            Assert.Equal("aaaa", Convert.ToBase64String(fileData.FileBytes));
-        }
-
 
         [Fact]
         public void CreateTest()

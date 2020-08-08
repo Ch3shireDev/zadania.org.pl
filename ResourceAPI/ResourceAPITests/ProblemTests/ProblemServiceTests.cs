@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using AutoMapper;
 using CommonLibrary;
+using FileDataLibrary;
 using Microsoft.EntityFrameworkCore;
 using ProblemLibrary;
 using ResourceAPI;
@@ -18,14 +18,8 @@ namespace ResourceAPITests.ProblemTests
             var context = new SqlContext(optionsBuilder.Options);
 
             var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
-
-            var conf = new MapperConfiguration(c =>
-            {
-                c.AddProfile<ProblemProfile>();
-                c.AddMaps(problemLibraryAssembly);
-            });
-            var mapper = new Mapper(conf);
-            _problemService = new ProblemService(context);
+            var fileDataService = new FileDataService(context);
+            _problemService = new ProblemService(context, fileDataService);
             _authorService = new AuthorService(context);
         }
 
@@ -122,6 +116,39 @@ namespace ResourceAPITests.ProblemTests
             var id = _problemService.Create(new Problem {Name = "xxx"}).Id;
             var problem = _problemService.Get(id);
             Assert.Equal(id, problem.Id);
+        }
+
+        [Fact]
+        public void CreateProblemWithFiles()
+        {
+            var element = new ProblemUserModel
+            {
+                Name = "abc",
+                Content = "cde ![](abc.png) ![](cde.png) ![](efg.png)",
+                Files = new[]
+                {
+                    new FileDataView {FileName = "abc.png", FileBytes = Convert.FromBase64String("aaaa")},
+                    new FileDataView {FileName = "cde.png", FileBytes = Convert.FromBase64String("bbbb")},
+                    new FileDataView {FileName = "efg.png", FileBytes = Convert.FromBase64String("cccc")}
+                }
+            };
+
+            var problemLink = _problemService.Create(element.ToModel());
+            var problem = _problemService.Get(problemLink.Id);
+
+            Assert.Equal(3, problem.Files.Count());
+
+            var b64List = problem.Files.Select(f => Convert.ToBase64String(f.FileBytes)).ToList();
+
+            Assert.Contains("aaaa", b64List);
+            Assert.Contains("bbbb", b64List);
+            Assert.Contains("cccc", b64List);
+
+            element.Render();
+
+            Assert.Contains("aaaa", element.Content);
+            Assert.Contains("bbbb", element.Content);
+            Assert.Contains("cccc", element.Content);
         }
 
         [Fact]

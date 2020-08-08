@@ -20,15 +20,15 @@ namespace CommonLibrary
         public Author Author { get; set; }
         public DateTime Created { get; set; }
         public DateTime Edited { get; set; }
-        public ICollection<FileData> FileData { get; set; }
-        [NotMapped] public ICollection<FileDataView> FileDataView { get; set; }
+        public ICollection<FileData> FileData { get; set; } = new List<FileData>();
+        [NotMapped] public IEnumerable<FileDataView> Files { get; set; } = new List<FileDataView>();
 
         //public Category.Category Category { get; set; }
         public int CategoryId { get; set; }
 
         public void Render()
         {
-            ContentHtml = Tools.Render(Content, FileDataView);
+            ContentHtml = Tools.Render(Content, Files);
         }
     }
 }

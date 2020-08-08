@@ -17,7 +17,7 @@ namespace ProblemLibrary
 
         public new Answer Render()
         {
-            ContentHtml = Tools.Render(Content, FileDataView);
+            ContentHtml = Tools.Render(Content, Files);
             return this;
         }
 
@@ -28,7 +28,7 @@ namespace ProblemLibrary
                 Id = Id,
                 ProblemId = ProblemId,
                 IsApproved = IsApproved,
-                Content = Tools.Render(Content, FileDataView)
+                Content = Tools.Render(Content, Files)
             };
         }
 

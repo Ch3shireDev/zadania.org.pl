@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FileDataLibrary;
 
 namespace ProblemLibrary
 {
     public class ProblemService : IProblemService
     {
         private readonly IProblemDbContext _context;
+        private readonly IFileDataService _fileDataService;
 
-        public ProblemService(IProblemDbContext context)
+        public ProblemService(IProblemDbContext context, IFileDataService fileDataService)
         {
             _context = context;
+            _fileDataService = fileDataService;
         }
 
         public bool Delete(int problemId, int authorId = 1)
@@ -68,7 +71,8 @@ namespace ProblemLibrary
         public Problem Get(int problemId)
         {
             var
-                problem = _context.Problems.Select(p => new Problem
+                problem = _context.Problems
+                    .Select(p => new Problem
                     {
                         Id = p.Id,
                         Name = p.Name,
@@ -84,23 +88,22 @@ namespace ProblemLibrary
                     .FirstOrDefault(p => p.Id == problemId);
             if (problem == null) return null;
 
+            problem.Files = _fileDataService.GetFilesForProblem(problemId);
+
             problem.IsSolved = _context.Answers.Where(a => a.ProblemId == problem.Id).Any(a => a.IsApproved);
             //problem = problem.Render();
             problem.Answers = problem.Answers.Select(a => a.Render()).ToList();
             return problem;
         }
 
-        public Problem Create(Problem problem, int authorId = 1)
+        public Problem Create(Problem problem, int categoryId = 1, int authorId = 1)
         {
-            if (problem.CategoryId == 0) problem.CategoryId = 1;
-            //if (!withAnswers) problem.Answers = null;
-            //if (author == null) return 0;
-
-            //var category = _categoryService.GetProblems(categoryId);
-            //if (category == null) return 0;
+            if (problem.CategoryId == 0) problem.CategoryId = categoryId;
 
             problem.AuthorId = authorId;
             _context.Problems.Add(problem);
+
+            foreach (var file in problem.Files) _fileDataService.Create(file, problem.Id);
 
             _context.SaveChanges();
             return problem;

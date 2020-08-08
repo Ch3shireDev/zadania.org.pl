@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -15,7 +16,7 @@ namespace FileDataLibrary
 
         public static string FileDirectory { get; set; } = "../../images";
 
-        public FileData Create(FileDataView fileData)
+        public FileData Create(FileDataView fileData, int problemId = 0)
         {
             var path = CreateFile(fileData.FileBytes);
 
@@ -23,7 +24,8 @@ namespace FileDataLibrary
             {
                 OriginalFileName = fileData.FileName,
                 FileName = Path.GetFileName(path),
-                FileDir = Path.GetDirectoryName(path)
+                FileDir = Path.GetDirectoryName(path),
+                ProblemId = problemId
             };
 
             _context.FileData.Add(element);
@@ -36,11 +38,7 @@ namespace FileDataLibrary
         {
             var element = _context.FileData.FirstOrDefault(f => f.Id == id);
             if (element == null) return null;
-            return new FileDataView
-            {
-                FileBytes = GetFile(element),
-                FileName = element.OriginalFileName
-            };
+            return ConvertToFileDataView(element);
         }
 
         public void Delete(int id)
@@ -57,6 +55,25 @@ namespace FileDataLibrary
             var relativePath = Path.Join(data.FileDir, data.FileName);
             var absolutePath = Path.GetFullPath(relativePath);
             return absolutePath;
+        }
+
+        public IEnumerable<FileDataView> GetFilesForProblem(int problemId)
+        {
+            var files = _context
+                .FileData
+                .Where(f => f.ProblemId == problemId)
+                .ToList()
+                .Select(ConvertToFileDataView);
+            return files;
+        }
+
+        private FileDataView ConvertToFileDataView(FileData element)
+        {
+            return new FileDataView
+            {
+                FileBytes = GetFile(element),
+                FileName = element.OriginalFileName
+            };
         }
 
         private byte[] GetFile(FileData fileData)

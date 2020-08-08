@@ -7,7 +7,7 @@ namespace ProblemLibrary
         //public Problem GetProblem(int id);
         //Answer GetAnswerById(int problemId, int answerId);
         public Problem Get(int problemId);
-        Problem Create(Problem problem, int authorId = 1);
+        Problem Create(Problem problem, int categoryId = 1, int authorId = 1);
 
         IEnumerable<Problem> BrowseProblems(int page,
             out int totalPages, string tags = null, string query = null, bool newest = true, bool highest = false);

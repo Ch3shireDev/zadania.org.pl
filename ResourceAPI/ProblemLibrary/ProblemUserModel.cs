@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CommonLibrary;
 using FileDataLibrary;
 
 namespace ProblemLibrary
@@ -17,8 +18,15 @@ namespace ProblemLibrary
             {
                 Name = Name,
                 Content = Content,
-                CategoryId = CategoryId
+                CategoryId = CategoryId,
+                Files = Files
             };
+        }
+
+        public void Render()
+        {
+            Content = Tools.Render(Content, Files);
+            Files = null;
         }
     }
 }

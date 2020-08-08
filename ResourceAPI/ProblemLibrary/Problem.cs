@@ -15,19 +15,14 @@ namespace ProblemLibrary
 
         public IList<Answer> Answers { get; set; } = new List<Answer>();
 
-        //[NotMapped] public IEnumerable<Tag> Tags { get; set; }
-
-        //public ICollection<ProblemTag> ProblemTags { get; set; }
-
-        //public ICollection<ProblemVote> ProblemVotes { get; set; }
-
         [NotMapped] public bool IsSolved { get; set; }
-        public ICollection<Comment> Comments { get; set; }
+
         [NotMapped] public string AuthorName { get; set; }
+        //[NotMapped] public IEnumerable<Files> FileData { get; set; }
 
         public new Problem Render()
         {
-            ContentHtml = Tools.Render(Content, FileDataView);
+            ContentHtml = Tools.Render(Content, Files);
             Content = null;
             FileData = null;
             return this;
@@ -48,14 +43,14 @@ namespace ProblemLibrary
             {
                 Id = Id,
                 Name = Name,
-                Content = Tools.Render(Content, FileDataView),
+                Content = Tools.Render(Content, Files),
                 IsSolved = IsSolved,
                 Answers = Answers.Select(a => new AnswerView
                 {
                     Id = a.Id,
                     ProblemId = a.ProblemId,
                     IsApproved = a.IsApproved,
-                    Content = Tools.Render(a.Content, a.FileDataView)
+                    Content = Tools.Render(a.Content, a.Files)
                 })
             };
         }

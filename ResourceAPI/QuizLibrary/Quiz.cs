@@ -26,7 +26,7 @@ namespace QuizLibrary
             {
                 Id = Id,
                 Name = Name,
-                Content = Tools.Render(Content, FileDataView)
+                Content = Tools.Render(Content, Files)
             };
         }
     }

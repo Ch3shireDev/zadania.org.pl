@@ -116,9 +116,9 @@ namespace QuizLibrary
         [Route("{testId}/questions/{questionId}/answers/{answerId}")]
         [HttpPut]
         public ActionResult PutAnswer(int testId, int questionId, int answerId,
-            QuizAnswer QuizAnswer)
+            QuizAnswer quizAnswer)
         {
-            var result = _quizService.EditAnswer(answerId, QuizAnswer);
+            var result = _quizService.EditAnswer(answerId, quizAnswer);
             if (result == false) return Forbid();
             return Ok();
         }

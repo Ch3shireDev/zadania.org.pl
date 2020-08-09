@@ -18,12 +18,10 @@ namespace ProblemLibrary
         [NotMapped] public bool IsSolved { get; set; }
 
         [NotMapped] public string AuthorName { get; set; }
-        //[NotMapped] public IEnumerable<Files> FileData { get; set; }
 
         public new Problem Render()
         {
-            ContentHtml = Tools.Render(Content, Files);
-            Content = null;
+            Content = Tools.Render(Content, Files);
             FileData = null;
             return this;
         }

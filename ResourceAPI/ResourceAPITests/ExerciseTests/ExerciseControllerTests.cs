@@ -47,7 +47,7 @@ namespace ResourceAPITests.ExerciseTests
             var exerciseRes = await Client.GetAsync($"/api/v1/exercises/{postEx.Id}");
             var exercise = exerciseRes.ToElement<Exercise>();
             Assert.Equal("xxx", exercise.Name);
-            Assert.Contains("yyy", exercise.ContentHtml);
+            Assert.Contains("yyy", exercise.Content);
             return exercise.Id;
         }
 
@@ -72,7 +72,7 @@ namespace ResourceAPITests.ExerciseTests
             await Client.PutAsync($"/api/v1/exercises/{exerciseId}", exercise.ToHttpContent());
             var exercise2 = await ExerciseGet(exerciseId);
             Assert.Equal("abc", exercise2.Name);
-            Assert.Contains("cde", exercise2.ContentHtml);
+            Assert.Contains("cde", exercise2.Content);
         }
 
         [Fact]

@@ -38,7 +38,7 @@ namespace ResourceAPITests.ExerciseTests
             var exerciseId = _exerciseService.Create(new Exercise {Name = "abc", Content = "cde"});
             var exercise = _exerciseService.Get(exerciseId);
             Assert.Equal("abc", exercise.Name);
-            Assert.Contains("cde", exercise.ContentHtml);
+            Assert.Contains("cde", exercise.Content);
             return exerciseId;
         }
 
@@ -58,7 +58,7 @@ namespace ResourceAPITests.ExerciseTests
             _exerciseService.Edit(exerciseId, new Exercise {Name = "xxx", Content = "yyy"});
             var exercise = _exerciseService.Get(exerciseId);
             Assert.Equal("xxx", exercise.Name);
-            Assert.Contains("yyy", exercise.ContentHtml);
+            Assert.Contains("yyy", exercise.Content);
         }
 
         [Fact]

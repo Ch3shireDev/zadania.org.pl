@@ -43,7 +43,7 @@ namespace ResourceAPITests.QuizTests
                 $"/api/v1/quiz/{test.Id}/questions/{question.Id}/answers",
                 new QuizAnswer {Content = "bbb"});
             var answer1 = await GetAnswer(test.Id, question.Id, answer.Id);
-            Assert.Contains("bbb", answer1.ContentHtml);
+            Assert.Contains("bbb", answer1.Content);
             return answer1;
         }
 
@@ -55,7 +55,7 @@ namespace ResourceAPITests.QuizTests
             var question = await Client.PostAsync($"/api/v1/quiz/{test.Id}/questions",
                 new QuizQuestion {Content = "aaa"});
             var question1 = await GetQuestion(test.Id, question.Id);
-            Assert.Contains("aaa", question1.ContentHtml);
+            Assert.Contains("aaa", question1.Content);
             return question1;
         }
 
@@ -113,7 +113,7 @@ namespace ResourceAPITests.QuizTests
                     Content = "xxxaaa"
                 }.ToHttpContent());
             var answer1 = await GetAnswer(answer.TestId, answer.QuestionId, answer.Id);
-            Assert.Contains("xxxaaa", answer1.ContentHtml);
+            Assert.Contains("xxxaaa", answer1.Content);
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace ResourceAPITests.QuizTests
                     Content = "aaabbb"
                 }.ToHttpContent());
             var question1 = await GetQuestion(question.TestId, question.Id);
-            Assert.Contains("aaabbb", question1.ContentHtml);
+            Assert.Contains("aaabbb", question1.Content);
         }
 
         [Fact]

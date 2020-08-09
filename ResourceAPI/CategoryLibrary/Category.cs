@@ -14,7 +14,6 @@ namespace CategoryLibrary
         public int Id { get; set; }
 
         [NotMapped] public ICollection<FileDataView> FileData { get; set; } = new List<FileDataView>();
-
         public string Name { get; set; }
         public string Description { get; set; }
         public Category Parent { get; set; }

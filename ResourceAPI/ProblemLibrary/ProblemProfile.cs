@@ -16,7 +16,7 @@ namespace ProblemLibrary
                 .ForMember(
                     dest => dest.Content,
                     x => x.MapFrom(y =>
-                        y.Render().ContentHtml
+                        y.Render().Content
                     )
                 )
                 .ReverseMap()

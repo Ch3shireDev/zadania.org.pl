@@ -8,8 +8,10 @@ namespace CommonLibrary
     public class Post
     {
         public int Id { get; set; }
+
         public string Content { get; set; }
-        [NotMapped] public string ContentHtml { get; set; }
+
+        //[NotMapped] public string ContentHtml { get; set; }
         public int AuthorId { get; set; }
         public Author Author { get; set; }
         public DateTime Created { get; set; }
@@ -21,7 +23,7 @@ namespace CommonLibrary
 
         public void Render()
         {
-            ContentHtml = Tools.Render(Content, Files);
+            Content = Tools.Render(Content, Files);
         }
     }
 }

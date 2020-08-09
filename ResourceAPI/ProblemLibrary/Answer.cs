@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using CommonLibrary;
 
 namespace ProblemLibrary
 {
     public class Answer : Post
     {
-        public Problem Problem { get; set; }
         public int ProblemId { get; set; }
         public bool IsApproved { get; set; }
-        public ICollection<Comment> Comments { get; set; }
 
         //public ICollection<AnswerVote> AnswerVotes { get; set; }
         [NotMapped] public string AuthorName { get; set; }
@@ -17,7 +14,7 @@ namespace ProblemLibrary
 
         public new Answer Render()
         {
-            ContentHtml = Tools.Render(Content, Files);
+            Content = Tools.Render(Content, Files);
             return this;
         }
 

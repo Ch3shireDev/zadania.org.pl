@@ -31,7 +31,7 @@ namespace ResourceAPITests.QuizTests
             var questionId = CreateQuestion();
             var answerId = _quizService.CreateAnswer(questionId, new QuizAnswer {Content = "xxx"});
             var answer = _quizService.GetAnswer(answerId);
-            Assert.Contains("xxx", answer.ContentHtml);
+            Assert.Contains("xxx", answer.Content);
             return answerId;
         }
 
@@ -140,7 +140,7 @@ namespace ResourceAPITests.QuizTests
             answer.Content = "xxxxxxx";
             _quizService.EditAnswer(answerId, answer);
             var answer2 = _quizService.GetAnswer(answerId);
-            Assert.Contains("xxxxxx", answer2.ContentHtml);
+            Assert.Contains("xxxxxx", answer2.Content);
         }
 
         [Fact]

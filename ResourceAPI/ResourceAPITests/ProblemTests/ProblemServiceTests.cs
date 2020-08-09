@@ -42,9 +42,9 @@ namespace ResourceAPITests.ProblemTests
             var problem = _problemService.Get(id);
 
             // Sprawdzamy czy treść odpowiedzi się zgadza.
-            Assert.Contains("xxx", problem.Answers.First(a => a.Id == answerId1).ContentHtml);
-            Assert.Contains("yyy", problem.Answers.First(a => a.Id == answerId2).ContentHtml);
-            Assert.Contains("zzz", problem.Answers.First(a => a.Id == answerId3).ContentHtml);
+            Assert.Contains("xxx", problem.Answers.First(a => a.Id == answerId1).Content);
+            Assert.Contains("yyy", problem.Answers.First(a => a.Id == answerId2).Content);
+            Assert.Contains("zzz", problem.Answers.First(a => a.Id == answerId3).Content);
 
             // Sprawdzamy czy odpowiedzi oznaczone są jako niezatwierdzone.
             Assert.False(problem.Answers.First(a => a.Id == answerId1).IsApproved);

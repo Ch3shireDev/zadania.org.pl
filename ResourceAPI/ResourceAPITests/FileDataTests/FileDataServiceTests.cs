@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using AutoMapper;
 using FileDataLibrary;
 using Microsoft.EntityFrameworkCore;
 using ResourceAPI;
@@ -16,14 +15,12 @@ namespace ResourceAPITests.FileDataTests
         {
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
 
-            var conf = new MapperConfiguration(c => { });
-
             _context = new SqlContext(optionsBuilder.Options);
-            _categoryService = new FileDataService(_context);
+            _fileDataService = new FileDataService(_context);
         }
 
         private readonly IFileDataDbContext _context;
-        private readonly IFileDataService _categoryService;
+        private readonly IFileDataService _fileDataService;
 
         [Fact]
         public void CreateElement()
@@ -34,15 +31,15 @@ namespace ResourceAPITests.FileDataTests
                 FileBytes = Encoding.UTF8.GetBytes("abc")
             };
 
-            var data = _categoryService.Create(element);
-            var file = _categoryService.Get(data.Id);
+            var data = _fileDataService.CreateFile(element);
+            var file = _fileDataService.Get(data.Id);
             var str = Encoding.UTF8.GetString(file.FileBytes);
             Assert.Equal("abc", str);
 
-            var fpath = _categoryService.GetAbsolutePath(data);
+            var fpath = _fileDataService.GetAbsolutePath(data);
             Assert.True(File.Exists(fpath));
             Assert.NotNull(_context.FileData.FirstOrDefault(f => f.Id == data.Id));
-            _categoryService.Delete(data.Id);
+            _fileDataService.Delete(data.Id);
             Assert.False(File.Exists(fpath));
             Assert.Null(_context.FileData.FirstOrDefault(f => f.Id == data.Id));
         }

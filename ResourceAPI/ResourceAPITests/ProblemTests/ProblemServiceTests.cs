@@ -119,39 +119,6 @@ namespace ResourceAPITests.ProblemTests
         }
 
         [Fact]
-        public void CreateProblemWithFiles()
-        {
-            var element = new ProblemUserModel
-            {
-                Name = "abc",
-                Content = "cde ![](abc.png) ![](cde.png) ![](efg.png)",
-                Files = new[]
-                {
-                    new FileDataView {FileName = "abc.png", FileBytes = Convert.FromBase64String("aaaa")},
-                    new FileDataView {FileName = "cde.png", FileBytes = Convert.FromBase64String("bbbb")},
-                    new FileDataView {FileName = "efg.png", FileBytes = Convert.FromBase64String("cccc")}
-                }
-            };
-
-            var problemLink = _problemService.Create(element.ToModel());
-            var problem = _problemService.Get(problemLink.Id);
-
-            Assert.Equal(3, problem.Files.Count());
-
-            var b64List = problem.Files.Select(f => Convert.ToBase64String(f.FileBytes)).ToList();
-
-            Assert.Contains("aaaa", b64List);
-            Assert.Contains("bbbb", b64List);
-            Assert.Contains("cccc", b64List);
-
-            element.Render();
-
-            Assert.Contains("aaaa", element.Content);
-            Assert.Contains("bbbb", element.Content);
-            Assert.Contains("cccc", element.Content);
-        }
-
-        [Fact]
         public void DeleteAnswerTest()
         {
             // Tworzymy nowy problem.
@@ -241,6 +208,45 @@ namespace ResourceAPITests.ProblemTests
             var problem2 = _problemService.Get(id);
             Assert.Equal(id, problem2.Id);
             Assert.Equal("yyy", problem2.Name);
+        }
+
+        [Fact]
+        public void FileAnswerCreate()
+        {
+            throw new Exception();
+        }
+
+        [Fact]
+        public void FileProblemCreate()
+        {
+            var element = new ProblemUserModel
+            {
+                Name = "abc",
+                Content = "cde ![](abc.png) ![](cde.png) ![](efg.png)",
+                Files = new[]
+                {
+                    new FileDataView {FileName = "abc.png", FileBytes = Convert.FromBase64String("aaaa")},
+                    new FileDataView {FileName = "cde.png", FileBytes = Convert.FromBase64String("bbbb")},
+                    new FileDataView {FileName = "efg.png", FileBytes = Convert.FromBase64String("cccc")}
+                }
+            };
+
+            var problemLink = _problemService.Create(element.ToModel());
+            var problem = _problemService.Get(problemLink.Id);
+
+            Assert.Equal(3, problem.Files.Count());
+
+            var b64List = problem.Files.Select(f => Convert.ToBase64String(f.FileBytes)).ToList();
+
+            Assert.Contains("aaaa", b64List);
+            Assert.Contains("bbbb", b64List);
+            Assert.Contains("cccc", b64List);
+
+            element.Render();
+
+            Assert.Contains("aaaa", element.Content);
+            Assert.Contains("bbbb", element.Content);
+            Assert.Contains("cccc", element.Content);
         }
 
         [Fact]

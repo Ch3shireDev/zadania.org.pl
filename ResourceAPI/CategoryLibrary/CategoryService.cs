@@ -68,10 +68,10 @@ namespace CategoryLibrary
             return category?.Problems.Select(p => p.ToLink()).ToArray();
         }
 
-        public IEnumerable<QuizLink> GetQuizzes(int categoryId)
+        public IEnumerable<QuizLink> GetQuiz(int categoryId)
         {
-            var category = _context.Categories.Include(c => c.Quizzes).FirstOrDefault(c => c.Id == categoryId);
-            return category?.Quizzes.Select(q => q.ToLink()).ToArray();
+            var category = _context.Categories.Include(c => c.Quiz).FirstOrDefault(c => c.Id == categoryId);
+            return category?.Quiz.Select(q => q.ToLink()).ToArray();
         }
 
         public IEnumerable<ExerciseLink> GetExercises(int categoryId)

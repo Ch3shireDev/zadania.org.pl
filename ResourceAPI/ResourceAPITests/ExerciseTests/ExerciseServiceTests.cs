@@ -62,6 +62,12 @@ namespace ResourceAPITests.ExerciseTests
         }
 
         [Fact]
+        public void FileExerciseCreate()
+        {
+            throw new Exception();
+        }
+
+        [Fact]
         public int ScriptCreate()
         {
             var exerciseId = ExerciseCreate();

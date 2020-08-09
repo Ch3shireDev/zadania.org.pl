@@ -22,7 +22,7 @@ namespace CategoryLibrary
         public IEnumerable<Category> Categories { get; set; } = new List<Category>();
         public IEnumerable<Problem> Problems { get; set; } = new List<Problem>();
         public IEnumerable<Exercise> Exercises { get; set; } = new List<Exercise>();
-        public IEnumerable<Quiz> Quizzes { get; set; } = new List<Quiz>();
+        public IEnumerable<Quiz> Quiz { get; set; } = new List<Quiz>();
         public int AuthorId { get; set; }
 
         public CategoryView ToView()
@@ -37,7 +37,7 @@ namespace CategoryLibrary
                 Categories = Categories.Select(c => c.ToLink()).ToArray(),
                 ProblemsCount = Problems.Count(),
                 ExercisesCount = Exercises.Count(),
-                QuizzesCount = Quizzes.Count()
+                QuizCount = Quiz.Count()
             };
             return categoryView;
         }

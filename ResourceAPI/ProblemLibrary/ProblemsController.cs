@@ -42,18 +42,16 @@ namespace ProblemLibrary
         /// <param name="page">Nr strony.</param>
         /// <param name="query">Zapytanie.</param>
         /// <param name="newest">Czy sortować po najnowszych.</param>
-        /// <param name="highest">Czy sortować po najwyżej punktowanych.</param>
         /// <returns></returns>
         [HttpGet]
         public OkObjectResult Browse(
             [FromQuery] string tags = null,
             [FromQuery] int page = 1,
             [FromQuery] string query = null,
-            [FromQuery] bool newest = false,
-            [FromQuery] bool highest = false
+            [FromQuery] bool newest = false
         )
         {
-            var problems = _problemService.BrowseProblems(page, out var totalPages, tags, query, newest, highest);
+            var problems = _problemService.BrowseProblems(page, out var totalPages, tags, query, newest);
 
             return new OkObjectResult(new
             {

@@ -55,7 +55,7 @@
 //                Questions = mdElement.Children[0].Children.Select(c => c.ToQuestion(author)).ToList()
 //            };
 
-//            _context.Quizzes.Add(test);
+//            _context.Quiz.Add(test);
 //            _context.SaveChanges();
 
 //            return StatusCode(200);

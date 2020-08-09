@@ -4,14 +4,14 @@ using Microsoft.Extensions.Logging;
 
 namespace QuizLibrary
 {
-    [Route("api/v1/quizzes")]
+    [Route("api/v1/quiz")]
     [ApiController]
-    public class QuizzesController : ControllerBase
+    public class QuizController : ControllerBase
     {
-        private readonly ILogger<QuizzesController> _logger;
+        private readonly ILogger<QuizController> _logger;
         private readonly IQuizService _quizService;
 
-        public QuizzesController(ILogger<QuizzesController> logger,
+        public QuizController(ILogger<QuizController> logger,
             IQuizService quizService)
         {
             _logger = logger;

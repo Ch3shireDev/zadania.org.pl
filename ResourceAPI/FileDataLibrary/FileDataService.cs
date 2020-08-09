@@ -16,22 +16,29 @@ namespace FileDataLibrary
 
         public static string FileDirectory { get; set; } = "../../images";
 
-        public FileData Create(FileDataView fileData, int problemId = 0)
+        public FileData CreateForProblem(FileDataView fileData, int problemId)
         {
-            var path = CreateFile(fileData.FileBytes);
+            return Create(fileData, problemId);
+        }
 
-            var element = new FileData
-            {
-                OriginalFileName = fileData.FileName,
-                FileName = Path.GetFileName(path),
-                FileDir = Path.GetDirectoryName(path),
-                ProblemId = problemId
-            };
+        public FileData CreateForExercise(FileDataView fileData, int exerciseId)
+        {
+            return Create(fileData, exerciseId: exerciseId);
+        }
 
-            _context.FileData.Add(element);
-            _context.SaveChanges();
+        public FileData CreateForQuizTest(FileDataView fileData, int quizTestId)
+        {
+            return Create(fileData, quizTestId: quizTestId);
+        }
 
-            return element;
+        public FileData CreateForQuizQuestion(FileDataView fileData, int quizQuestionId)
+        {
+            return Create(fileData, quizQuestionId: quizQuestionId);
+        }
+
+        public FileData CreateForQuizAnswer(FileDataView fileData, int quizAnswerId)
+        {
+            return Create(fileData, quizAnswerId: quizAnswerId);
         }
 
         public FileDataView Get(int id)
@@ -65,6 +72,34 @@ namespace FileDataLibrary
                 .ToList()
                 .Select(ConvertToFileDataView);
             return files;
+        }
+
+        public FileData CreateFile(FileDataView element)
+        {
+            return Create(element);
+        }
+
+        public FileData Create(FileDataView fileData, int problemId = 0, int exerciseId = 0, int quizTestId = 0,
+            int quizQuestionId = 0, int quizAnswerId = 0)
+        {
+            var path = CreateFile(fileData.FileBytes);
+
+            var element = new FileData
+            {
+                OriginalFileName = fileData.FileName,
+                FileName = Path.GetFileName(path),
+                FileDir = Path.GetDirectoryName(path),
+                ProblemId = problemId,
+                ExerciseId = exerciseId,
+                QuizTestId = quizTestId,
+                QuizQuestionId = quizQuestionId,
+                QuizAnswerId = quizAnswerId
+            };
+
+            _context.FileData.Add(element);
+            _context.SaveChanges();
+
+            return element;
         }
 
         private FileDataView ConvertToFileDataView(FileData element)

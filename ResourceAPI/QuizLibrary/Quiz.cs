@@ -9,7 +9,7 @@ namespace QuizLibrary
         public string Name { get; set; }
         public List<QuizQuestion> Questions { get; set; }
         public bool CanBeRandomized { get; set; }
-        [NotMapped] public string Url => $"/api/v1/quizzes/{Id}";
+        [NotMapped] public string Url => $"/api/v1/quiz/{Id}";
 
         public QuizLink ToLink()
         {

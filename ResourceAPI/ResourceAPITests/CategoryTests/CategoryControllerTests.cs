@@ -106,21 +106,21 @@ namespace ResourceAPITests.CategoryTests
                 new Category {Name = "aaa"}.ToHttpContent());
             var cid = res0.ToElement<CategoryLink>().Id;
 
-            await Client.PostAsync("/api/v1/quizzes",
+            await Client.PostAsync("/api/v1/quiz",
                 new Quiz {Name = "xxx", CategoryId = cid}.ToHttpContent());
-            await Client.PostAsync("/api/v1/quizzes",
+            await Client.PostAsync("/api/v1/quiz",
                 new Quiz {Name = "yyy", CategoryId = cid}.ToHttpContent());
-            await Client.PostAsync("/api/v1/quizzes",
+            await Client.PostAsync("/api/v1/quiz",
                 new Quiz {Name = "zzz", CategoryId = cid}.ToHttpContent());
 
-            var res = await Client.GetAsync($"/api/v1/categories/{cid}/quizzes");
-            var quizzes = res.ToElement<QuizLink[]>();
+            var res = await Client.GetAsync($"/api/v1/categories/{cid}/quiz");
+            var quiz = res.ToElement<QuizLink[]>();
 
             //Assert.Equal(cid, category.Id);
             //Assert.Equal(1, category.ParentId);
-            //Assert.Equal(3, category.Quizzes.Count());
+            //Assert.Equal(3, category.Quiz.Count());
 
-            var names = quizzes.Select(p => p.Name).ToList();
+            var names = quiz.Select(p => p.Name).ToList();
 
             Assert.Contains("xxx", names);
             Assert.Contains("yyy", names);

@@ -69,11 +69,11 @@ namespace ResourceAPITests.CategoryTests
             var pid1 = _quizService.CreateTest(id2, new Quiz {Name = "xxx2"});
             var pid2 = _quizService.CreateTest(id2, new Quiz {Name = "xxx3"});
 
-            var quizzes = _categoryService.GetQuizzes(id2);
+            var quiz = _categoryService.GetQuiz(id2);
 
             //Assert.Equal("xyz", category.Name);
-            Assert.Equal(3, quizzes.Count());
-            var tests = quizzes.ToList();
+            Assert.Equal(3, quiz.Count());
+            var tests = quiz.ToList();
             Assert.Contains(tests, p => p.Id == pid0);
             Assert.Contains(tests, p => p.Id == pid1);
             Assert.Contains(tests, p => p.Id == pid2);
@@ -129,10 +129,10 @@ namespace ResourceAPITests.CategoryTests
         public void CreateTest()
         {
             var id = _categoryService.Create(new Category {Name = "xyz"}).Id;
-            var initNum = _context.Categories.FirstOrDefault(c => c.Id == id)?.Quizzes.ToList().Count;
+            var initNum = _context.Categories.FirstOrDefault(c => c.Id == id)?.Quiz.ToList().Count;
 
             var test = _quizService.CreateTest(id, new Quiz {Name = "abc"});
-            var num = _context.Categories.FirstOrDefault(c => c.Id == id)?.Quizzes.ToList().Count;
+            var num = _context.Categories.FirstOrDefault(c => c.Id == id)?.Quiz.ToList().Count;
             Assert.Equal(initNum + 1, num);
         }
 
@@ -229,11 +229,11 @@ namespace ResourceAPITests.CategoryTests
             var pid2 = _quizService.Create(new Quiz {Name = "bbb", CategoryId = cid1});
             var pid3 = _quizService.Create(new Quiz {Name = "ccc", CategoryId = cid1});
 
-            var quizzes = _categoryService.GetQuizzes(cid1);
+            var quiz = _categoryService.GetQuiz(cid1);
 
-            var names = quizzes.Select(p => p.Name).ToList();
+            var names = quiz.Select(p => p.Name).ToList();
 
-            Assert.Equal(3, quizzes.Count());
+            Assert.Equal(3, quiz.Count());
 
             Assert.Contains("aaa", names);
             Assert.Contains("bbb", names);

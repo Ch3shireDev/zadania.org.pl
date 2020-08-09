@@ -12,8 +12,8 @@
         public string ProblemsUrl => $"/api/v1/categories/{Id}/problems";
         public int ExercisesCount { get; set; }
         public string ExercisesUrl => $"/api/v1/categories/{Id}/exercises";
-        public int QuizzesCount { get; set; }
-        public string QuizzesUrl => $"/api/v1/categories/{Id}/quizzes";
+        public int QuizCount { get; set; }
+        public string QuizUrl => $"/api/v1/categories/{Id}/quiz";
         public int? ParentId { get; set; }
         public string ParentUrl => $"/api/v1/categories/{ParentId}";
     }

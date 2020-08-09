@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FileDataLibrary;
 
 namespace QuizLibrary
 {
     public class QuizService : IQuizService
     {
         private readonly IQuizDbContext _context;
+        private readonly IFileDataService _fileDataService;
 
-        public QuizService(IQuizDbContext context)
+        public QuizService(IQuizDbContext context, IFileDataService fileDataService = null)
         {
             _context = context;
+            _fileDataService = fileDataService;
         }
 
         public bool DeleteTest(int testId)
@@ -94,9 +97,6 @@ namespace QuizLibrary
 
         public int CreateTest(int categoryId, Quiz element, int authorId = 1)
         {
-            //if (!_context.Categories.Any(c => c.Id != categoryId)) return 0;
-            //if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
-
             var test = new Quiz
             {
                 Name = element.Name,
@@ -114,7 +114,6 @@ namespace QuizLibrary
         {
             var test = _context.QuizTests.FirstOrDefault(t => t.Id == testId);
             if (test == null) return 0;
-            //if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
             var newQuestion = new QuizQuestion
             {
                 Content = question.Content,
@@ -130,7 +129,6 @@ namespace QuizLibrary
         {
             var question = _context.QuizQuestions.FirstOrDefault(q => q.Id == questionId);
             if (question == null) return 0;
-            //if (!_context.Authors.Any(a => a.Id == authorId)) return 0;
             var newAnswer = new QuizAnswer
             {
                 Content = answer.Content,
@@ -177,10 +175,16 @@ namespace QuizLibrary
                 Name = quiz.Name,
                 Content = quiz.Content,
                 AuthorId = authorId,
-                CategoryId = quiz.CategoryId
+                CategoryId = quiz.CategoryId,
+                CanBeRandomized = quiz.CanBeRandomized
             };
+
+
             _context.QuizTests.Add(element);
             _context.SaveChanges();
+
+            foreach (var file in quiz.Files) _fileDataService.CreateForQuizTest(file, element.Id);
+
             return element.Id;
         }
 

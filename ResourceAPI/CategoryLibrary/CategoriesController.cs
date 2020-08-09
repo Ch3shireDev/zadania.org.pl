@@ -119,12 +119,12 @@ namespace CategoryLibrary
         /// </summary>
         /// <param name="id">Identyfikator kategorii.</param>
         /// <returns>Lista linków quizów.</returns>
-        [HttpGet("{id}/quizzes")]
+        [HttpGet("{id}/quiz")]
         public ActionResult GetQuizTests(int id)
         {
-            var quizzes = _categoryService.GetQuizzes(id);
-            if (quizzes == null) return NotFound();
-            return Ok(quizzes);
+            var quiz = _categoryService.GetQuiz(id);
+            if (quiz == null) return NotFound();
+            return Ok(quiz);
         }
     }
 }

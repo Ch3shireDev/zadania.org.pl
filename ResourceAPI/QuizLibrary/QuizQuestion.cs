@@ -14,7 +14,7 @@ namespace QuizLibrary
         //[NotMapped] public IEnumerable<string> AnswerLinks { get; set; }
         public string Solution { get; set; }
         [NotMapped] public string SolutionHtml { get; set; }
-        [NotMapped] public string Url => $"/api/v1/quizzes/{TestId}/questions/{Id}";
+        [NotMapped] public string Url => $"/api/v1/quiz/{TestId}/questions/{Id}";
 
         public new void Render()
         {

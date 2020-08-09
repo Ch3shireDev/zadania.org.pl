@@ -103,16 +103,16 @@ namespace ProblemLibrary
             problem.AuthorId = authorId;
             _context.Problems.Add(problem);
 
-            foreach (var file in problem.Files) _fileDataService.Create(file, problem.Id);
+            foreach (var file in problem.Files) _fileDataService.CreateForProblem(file, problem.Id);
 
             _context.SaveChanges();
             return problem;
         }
 
         public IEnumerable<Problem> BrowseProblems(int page,
-            out int totalPages, string tags, string query, bool newest, bool highest)
+            out int totalPages, string tags, string query, bool newest)
         {
-            var tag = tags;
+            //var tag = tags;
             var problemsQuery = _context.Problems.AsQueryable();
 
             //if (tags != null)
@@ -133,7 +133,7 @@ namespace ProblemLibrary
                     .OrderByDescending(p => p.Created)
                     .AsQueryable();
 
-            if (highest) linksQuery = linksQuery.OrderByDescending(p => p.Points).AsQueryable();
+            //if (highest) linksQuery = linksQuery.OrderByDescending(p => p.Points).AsQueryable();
 
             var num = resultQuery.Count();
 

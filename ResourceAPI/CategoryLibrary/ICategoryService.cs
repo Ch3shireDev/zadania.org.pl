@@ -13,7 +13,7 @@ namespace CategoryLibrary
 
         //bool SetParent(int parentId, int childId);
         IEnumerable<ProblemLink> GetProblems(int id);
-        IEnumerable<QuizLink> GetQuizzes(int cid1);
+        IEnumerable<QuizLink> GetQuiz(int cid1);
         IEnumerable<ExerciseLink> GetExercises(int cid1);
 
         Category GetCategory(int id);

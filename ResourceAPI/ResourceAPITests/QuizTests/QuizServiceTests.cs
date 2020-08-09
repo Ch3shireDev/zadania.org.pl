@@ -166,5 +166,23 @@ namespace ResourceAPITests.QuizTests
             var test2 = _quizService.GetTest(testId);
             Assert.Equal("cde", test2.Name);
         }
+
+        [Fact]
+        public void FileAnswerCreate()
+        {
+            throw new Exception();
+        }
+
+        [Fact]
+        public void FileQuestionCreate()
+        {
+            throw new Exception();
+        }
+
+        [Fact]
+        public void FileTestCreate()
+        {
+            throw new Exception();
+        }
     }
 }

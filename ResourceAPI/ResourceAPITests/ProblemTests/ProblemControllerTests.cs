@@ -1,8 +1,10 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CategoryLibrary;
+using FileDataLibrary;
 using ProblemLibrary;
 using Xunit;
 
@@ -17,6 +19,12 @@ namespace ResourceAPITests.ProblemTests
             var problemRes = await _client.GetAsync($"/api/v1/problems/{problemId}");
             var problem = problemRes.ToElement<ProblemView>();
             return problem;
+        }
+
+        private async Task<ProblemView> GetProblemAsync(int problemId)
+        {
+            var problem = await _client.GetAsync($"/api/v1/problems/{problemId}");
+            return problem.ToElement<ProblemView>();
         }
 
         [Fact]
@@ -162,6 +170,55 @@ namespace ResourceAPITests.ProblemTests
             var problem2 = await GetProblem(problemId);
             Assert.Contains(true, problem2.Answers.Select(a => a.Id == answer1.Id));
             Assert.Contains(true, problem2.Answers.Select(a => a.Content.Contains("yyy")));
+        }
+
+        [Fact]
+        public async Task FileAnswerCreate()
+        {
+            throw new Exception();
+        }
+
+
+        [Fact]
+        public async Task FileAnswerEdit()
+        {
+            throw new Exception();
+        }
+
+
+        [Fact]
+        public async Task FileProblemCreate()
+        {
+            var problem = new Problem
+            {
+                Name = "abc",
+                Content = "cde ![](aaa.png) ![](bbb.png) ![](ccc.png)",
+
+                Files = new[]
+                {
+                    new FileDataView {FileName = "aaa.png", FileBytes = Convert.FromBase64String("aaaa")},
+                    new FileDataView {FileName = "bbb.png", FileBytes = Convert.FromBase64String("bbbb")},
+                    new FileDataView {FileName = "ccc.png", FileBytes = Convert.FromBase64String("cccc")}
+                }
+            };
+
+            var problemInfo = await _client.PostAsync("/api/v1/problems", problem);
+            var problemView = await GetProblemAsync(problemInfo.Id);
+
+            Assert.Contains("aaaa", problemView.Content);
+            Assert.Contains("bbbb", problemView.Content);
+            Assert.Contains("cccc", problemView.Content);
+
+            await _client.DeleteAsync($"/api/v1/problems/{problemInfo.Id}");
+
+            var resDelete = await _client.GetAsync($"/api/v1/problems/{problemInfo.Id}");
+            Assert.Equal(HttpStatusCode.NotFound, resDelete.StatusCode);
+        }
+
+        [Fact]
+        public async Task FileProblemEdit()
+        {
+            throw new Exception();
         }
 
         [Fact]

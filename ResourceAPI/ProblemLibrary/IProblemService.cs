@@ -10,7 +10,7 @@ namespace ProblemLibrary
         Problem Create(Problem problem, int categoryId = 1, int authorId = 1);
 
         IEnumerable<Problem> BrowseProblems(int page,
-            out int totalPages, string tags = null, string query = null, bool newest = true, bool highest = false);
+            out int totalPages, string tags = null, string query = null, bool newest = true);
 
         bool Edit(Problem problem, int problemId, int authorId = 1);
         bool Delete(int problemId, int authorId = 1);

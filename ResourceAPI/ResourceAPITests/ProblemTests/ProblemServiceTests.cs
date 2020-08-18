@@ -213,7 +213,27 @@ namespace ResourceAPITests.ProblemTests
         [Fact]
         public void FileAnswerCreate()
         {
-            throw new Exception();
+            var problem = new ProblemUserModel {Content = "aaa", Name = "bbb"};
+            var problemLink = _problemService.Create(problem.ToModel());
+
+            var element = new AnswerUserModel
+            {
+                Content = "![](a.png) ![](b.png) ![](c.png)",
+                Files = new[]
+                {
+                    new FileDataView {FileName = "a.png", FileBytes = Convert.FromBase64String("aaaa")},
+                    new FileDataView {FileName = "b.png", FileBytes = Convert.FromBase64String("bbbb")},
+                    new FileDataView {FileName = "c.png", FileBytes = Convert.FromBase64String("cccc")}
+                }
+            };
+
+            var answerId = _problemService.CreateAnswer(problemLink.Id, element.ToModel());
+
+            var answer = _problemService.GetAnswer(problemLink.Id, answerId);
+
+            Assert.Contains("aaaa", answer.Content);
+            Assert.Contains("bbbb", answer.Content);
+            Assert.Contains("cccc", answer.Content);
         }
 
         [Fact]

@@ -11,5 +11,6 @@
         public int QuizTestId { get; set; }
         public int QuizQuestionId { get; set; }
         public int QuizAnswerId { get; set; }
+        public int ProblemAnswerId { get; set; }
     }
 }

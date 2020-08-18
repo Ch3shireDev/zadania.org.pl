@@ -79,8 +79,25 @@ namespace FileDataLibrary
             return Create(element);
         }
 
+        public IEnumerable<FileDataView> GetFilesForExercise(int exerciseId)
+        {
+            var files = _context.FileData.Where(f => f.ExerciseId == exerciseId).ToList().Select(ConvertToFileDataView);
+            return files;
+        }
+
+        public FileData CreateForProblemAnswer(int answerId, FileDataView file)
+        {
+            return Create(file, problemAnswerId: answerId);
+        }
+
+        public IEnumerable<FileDataView> GetFilesForProblemAnswer(int answerId)
+        {
+            return _context.FileData.Where(f => f.ProblemAnswerId == answerId).ToList()
+                .Select(ConvertToFileDataView);
+        }
+
         public FileData Create(FileDataView fileData, int problemId = 0, int exerciseId = 0, int quizTestId = 0,
-            int quizQuestionId = 0, int quizAnswerId = 0)
+            int quizQuestionId = 0, int quizAnswerId = 0, int problemAnswerId = 0)
         {
             var path = CreateFile(fileData.FileBytes);
 
@@ -93,7 +110,8 @@ namespace FileDataLibrary
                 ExerciseId = exerciseId,
                 QuizTestId = quizTestId,
                 QuizQuestionId = quizQuestionId,
-                QuizAnswerId = quizAnswerId
+                QuizAnswerId = quizAnswerId,
+                ProblemAnswerId = problemAnswerId
             };
 
             _context.FileData.Add(element);

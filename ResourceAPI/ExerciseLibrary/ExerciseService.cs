@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FileDataLibrary;
 
 namespace ExerciseLibrary
 {
     public class ExerciseService : IExerciseService
     {
         private readonly IExerciseDbContext _context;
+        private readonly IFileDataService _fileDataService;
 
-        public ExerciseService(IExerciseDbContext context)
+        public ExerciseService(IExerciseDbContext context, IFileDataService fileDataService = null)
         {
             _context = context;
+            _fileDataService = fileDataService;
         }
 
         public bool Delete(int exerciseId)
@@ -47,6 +50,9 @@ namespace ExerciseLibrary
             };
             _context.Exercises.Add(element);
             _context.SaveChanges();
+
+            foreach (var fileData in exercise.Files) _fileDataService.CreateForExercise(fileData, element.Id);
+
             return element.Id;
         }
 
@@ -59,7 +65,11 @@ namespace ExerciseLibrary
                 Content = e.Content,
                 Name = e.Name
             }).FirstOrDefault(e => e.Id == exerciseId);
-            exercise?.Render();
+
+            if (exercise == null) return null;
+
+            exercise.Files = _fileDataService.GetFilesForExercise(exerciseId);
+            exercise.Render();
             return exercise;
         }
 

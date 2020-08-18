@@ -16,5 +16,8 @@ namespace FileDataLibrary
         public FileData CreateForQuizQuestion(FileDataView fileData, int quizQuestionId);
         public FileData CreateForQuizAnswer(FileDataView fileData, int quizAnswerId);
         FileData CreateFile(FileDataView element);
+        IEnumerable<FileDataView> GetFilesForExercise(int exerciseId);
+        FileData CreateForProblemAnswer(int answerId, FileDataView file);
+        IEnumerable<FileDataView> GetFilesForProblemAnswer(int answerId);
     }
 }

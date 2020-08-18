@@ -180,12 +180,17 @@ namespace ProblemLibrary
             _context.Answers.Add(element);
             _context.SaveChanges();
 
+            foreach (var file in answer.Files) _fileDataService.CreateForProblemAnswer(element.Id, file);
+
             return element.Id;
         }
 
         public Answer GetAnswer(int problemId, int answerId)
         {
             var answer = _context.Answers.FirstOrDefault(a => a.ProblemId == problemId && a.Id == answerId);
+            if (answer == null) return null;
+            answer.Files = _fileDataService.GetFilesForProblemAnswer(answerId);
+            answer.Render();
             return answer;
         }
 

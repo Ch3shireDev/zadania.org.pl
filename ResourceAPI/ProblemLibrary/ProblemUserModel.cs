@@ -10,7 +10,7 @@ namespace ProblemLibrary
         public string Content { get; set; }
         public int CategoryId { get; set; }
 
-        public IEnumerable<FileDataView> Files { get; set; }
+        public IEnumerable<FileDataView> Files { get; set; } = new List<FileDataView>();
 
         public Problem ToModel()
         {

@@ -2,6 +2,7 @@ using System;
 using CategoryLibrary;
 using CommonLibrary;
 using ExerciseLibrary;
+using FileDataLibrary;
 using Microsoft.EntityFrameworkCore;
 using ResourceAPI;
 using Xunit;
@@ -14,14 +15,16 @@ namespace ResourceAPITests.ExerciseTests
         {
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
             var context = new SqlContext(optionsBuilder.Options);
+            _fileDataService = new FileDataService(context);
             _categoryService = new CategoryService(context);
-            _exerciseService = new ExerciseService(context);
+            _exerciseService = new ExerciseService(context, _fileDataService);
             _authorService = new AuthorService(context);
         }
 
         private readonly IExerciseService _exerciseService;
         private readonly ICategoryService _categoryService;
         private readonly IAuthorService _authorService;
+        private readonly IFileDataService _fileDataService;
 
 
         public int CreateScript(int exerciseId)
@@ -64,7 +67,21 @@ namespace ResourceAPITests.ExerciseTests
         [Fact]
         public void FileExerciseCreate()
         {
-            throw new Exception();
+            var exerciseId = _exerciseService.Create(new Exercise
+                {
+                    Content = "![](a.png) ![](b.png) ![](c.png)", Name = "xxx", Files = new[]
+                    {
+                        new FileDataView {FileName = "a.png", FileBytes = Convert.FromBase64String("aaaa")},
+                        new FileDataView {FileName = "b.png", FileBytes = Convert.FromBase64String("bbbb")},
+                        new FileDataView {FileName = "c.png", FileBytes = Convert.FromBase64String("cccc")}
+                    }
+                }
+            );
+
+            var exercise = _exerciseService.Get(exerciseId);
+            Assert.Contains("aaaa", exercise.Content);
+            Assert.Contains("bbbb", exercise.Content);
+            Assert.Contains("cccc", exercise.Content);
         }
 
         [Fact]

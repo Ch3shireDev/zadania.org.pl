@@ -96,6 +96,21 @@ namespace FileDataLibrary
                 .Select(ConvertToFileDataView);
         }
 
+        public IEnumerable<FileDataView> GetFilesForQuizAnswer(int answerId)
+        {
+            return _context.FileData.Where(f => f.QuizAnswerId == answerId).ToList().Select(ConvertToFileDataView);
+        }
+
+        public IEnumerable<FileDataView> GetFilesForQuizQuestion(int questionId)
+        {
+            return _context.FileData.Where(f => f.QuizQuestionId == questionId).ToList().Select(ConvertToFileDataView);
+        }
+
+        public IEnumerable<FileDataView> GetFilesForQuizTest(int testId)
+        {
+            return _context.FileData.Where(f => f.QuizTestId == testId).ToList().Select(ConvertToFileDataView);
+        }
+
         public FileData Create(FileDataView fileData, int problemId = 0, int exerciseId = 0, int quizTestId = 0,
             int quizQuestionId = 0, int quizAnswerId = 0, int problemAnswerId = 0)
         {

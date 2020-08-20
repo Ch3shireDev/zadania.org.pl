@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CategoryLibrary;
 using CommonLibrary;
+using FileDataLibrary;
 using Microsoft.EntityFrameworkCore;
 using QuizLibrary;
 using ResourceAPI;
@@ -15,11 +17,14 @@ namespace ResourceAPITests.QuizTests
         {
             var optionsBuilder = new DbContextOptionsBuilder().UseInMemoryDatabase(Guid.NewGuid().ToString());
             _context = new SqlContext(optionsBuilder.Options);
+
+            _fileDataService = new FileDataService(_context);
             _categoryService = new CategoryService(_context);
-            _quizService = new QuizService(_context);
+            _quizService = new QuizService(_context, _fileDataService);
             _authorService = new AuthorService(_context);
         }
 
+        private readonly IFileDataService _fileDataService;
         private readonly SqlContext _context;
         private readonly ICategoryService _categoryService;
         private readonly IQuizService _quizService;
@@ -170,19 +175,69 @@ namespace ResourceAPITests.QuizTests
         [Fact]
         public void FileAnswerCreate()
         {
-            throw new Exception();
+            var testId = _quizService.CreateTest(1, new Quiz {Name = "abc"});
+
+            var questionId = _quizService.CreateQuestion(testId, new QuizQuestion {Content = "abc"});
+
+            var answerId = _quizService.CreateAnswer(questionId, new QuizAnswer
+                {
+                    Content = "![](a.png) ![](b.png) ![](c.png)",
+                    Files = new List<FileDataView>
+                    {
+                        new FileDataView {FileName = "a.png", FileBytes = Convert.FromBase64String("aaaa")},
+                        new FileDataView {FileName = "b.png", FileBytes = Convert.FromBase64String("bbbb")},
+                        new FileDataView {FileName = "c.png", FileBytes = Convert.FromBase64String("cccc")}
+                    }
+                }
+            );
+
+            var quiz = _quizService.GetAnswer(answerId);
+            Assert.Contains("aaaa", quiz.Content);
+            Assert.Contains("bbbb", quiz.Content);
+            Assert.Contains("cccc", quiz.Content);
         }
 
         [Fact]
         public void FileQuestionCreate()
         {
-            throw new Exception();
+            var testId = _quizService.CreateTest(1, new Quiz {Name = "abc"});
+
+            var questionId = _quizService.CreateQuestion(testId, new QuizQuestion
+            {
+                Content = "![](a.png) ![](b.png) ![](c.png)",
+                Files = new List<FileDataView>
+                {
+                    new FileDataView {FileName = "a.png", FileBytes = Convert.FromBase64String("aaaa")},
+                    new FileDataView {FileName = "b.png", FileBytes = Convert.FromBase64String("bbbb")},
+                    new FileDataView {FileName = "c.png", FileBytes = Convert.FromBase64String("cccc")}
+                }
+            });
+
+            var quiz = _quizService.GetQuestion(questionId);
+            Assert.Contains("aaaa", quiz.Content);
+            Assert.Contains("bbbb", quiz.Content);
+            Assert.Contains("cccc", quiz.Content);
         }
 
         [Fact]
         public void FileTestCreate()
         {
-            throw new Exception();
+            var testId = _quizService.CreateTest(1, new Quiz
+            {
+                Name = "abc",
+                Content = "![](a.png) ![](b.png) ![](c.png)",
+                Files = new List<FileDataView>
+                {
+                    new FileDataView {FileName = "a.png", FileBytes = Convert.FromBase64String("aaaa")},
+                    new FileDataView {FileName = "b.png", FileBytes = Convert.FromBase64String("bbbb")},
+                    new FileDataView {FileName = "c.png", FileBytes = Convert.FromBase64String("cccc")}
+                }
+            });
+
+            var quiz = _quizService.GetTest(testId);
+            Assert.Contains("aaaa", quiz.Content);
+            Assert.Contains("bbbb", quiz.Content);
+            Assert.Contains("cccc", quiz.Content);
         }
     }
 }

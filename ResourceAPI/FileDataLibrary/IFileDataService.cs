@@ -19,5 +19,8 @@ namespace FileDataLibrary
         IEnumerable<FileDataView> GetFilesForExercise(int exerciseId);
         FileData CreateForProblemAnswer(int answerId, FileDataView file);
         IEnumerable<FileDataView> GetFilesForProblemAnswer(int answerId);
+        IEnumerable<FileDataView> GetFilesForQuizAnswer(int answerId);
+        IEnumerable<FileDataView> GetFilesForQuizQuestion(int questionId);
+        IEnumerable<FileDataView> GetFilesForQuizTest(int testId);
     }
 }

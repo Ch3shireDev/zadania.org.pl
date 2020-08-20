@@ -54,7 +54,8 @@ namespace QuizLibrary
                 Questions = t.Questions.Select(q => new QuizQuestion {Id = q.Id}).ToList()
             }).FirstOrDefault(t => t.Id == testId);
             if (test == null) return null;
-            //test.Render();
+            test.Files = _fileDataService.GetFilesForQuizTest(testId);
+            test.Render();
             if (includeQuestions)
                 test.Questions = test.Questions.Select(q => GetQuestion(q.Id, includeAnswers)).ToList();
             return test;
@@ -75,6 +76,7 @@ namespace QuizLibrary
                 })
                 .FirstOrDefault(q => q.Id == questionId);
             if (question == null) return null;
+            question.Files = _fileDataService.GetFilesForQuizQuestion(questionId);
             question.Render();
             if (includeAnswers)
                 question.Answers = question.Answers.Select(a => GetAnswer(a.Id)).ToList();
@@ -91,6 +93,10 @@ namespace QuizLibrary
                 Content = a.Content,
                 IsCorrect = a.IsCorrect
             }).FirstOrDefault(a => a.Id == answerId);
+
+            if (answer == null) return null;
+            answer.Files = _fileDataService.GetFilesForQuizAnswer(answerId);
+
             answer?.Render();
             return answer;
         }
@@ -107,6 +113,9 @@ namespace QuizLibrary
 
             _context.QuizTests.Add(test);
             _context.SaveChanges();
+
+            foreach (var file in element.Files) _fileDataService.CreateForQuizTest(file, test.Id);
+
             return test.Id;
         }
 
@@ -122,6 +131,9 @@ namespace QuizLibrary
             };
             _context.QuizQuestions.Add(newQuestion);
             _context.SaveChanges();
+
+            foreach (var file in question.Files) _fileDataService.CreateForQuizQuestion(file, newQuestion.Id);
+
             return newQuestion.Id;
         }
 
@@ -137,6 +149,7 @@ namespace QuizLibrary
             };
             _context.QuizAnswers.Add(newAnswer);
             _context.SaveChanges();
+            foreach (var file in answer.Files) _fileDataService.CreateForQuizAnswer(file, newAnswer.Id);
             return newAnswer.Id;
         }
 

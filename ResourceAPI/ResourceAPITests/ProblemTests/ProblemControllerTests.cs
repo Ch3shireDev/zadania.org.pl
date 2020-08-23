@@ -173,21 +173,87 @@ namespace ResourceAPITests.ProblemTests
         }
 
         [Fact]
-        public async Task FileAnswerCreate()
+        public async Task<AnswerView> FileAnswerCreate()
         {
-            throw new Exception();
+            var problemId = await ProblemCreate();
+            var answer =
+                await _client.PostAsync($"/api/v1/problems/{problemId}/answers", new Answer
+                {
+                    Content = "![](a.png) ![](b.png) ![](c.png)",
+                    Files = new[]
+                    {
+                        new FileDataView
+                        {
+                            FileBytes = Convert.FromBase64String("aaaa"),
+                            FileName = "a.png"
+                        },
+                        new FileDataView
+                        {
+                            FileBytes = Convert.FromBase64String("bbbb"),
+                            FileName = "b.png"
+                        },
+                        new FileDataView
+                        {
+                            FileBytes = Convert.FromBase64String("cccc"),
+                            FileName = "c.png"
+                        }
+                    }
+                });
+
+            var answerId = answer.Id;
+
+            var createdAnswer = (await _client.GetAsync($"/api/v1/problems/{problemId}/answers/{answerId}"))
+                .ToElement<AnswerView>();
+
+            Assert.Contains("aaaa", createdAnswer.Content);
+            Assert.Contains("bbbb", createdAnswer.Content);
+            Assert.Contains("cccc", createdAnswer.Content);
+
+            return createdAnswer;
         }
 
 
         [Fact]
         public async Task FileAnswerEdit()
         {
-            throw new Exception();
+            var answer = await FileAnswerCreate();
+            var problemId = answer.ProblemId;
+            var answerId = answer.Id;
+
+            await _client.PutAsync($"/api/v1/problems/{problemId}/answers/{answerId}", new AnswerUserModel
+            {
+                Content = "![](x.png) ![](y.png) ![](z.png)",
+                Files = new[]
+                {
+                    new FileDataView
+                    {
+                        FileBytes = Convert.FromBase64String("xxxx"),
+                        FileName = "x.png"
+                    },
+                    new FileDataView
+                    {
+                        FileBytes = Convert.FromBase64String("yyyy"),
+                        FileName = "y.png"
+                    },
+                    new FileDataView
+                    {
+                        FileBytes = Convert.FromBase64String("zzzz"),
+                        FileName = "z.png"
+                    }
+                }
+            }.ToHttpContent());
+
+            var createdAnswer2 = (await _client.GetAsync($"/api/v1/problems/{problemId}/answers/{answerId}"))
+                .ToElement<AnswerView>();
+
+            Assert.Contains("xxxx", createdAnswer2.Content);
+            Assert.Contains("yyyy", createdAnswer2.Content);
+            Assert.Contains("zzzz", createdAnswer2.Content);
         }
 
 
         [Fact]
-        public async Task FileProblemCreate()
+        public async Task<ProblemView> FileProblemCreate()
         {
             var problem = new Problem
             {
@@ -209,6 +275,14 @@ namespace ResourceAPITests.ProblemTests
             Assert.Contains("bbbb", problemView.Content);
             Assert.Contains("cccc", problemView.Content);
 
+            return problemView;
+        }
+
+        [Fact]
+        public async Task FileProblemDelete()
+        {
+            var problemInfo = await FileProblemCreate();
+
             await _client.DeleteAsync($"/api/v1/problems/{problemInfo.Id}");
 
             var resDelete = await _client.GetAsync($"/api/v1/problems/{problemInfo.Id}");
@@ -218,7 +292,29 @@ namespace ResourceAPITests.ProblemTests
         [Fact]
         public async Task FileProblemEdit()
         {
-            throw new Exception();
+            var problemView = await FileProblemCreate();
+
+            Assert.Contains("aaaa", problemView.Content);
+            Assert.Contains("bbbb", problemView.Content);
+            Assert.Contains("cccc", problemView.Content);
+
+            await _client.PutAsync($"/api/v1/problems/{problemView.Id}", new ProblemUserModel
+            {
+                Name = "aaa",
+                Content = "![](x.png) ![](y.png) ![](z.png)",
+                Files = new[]
+                {
+                    new FileDataView {FileName = "x.png", FileBytes = Convert.FromBase64String("xxxx")},
+                    new FileDataView {FileName = "y.png", FileBytes = Convert.FromBase64String("yyyy")},
+                    new FileDataView {FileName = "z.png", FileBytes = Convert.FromBase64String("zzzz")}
+                }
+            }.ToHttpContent());
+
+            var problem2 = await GetProblem(problemView.Id);
+
+            Assert.Contains("xxxx", problem2.Content);
+            Assert.Contains("yyyy", problem2.Content);
+            Assert.Contains("zzzz", problem2.Content);
         }
 
         [Fact]

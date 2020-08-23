@@ -111,6 +111,30 @@ namespace FileDataLibrary
             return _context.FileData.Where(f => f.QuizTestId == testId).ToList().Select(ConvertToFileDataView);
         }
 
+        public int GetDataBaseFilesCount()
+        {
+            return _context.FileData.Count();
+        }
+
+        public int GetFileSystemFilesCount()
+        {
+            if (!Directory.Exists(FileDirectory)) return 0;
+            return Directory.GetFiles(FileDirectory, "*", SearchOption.AllDirectories).Length;
+        }
+
+        public void ClearFileSystem()
+        {
+            if (Directory.Exists(FileDirectory)) Directory.Delete(FileDirectory, true);
+        }
+
+        public void DeleteAllForProblem(int problemId)
+        {
+            var files = _context.FileData.Where(f => f.ProblemId == problemId).ToList();
+            foreach (var file in files) DeleteFile(file);
+            _context.FileData.RemoveRange(files);
+            _context.SaveChanges();
+        }
+
         public FileData Create(FileDataView fileData, int problemId = 0, int exerciseId = 0, int quizTestId = 0,
             int quizQuestionId = 0, int quizAnswerId = 0, int problemAnswerId = 0)
         {

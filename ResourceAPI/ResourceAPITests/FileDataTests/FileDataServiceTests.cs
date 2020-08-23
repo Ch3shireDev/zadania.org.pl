@@ -22,8 +22,7 @@ namespace ResourceAPITests.FileDataTests
         private readonly IFileDataDbContext _context;
         private readonly IFileDataService _fileDataService;
 
-        [Fact]
-        public void CreateElement()
+        public FileData Create()
         {
             var element = new FileDataView
             {
@@ -33,9 +32,47 @@ namespace ResourceAPITests.FileDataTests
 
             var data = _fileDataService.CreateFile(element);
             var file = _fileDataService.Get(data.Id);
+
             var str = Encoding.UTF8.GetString(file.FileBytes);
             Assert.Equal("abc", str);
 
+            return data;
+        }
+
+        [Fact]
+        public void CheckElementCount()
+        {
+            _fileDataService.ClearFileSystem();
+
+            var dataNum1 = _fileDataService.GetDataBaseFilesCount();
+            var fileNum1 = _fileDataService.GetFileSystemFilesCount();
+
+            Assert.Equal(dataNum1, fileNum1);
+
+            var file = Create();
+
+            var dataNum2 = _fileDataService.GetDataBaseFilesCount();
+            var fileNum2 = _fileDataService.GetFileSystemFilesCount();
+
+            Assert.Equal(dataNum1 + 1, dataNum2);
+            Assert.Equal(fileNum1 + 1, fileNum2);
+            Assert.Equal(dataNum2, fileNum2);
+
+            _fileDataService.Delete(file.Id);
+
+            var dataNum3 = _fileDataService.GetDataBaseFilesCount();
+            var fileNum3 = _fileDataService.GetFileSystemFilesCount();
+
+            Assert.Equal(dataNum3, dataNum1);
+            Assert.Equal(fileNum3, fileNum1);
+            Assert.Equal(dataNum3, fileNum3);
+        }
+
+
+        [Fact]
+        public void CreateElement()
+        {
+            var data = Create();
             var fpath = _fileDataService.GetAbsolutePath(data);
             Assert.True(File.Exists(fpath));
             Assert.NotNull(_context.FileData.FirstOrDefault(f => f.Id == data.Id));

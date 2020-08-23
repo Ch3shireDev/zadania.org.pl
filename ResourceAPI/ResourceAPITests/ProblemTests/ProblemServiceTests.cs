@@ -18,13 +18,13 @@ namespace ResourceAPITests.ProblemTests
             var context = new SqlContext(optionsBuilder.Options);
 
             var problemLibraryAssembly = Assembly.Load("ProblemLibrary");
-            var fileDataService = new FileDataService(context);
-            _problemService = new ProblemService(context, fileDataService);
+            _fileDataService = new FileDataService(context);
+            _problemService = new ProblemService(context, _fileDataService);
             _authorService = new AuthorService(context);
         }
 
         private readonly IAuthorService _authorService;
-
+        private readonly IFileDataService _fileDataService;
         private readonly IProblemService _problemService;
 
         [Fact]
@@ -187,29 +187,6 @@ namespace ResourceAPITests.ProblemTests
             Assert.Contains("bbb", answer2.Content);
         }
 
-
-        [Fact]
-        public void EditProblemTest()
-        {
-            // Tworzymy nowy problem.
-            var id = _problemService.Create(new Problem {Name = "xxx"}).Id;
-
-            // Wartości powinny być takie jak utworzone.
-            var problem = _problemService.Get(id);
-            Assert.Equal(id, problem.Id);
-            Assert.Equal("xxx", problem.Name);
-
-            // Edytujemy wartości problemu.
-            problem.Name = "yyy";
-            var res = _problemService.Edit(problem, id);
-            Assert.True(res);
-
-            // Nowe wartości powinny być odpowiednie do wprowadzonych.
-            var problem2 = _problemService.Get(id);
-            Assert.Equal(id, problem2.Id);
-            Assert.Equal("yyy", problem2.Name);
-        }
-
         [Fact]
         public void FileAnswerCreate()
         {
@@ -267,6 +244,72 @@ namespace ResourceAPITests.ProblemTests
             Assert.Contains("aaaa", element.Content);
             Assert.Contains("bbbb", element.Content);
             Assert.Contains("cccc", element.Content);
+        }
+
+
+        [Fact]
+        public void FileProblemEdit()
+        {
+            var fsNum1 = _fileDataService.GetFileSystemFilesCount();
+            var dbNum1 = _fileDataService.GetDataBaseFilesCount();
+
+            // Tworzymy nowy problem.
+            var id = _problemService.Create(new Problem
+            {
+                Name = "xxx", Content = "![](a.png) ![](b.png) ![](c.png)",
+                Files = new[]
+                {
+                    new FileDataView {FileName = "a.png", FileBytes = Convert.FromBase64String("aaaa")},
+                    new FileDataView {FileName = "b.png", FileBytes = Convert.FromBase64String("bbbb")},
+                    new FileDataView {FileName = "c.png", FileBytes = Convert.FromBase64String("cccc")}
+                }
+            }).Id;
+
+            var fsNum2 = _fileDataService.GetFileSystemFilesCount();
+            var dbNum2 = _fileDataService.GetDataBaseFilesCount();
+
+            Assert.Equal(fsNum1 + 3, fsNum2);
+            Assert.Equal(dbNum1 + 3, dbNum2);
+
+            // Wartości powinny być takie jak utworzone.
+            var problem = _problemService.Get(id).ToView();
+
+            Assert.Equal(id, problem.Id);
+            Assert.Equal("xxx", problem.Name);
+
+            Assert.Contains("aaaa", problem.Content);
+            Assert.Contains("bbbb", problem.Content);
+            Assert.Contains("cccc", problem.Content);
+
+            // Edytujemy wartości problemu.
+            var problem2 = new ProblemUserModel
+            {
+                Name = "yyy",
+                Content = "![](x.png) ![](y.png) ![](z.png)",
+                Files = new[]
+                {
+                    new FileDataView {FileName = "x.png", FileBytes = Convert.FromBase64String("xxxx")},
+                    new FileDataView {FileName = "y.png", FileBytes = Convert.FromBase64String("yyyy")},
+                    new FileDataView {FileName = "z.png", FileBytes = Convert.FromBase64String("zzzz")}
+                }
+            };
+
+            var res = _problemService.Edit(problem2.ToModel(), id);
+            Assert.True(res);
+
+            // Nowe wartości powinny być odpowiednie do wprowadzonych.
+            var problem3 = _problemService.Get(id).ToView();
+            Assert.Equal(id, problem3.Id);
+            Assert.Equal("yyy", problem3.Name);
+            Assert.Contains("xxxx", problem3.Content);
+            Assert.Contains("yyyy", problem3.Content);
+            Assert.Contains("zzzz", problem3.Content);
+
+            var fsNum3 = _fileDataService.GetFileSystemFilesCount();
+            var dbNum3 = _fileDataService.GetDataBaseFilesCount();
+
+            Assert.Equal(fsNum2, fsNum3);
+            Assert.Equal(dbNum2, dbNum3);
         }
 
         [Fact]

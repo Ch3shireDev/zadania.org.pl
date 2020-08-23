@@ -160,8 +160,13 @@ namespace ProblemLibrary
             if (element == null) return false;
             element.Name = problem.Name;
             element.Content = problem.Content;
+
+            _fileDataService.DeleteAllForProblem(problemId);
+
+
             _context.Problems.Update(element);
             _context.SaveChanges();
+            foreach (var file in problem.Files) _fileDataService.CreateForProblem(file, problemId);
             return true;
         }
 
@@ -201,6 +206,7 @@ namespace ProblemLibrary
             element.Content = answer.Content;
             _context.Answers.Update(element);
             _context.SaveChanges();
+            foreach (var file in answer.Files) _fileDataService.CreateForProblemAnswer(answerId, file);
             return true;
         }
     }

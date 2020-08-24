@@ -79,8 +79,14 @@ namespace ExerciseLibrary
             if (element == null) return false;
             element.Name = exercise.Name;
             element.Content = exercise.Content;
+
+            foreach (var file in element.Files) _fileDataService.DeleteForExercise(exercise.Id, file.FileName);
+
             _context.Exercises.Update(element);
             _context.SaveChanges();
+
+            foreach (var file in exercise.Files) _fileDataService.CreateForExercise(file, exerciseId);
+
             return true;
         }
 

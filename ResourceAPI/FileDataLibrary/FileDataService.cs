@@ -135,6 +135,16 @@ namespace FileDataLibrary
             _context.SaveChanges();
         }
 
+        public void DeleteForExercise(int exerciseId, string fileFileName)
+        {
+            var file = _context.FileData.FirstOrDefault(f =>
+                f.ExerciseId == exerciseId && f.OriginalFileName == fileFileName);
+            if (file == null) return;
+            DeleteFile(file);
+            _context.FileData.Remove(file);
+            _context.SaveChanges();
+        }
+
         public FileData Create(FileDataView fileData, int problemId = 0, int exerciseId = 0, int quizTestId = 0,
             int quizQuestionId = 0, int quizAnswerId = 0, int problemAnswerId = 0)
         {

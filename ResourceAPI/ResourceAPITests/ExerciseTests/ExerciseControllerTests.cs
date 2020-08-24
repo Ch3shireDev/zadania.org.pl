@@ -1,6 +1,8 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ExerciseLibrary;
+using FileDataLibrary;
 using Xunit;
 
 namespace ResourceAPITests.ExerciseTests
@@ -42,12 +44,35 @@ namespace ResourceAPITests.ExerciseTests
         public async Task<int> ExerciseCreate()
         {
             var postRes = await Client.PostAsync("/api/v1/exercises",
-                new Exercise {Name = "xxx", Content = "yyy"}.ToHttpContent());
+                new Exercise
+                {
+                    Name = "xxx", Content = "![](a.png) ![](b.png) ![](c.png)",
+                    Files = new[]
+                    {
+                        new FileDataView
+                        {
+                            FileBytes = Convert.FromBase64String("aaaa"),
+                            FileName = "a.png"
+                        },
+                        new FileDataView
+                        {
+                            FileBytes = Convert.FromBase64String("bbbb"),
+                            FileName = "b.png"
+                        },
+                        new FileDataView
+                        {
+                            FileBytes = Convert.FromBase64String("cccc"),
+                            FileName = "c.png"
+                        }
+                    }
+                }.ToHttpContent());
             var postEx = postRes.ToElement<Exercise>();
             var exerciseRes = await Client.GetAsync($"/api/v1/exercises/{postEx.Id}");
             var exercise = exerciseRes.ToElement<Exercise>();
             Assert.Equal("xxx", exercise.Name);
-            Assert.Contains("yyy", exercise.Content);
+            Assert.Contains("aaaa", exercise.Content);
+            Assert.Contains("bbbb", exercise.Content);
+            Assert.Contains("cccc", exercise.Content);
             return exercise.Id;
         }
 
@@ -66,13 +91,23 @@ namespace ResourceAPITests.ExerciseTests
         public async void ExerciseEdit()
         {
             var exerciseId = await ExerciseCreate();
+
+
             var exercise = await ExerciseGet(exerciseId);
             exercise.Name = "abc";
-            exercise.Content = "cde";
+            exercise.Content = "![](x.png) ![](y.png) ![](z.png)";
+            exercise.Files = new[]
+            {
+                new FileDataView {FileBytes = Convert.FromBase64String("xxxx"), FileName = "x.png"},
+                new FileDataView {FileBytes = Convert.FromBase64String("yyyy"), FileName = "y.png"},
+                new FileDataView {FileBytes = Convert.FromBase64String("zzzz"), FileName = "z.png"}
+            };
             await Client.PutAsync($"/api/v1/exercises/{exerciseId}", exercise.ToHttpContent());
             var exercise2 = await ExerciseGet(exerciseId);
             Assert.Equal("abc", exercise2.Name);
-            Assert.Contains("cde", exercise2.Content);
+            Assert.Contains("xxxx", exercise2.Content);
+            Assert.Contains("yyyy", exercise2.Content);
+            Assert.Contains("zzzz", exercise2.Content);
         }
 
         [Fact]

@@ -24,5 +24,6 @@ namespace FileDataLibrary
         int GetFileSystemFilesCount();
         void ClearFileSystem();
         void DeleteAllForProblem(int problemId);
+        void DeleteForExercise(int exerciseId, string fileFileName);
     }
 }

@@ -6,7 +6,8 @@ namespace ExerciseLibrary
     public class Exercise : Post
     {
         public string Name { get; set; }
-        public List<Script> Scripts { get; set; }
+        public List<ExerciseVariableData> VariableData { get; set; }
+        public List<ExerciseAnswerData> AnswerData { get; set; }
 
         public ExerciseLink AsLink()
         {

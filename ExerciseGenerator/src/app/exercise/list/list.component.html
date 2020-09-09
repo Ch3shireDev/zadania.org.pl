@@ -1,0 +1,19 @@
+<h3>Zadania</h3>
+
+
+<ol *ngFor="let exercise of exercises">
+    <li>
+        <span>
+            <a [routerLink]="exercise.id">{{ exercise.title }}</a>
+        </span>
+        <span>
+            <a [routerLink]="[exercise.id, 'edit']">(Edytuj)</a>
+        </span>
+        <span>
+            <a [routerLink]="[exercise.id, 'delete']">(Usuń)</a>
+        </span>
+    </li>
+</ol>
+
+
+<button routerLink="create">Dodaj nowe zadanie</button>

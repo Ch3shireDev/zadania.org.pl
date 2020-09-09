@@ -9,9 +9,9 @@ namespace ExerciseLibrary
         Exercise Get(int exerciseId);
         bool Delete(int exerciseId);
         bool Edit(int exerciseId, Exercise exercise);
-        int CreateScript(int exerciseId, Script script);
-        Script GetScript(int exerciseId, int scriptId);
-        bool EditScript(int exerciseId, int scriptId, Script script);
-        bool DeleteScript(int exerciseId, int scriptId);
+        int CreateVariableData(int exerciseId, ExerciseVariableData exerciseVariableData);
+        ExerciseVariableData GetVariableData(int exerciseId, int scriptId);
+        bool EditVariableData(int exerciseId, int scriptId, ExerciseVariableData exerciseVariableData);
+        bool DeleteVariableData(int exerciseId, int scriptId);
     }
 }

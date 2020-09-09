@@ -24,11 +24,11 @@ namespace ExerciseLibrary
             return true;
         }
 
-        public bool DeleteScript(int exerciseId, int scriptId)
+        public bool DeleteVariableData(int exerciseId, int scriptId)
         {
-            var element = _context.ExerciseScripts.FirstOrDefault(s => s.Id == scriptId);
+            var element = _context.ExerciseVariablesData.FirstOrDefault(s => s.Id == scriptId);
             if (element == null) return false;
-            _context.ExerciseScripts.Remove(element);
+            _context.ExerciseVariablesData.Remove(element);
             _context.SaveChanges();
             return true;
         }
@@ -90,41 +90,41 @@ namespace ExerciseLibrary
             return true;
         }
 
-        public int CreateScript(int exerciseId, Script script)
+        public int CreateVariableData(int exerciseId, ExerciseVariableData exerciseVariableData)
         {
             var exercise = _context.Exercises.FirstOrDefault(e => e.Id == exerciseId);
             if (exercise == null) return 0;
 
-            var element = new Script
+            var element = new ExerciseVariableData
             {
-                Name = script.Name,
-                Content = script.Content,
-                FloatMin = script.FloatMin,
-                FloatMax = script.FloatMax,
-                IntMin = script.IntMin,
-                IntMax = script.IntMax,
-                ExerciseId = script.Id
+                Name = exerciseVariableData.Name,
+                Content = exerciseVariableData.Content,
+                //FloatMin = exerciseVariableData.FloatMin,
+                //FloatMax = exerciseVariableData.FloatMax,
+                //IntMin = exerciseVariableData.IntMin,
+                //IntMax = exerciseVariableData.IntMax,
+                ExerciseId = exerciseVariableData.Id
             };
 
-            _context.ExerciseScripts.Add(element);
+            _context.ExerciseVariablesData.Add(element);
             _context.SaveChanges();
 
             return element.Id;
         }
 
-        public Script GetScript(int exerciseId, int scriptId)
+        public ExerciseVariableData GetVariableData(int exerciseId, int scriptId)
         {
-            var script = _context.ExerciseScripts.FirstOrDefault(s => s.Id == scriptId);
+            var script = _context.ExerciseVariablesData.FirstOrDefault(s => s.Id == scriptId);
             return script;
         }
 
-        public bool EditScript(int exerciseId, int scriptId, Script script)
+        public bool EditVariableData(int exerciseId, int scriptId, ExerciseVariableData exerciseVariableData)
         {
-            var element = _context.ExerciseScripts.FirstOrDefault(s => s.Id == scriptId);
+            var element = _context.ExerciseVariablesData.FirstOrDefault(s => s.Id == scriptId);
             if (element == null) return false;
-            element.Name = script.Name;
-            element.Content = script.Content;
-            _context.ExerciseScripts.Update(element);
+            element.Name = exerciseVariableData.Name;
+            element.Content = exerciseVariableData.Content;
+            _context.ExerciseVariablesData.Update(element);
             _context.SaveChanges();
             return true;
         }

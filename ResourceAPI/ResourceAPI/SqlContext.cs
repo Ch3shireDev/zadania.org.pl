@@ -20,7 +20,8 @@ namespace ResourceAPI
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<Script> ExerciseScripts { get; set; }
+        public DbSet<ExerciseVariableData> ExerciseVariablesData { get; set; }
+        public DbSet<ExerciseAnswerData> ExerciseAnswersData { get; set; }
         public DbSet<FileData> FileData { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Problem> Problems { get; set; }

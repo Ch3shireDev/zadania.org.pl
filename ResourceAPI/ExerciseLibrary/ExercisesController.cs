@@ -94,7 +94,7 @@ namespace ExerciseLibrary
         [HttpGet("{exerciseId}/scripts/{scriptId}")]
         public ActionResult GetScript(int exerciseId, int scriptId)
         {
-            var script = _exerciseService.GetScript(exerciseId, scriptId);
+            var script = _exerciseService.GetVariableData(exerciseId, scriptId);
             if (script == null) return NotFound();
             return Ok(script);
         }
@@ -103,14 +103,14 @@ namespace ExerciseLibrary
         ///     Tworzy nowy skrypt w podanym ćwiczeniu o zadanej strukturze.
         /// </summary>
         /// <param name="exerciseId"></param>
-        /// <param name="script"></param>
+        /// <param name="exerciseVariableData"></param>
         /// <returns></returns>
         [HttpPost("{exerciseId}/scripts")]
-        public ActionResult PostScript(int exerciseId, Script script)
+        public ActionResult PostScript(int exerciseId, ExerciseVariableData exerciseVariableData)
         {
-            var scriptId = _exerciseService.CreateScript(exerciseId, script);
+            var scriptId = _exerciseService.CreateVariableData(exerciseId, exerciseVariableData);
             if (scriptId == 0) return Forbid();
-            return Ok(new Script {Id = scriptId});
+            return Ok(new ExerciseVariableData {Id = scriptId});
         }
 
         /// <summary>
@@ -118,12 +118,12 @@ namespace ExerciseLibrary
         /// </summary>
         /// <param name="exerciseId"></param>
         /// <param name="scriptId"></param>
-        /// <param name="script"></param>
+        /// <param name="exerciseVariableData"></param>
         /// <returns></returns>
         [HttpPut("{exerciseId}/scripts/{scriptId}")]
-        public ActionResult EditScript(int exerciseId, int scriptId, Script script)
+        public ActionResult EditScript(int exerciseId, int scriptId, ExerciseVariableData exerciseVariableData)
         {
-            var result = _exerciseService.EditScript(exerciseId, scriptId, script);
+            var result = _exerciseService.EditVariableData(exerciseId, scriptId, exerciseVariableData);
             if (result == false) return Forbid();
             return Ok();
         }
@@ -137,7 +137,7 @@ namespace ExerciseLibrary
         [HttpDelete("{exerciseId}/scripts/{scriptId}")]
         public ActionResult DeleteScript(int exerciseId, int scriptId)
         {
-            var result = _exerciseService.DeleteScript(exerciseId, scriptId);
+            var result = _exerciseService.DeleteVariableData(exerciseId, scriptId);
             if (result == false) return Forbid();
             return Ok();
         }

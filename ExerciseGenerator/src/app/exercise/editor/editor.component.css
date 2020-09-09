@@ -1,0 +1,45 @@
+#text-content {
+	width: 100%;
+	min-height: 100px;
+	resize: none;
+	box-sizing: border-box;
+}
+
+.variable-container-ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+.variable-container-li {
+	display: flex;
+}
+
+.variable-symbol-input {
+	flex-shrink: 1;
+	margin-right: 0.1rem;
+	/* max-width: 20px; */
+	text-align: center;
+}
+
+.variable-data-input {
+	flex-grow: 1;
+}
+
+.alert-text {
+	color: red;
+}
+
+.success-text {
+	color: green;
+}
+
+#example-container {
+	padding: 1rem;
+	border: 1px solid black;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.data-input{
+	font-family: 'Courier New', Courier, monospace;
+}

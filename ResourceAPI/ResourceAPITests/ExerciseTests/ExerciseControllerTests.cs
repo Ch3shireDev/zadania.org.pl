@@ -18,11 +18,11 @@ namespace ResourceAPITests.ExerciseTests
             return res.ToElement<Exercise>();
         }
 
-        public async Task<Script> ScriptGet(int exerciseId, int scriptId)
+        public async Task<ExerciseVariableData> ScriptGet(int exerciseId, int scriptId)
         {
             var res = await Client.GetAsync($"/api/v1/exercises/{exerciseId}/scripts/{scriptId}");
             if (!res.IsSuccessStatusCode) return null;
-            var element = res.ToElement<Script>();
+            var element = res.ToElement<ExerciseVariableData>();
             return element;
         }
 
@@ -31,8 +31,8 @@ namespace ResourceAPITests.ExerciseTests
         {
             //var exerciseId = await ExerciseCreate();
             var res = await Client.PostAsync($"/api/v1/exercises/{exerciseId}/scripts",
-                new Script {Content = "xxx", Name = "yyy"}.ToHttpContent());
-            var script = res.ToElement<Script>();
+                new ExerciseVariableData {Content = "xxx", Name = "yyy"}.ToHttpContent());
+            var script = res.ToElement<ExerciseVariableData>();
             var script1 = await ScriptGet(exerciseId, script.Id);
             Assert.Equal("yyy", script1.Name);
             Assert.Equal("xxx", script1.Content);

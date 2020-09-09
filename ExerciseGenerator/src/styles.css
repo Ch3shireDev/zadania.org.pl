@@ -1,0 +1,59 @@
+body,
+html {
+	margin: 0;
+	width: 100%;
+	line-height: 1.6;
+	font-size: 18px;
+  color: #444;
+  background: #fff;
+  height:100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+h1,
+h2,
+h3 {
+	line-height: 1.2;
+}
+
+body{
+  background:url('./assets/background.png');
+  background-size: cover;
+}
+
+input {
+	color: #444;
+	border: solid 1px #b3aca7;
+	padding: 0.5rem;
+}
+
+
+#body {
+	margin: 40px auto;
+	max-width: 650px;
+	line-height: 1.6;
+	font-size: 18px;
+	color: #444;
+  border:1px solid #444;
+  background:#ffddaa;
+  padding:0.5rem 2rem 2rem;
+}
+
+a{
+  text-decoration: none;
+  color:#444;
+}
+nav {
+	background: #FF7D4E;
+	height: 40px;
+  width: 100%;
+  padding-top:0.4rem;
+  border-bottom:1px solid black;
+}
+
+nav a{
+  color:#444;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  margin:1rem 2rem 0;
+}

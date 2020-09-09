@@ -30,7 +30,8 @@ namespace ResourceAPITests.ExerciseTests
         public int CreateScript(int exerciseId)
         {
             var scriptId =
-                _exerciseService.CreateScript(exerciseId, new Script {Name = "xxx", Content = "yyy"});
+                _exerciseService.CreateVariableData(exerciseId,
+                    new ExerciseVariableData {Name = "xxx", Content = "yyy"});
 
             return scriptId;
         }
@@ -89,7 +90,8 @@ namespace ResourceAPITests.ExerciseTests
         {
             var exerciseId = ExerciseCreate();
             var scriptId =
-                _exerciseService.CreateScript(exerciseId, new Script {Name = "xxx", Content = "yyy"});
+                _exerciseService.CreateVariableData(exerciseId,
+                    new ExerciseVariableData {Name = "xxx", Content = "yyy"});
 
             return scriptId;
         }
@@ -99,10 +101,10 @@ namespace ResourceAPITests.ExerciseTests
         {
             var exerciseId = ExerciseCreate();
             var scriptId = CreateScript(exerciseId);
-            var script1 = _exerciseService.GetScript(exerciseId, scriptId);
+            var script1 = _exerciseService.GetVariableData(exerciseId, scriptId);
             Assert.NotNull(script1);
-            _exerciseService.DeleteScript(exerciseId, scriptId);
-            var script2 = _exerciseService.GetScript(exerciseId, scriptId);
+            _exerciseService.DeleteVariableData(exerciseId, scriptId);
+            var script2 = _exerciseService.GetVariableData(exerciseId, scriptId);
             Assert.Null(script2);
         }
 
@@ -111,8 +113,8 @@ namespace ResourceAPITests.ExerciseTests
         {
             var exerciseId = ExerciseCreate();
             var scriptId = CreateScript(exerciseId);
-            var script = _exerciseService.GetScript(exerciseId, scriptId);
-            _exerciseService.EditScript(exerciseId, scriptId, script);
+            var script = _exerciseService.GetVariableData(exerciseId, scriptId);
+            _exerciseService.EditVariableData(exerciseId, scriptId, script);
         }
     }
 }

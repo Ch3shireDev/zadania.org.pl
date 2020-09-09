@@ -1,0 +1,14 @@
+<h3>{{exercise.title}}</h3>
+<p [innerHtml]="content"></p>
+<div *ngFor="let answer of answers">
+  <p>{{answer.name}}: <input [(ngModel)]="answer.userAnswer"/></p>
+</div>
+<p>
+  <button (click)="submit()">Wyślij</button>
+  <button (click)="next()">Następny</button>
+</p>
+<p>{{result}}</p>
+<p>
+  <button routerLink="edit">Edytuj</button>
+  <button routerLink='/'>Wróć</button>
+</p>

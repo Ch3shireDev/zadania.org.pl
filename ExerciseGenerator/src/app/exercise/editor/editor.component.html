@@ -1,80 +1,66 @@
 <div *ngIf="exercise">
-  <div>
-    <h3>Tytuł</h3>
-    <input [(ngModel)]="exercise.title" class="data-input" />
-  </div>
-
-  <div>
-    <h3>Treść zadania</h3>
-    <textarea id="text-content" [(ngModel)]="exercise.content" spellcheck="false"></textarea>
-  </div>
-
-  <div>
-    <h3>Zmienne</h3>
-    <ul *ngFor="let variable of exercise.variableData" class="variable-container-ul">
-      <li class="variable-container-li">
-        <input [value]="variable.name" class="variable-symbol-input data-input">
-        <input [(ngModel)]="variable.expression" class="variable-data-input data-input">
-      </li>
-    </ul>
-    <button (click)="addVariable()">Dodaj zmienną</button>
-    <button (click)="removeVariable()">Usuń ostatnią zmienną</button>
-  </div>
-
-  <div>
-    <h3>Pytania</h3>
-    <ul *ngFor="let answer of exercise.answerData" class="variable-container-ul">
-      <li class="variable-container-li">
-        <input [value]="answer.name" class="variable-symbol-input">
-        <input [(ngModel)]="answer.expression" class="variable-data-input data-input">
-      </li>
-    </ul>
-    <button (click)="addQuestion()">Dodaj pytanie</button>
-    <button (click)="removeQuestion()">Usuń ostatnie pytanie</button>
-  </div>
+    <div>
+        <h3>Tytuł</h3>
+        <input
+            [(ngModel)]="exercise.title"
+            class="data-input"
+        >
+    </div>
 
 
-  <!--
-    <div
-        id="example-container"
-        [innerHTML]="example"
-        *ngIf="example"
-    ></div> -->
 
+    <div>
+        <h3>Treść zadania</h3>
+        <textarea
+            id="text-content"
+            [(ngModel)]="exercise.content"
+            spellcheck="false"
+        ></textarea>
+    </div>
 
-  <!--
-
-    <p>
-        <button (click)="generate()">Wygeneruj przykład</button>
-    </p> -->
-
-  <!--
 
 
     <div>
         <h3>Zmienne</h3>
+        <ul
+            *ngFor="let variable of exercise.variableData"
+            class="variable-container-ul"
+        >
+            <li class="variable-container-li">
+                <input
+                    [value]="variable.name"
+                    class="variable-symbol-input data-input"
+                >
+                <input
+                    [(ngModel)]="variable.expression"
+                    class="variable-data-input data-input"
+                >
+            </li>
+        </ul>
+        <button (click)="addVariable()">Dodaj zmienną</button>
+        <button (click)="removeVariable()">Usuń ostatnią zmienną</button>
+    </div>
 
-        <p
-            class="alert-text"
-            *ngIf="alertMessage"
+
+
+    <div>
+        <h3>Pytania</h3>
+        <ul
+            *ngFor="let answer of exercise.answerData"
+            class="variable-container-ul"
         >
-            {{ alertMessage }}
-        </p>
-        <p
-            class="success-text"
-            *ngIf="successMessage"
-        >
-            {{ successMessage }}
-        </p>
-    </div> -->
-  <!-- <button
-        (click)="addVariable()"
-        *ngIf="!newVariable"
-    >
-        Dodaj zmienną
-    </button> -->
-  <!-- <div *ngIf="newVariable">
-        <button (click)="submitVariable()">Zatwierdź</button>
-        <button (click)="evaluate()">Sprawdź</button>
-    </div> -->
+            <li class="variable-container-li">
+                <input
+                    [value]="answer.name"
+                    class="variable-symbol-input"
+                >
+                <input
+                    [(ngModel)]="answer.expression"
+                    class="variable-data-input data-input"
+                >
+            </li>
+        </ul>
+        <button (click)="addQuestion()">Dodaj pytanie</button>
+        <button (click)="removeQuestion()">Usuń ostatnie pytanie</button>
+    </div>
 </div>

@@ -9,14 +9,11 @@ import { EditComponent } from './edit/edit.component';
 import { DeleteComponent } from './delete/delete.component';
 import { ListComponent } from './list/list.component';
 import { RouterModule } from '@angular/router';
-import { Exercise } from './exercise';
-
-
-
 @NgModule({
   declarations: [
     ExerciseComponent,
-    ShowComponent, EditorComponent, CreateComponent, EditComponent, DeleteComponent, ListComponent],
+    ShowComponent, EditorComponent, CreateComponent, EditComponent, DeleteComponent, ListComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,

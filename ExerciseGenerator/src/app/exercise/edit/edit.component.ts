@@ -1,6 +1,6 @@
 import { ExerciseService } from './../exercise.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Exercise } from '../exercise';
 
 @Component({
@@ -14,7 +14,7 @@ export class EditComponent implements OnInit {
   public exercise: Exercise;
   public Object = Object;
 
-  constructor(private route: ActivatedRoute, private exerciseService: ExerciseService) {
+  constructor(private route: ActivatedRoute, private exerciseService: ExerciseService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -22,18 +22,11 @@ export class EditComponent implements OnInit {
     this.exerciseService.getExercise(this.id).subscribe(exercise => {
       this.exercise = exercise;
     });
-    // exercises.forEach(exercise => {
-    //   if (exercise.id === this.id) {
-    //     this.exercise = exercise;
-    //   }
-    // });
   }
 
   save(): void {
     this.exerciseService.updateExercise(this.exercise);
-    // this.exercise.id = exercises.length.toString();
-    // exercises.push(this.exercise);
-
+    this.router.navigate([this.id]);
   }
 
 }

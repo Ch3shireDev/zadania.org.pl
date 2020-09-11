@@ -4,7 +4,7 @@ import { ExerciseComponent } from './exercise/exercise.component';
 import { exerciseRoutes } from './exercise/exercise-routing.module';
 
 const routes: Routes = [
-  { path: '', component: ExerciseComponent, children: exerciseRoutes}
+  { path: '', component: ExerciseComponent, children: exerciseRoutes }
 ];
 
 @NgModule({

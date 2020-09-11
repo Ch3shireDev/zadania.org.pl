@@ -17,6 +17,10 @@ export class ShowComponent implements OnInit {
   public answers: { name, value, userAnswer; }[];
   public result: string;
 
+  math = '\\[ \\sqrt{5} \\]';
+
+  mathContent = `When $ a \\ne 0 $, there are two solutions to \\(ax^2 + bx + c = 0 \\) and they are
+$$ x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$$`;
   constructor(private route: ActivatedRoute, private exerciseService: ExerciseService) {
 
   }
@@ -25,14 +29,12 @@ export class ShowComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.exerciseService.getExercise(this.id).subscribe(exercise => {
       this.exercise = exercise;
+      this.initialize();
     });
-    this.initialize();
   }
 
   initialize(): void {
-    const variables = this.exercise.getVariables();
-    this.content = this.exercise.getContent(variables);
-    this.answers = this.exercise.getAnswers(variables);
+    [this.content, this.answers] = this.exercise.initialize();
     this.submitted = false;
     this.result = undefined;
   }

@@ -5,7 +5,6 @@ export enum DataType {
 }
 
 export class Exercise {
-
   public id: string;
   public title: string;
 
@@ -14,8 +13,26 @@ export class Exercise {
 
   public answerData: { name, expression, type; }[] = [];
 
-  public getContent(variables): string {
+
+  public initialize(): [string, { name: any; value: any; userAnswer: any; }[]] {
+
+    const variables = this.getVariables();
+    const content = this.getContent(variables);
+    const answers = this.getAnswers(variables);
+
+    return [content, answers];
+  }
+
+  public getContent(variables = null): string {
+
+    if (variables === null) {
+      variables = this.getVariables();
+    }
+
     let content = this.content;
+
+    if (content === undefined) { return ''; }
+
     const matches = content.match(/\$\w+/g);
     if (matches) {
       matches.forEach(match => {
@@ -26,14 +43,14 @@ export class Exercise {
   }
 
   getVariables(): object {
-    let variables = {};
+    const variables = {};
     this.variableData.forEach(variable => {
       variables[variable.name] = eval(variable.expression);
     });
     return variables;
   }
 
-  public evaluate(expression: string, values: object) {
+  public evaluate(expression: string, values: object): string {
 
     const found = expression.match(/\$\w+/g);
     let isSafe = true;

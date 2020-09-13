@@ -1,8 +1,15 @@
 import { ExerciseService } from './../exercise.service';
 import { Exercise } from './../exercise';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, AfterContentInit, PipeTransform, Pipe } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
+@Pipe({
+  name: 'split'
+})
+export class SplitPipe implements PipeTransform {
+  transform(val: string): string[] {
+    return val.split(' ');
+  }
+}
 @Component({
   selector: 'app-show',
   templateUrl: './show.component.html',
@@ -17,22 +24,17 @@ export class ShowComponent implements OnInit {
   public answers: { name, value, userAnswer; }[];
   public result: string;
 
-  math = '\\[ \\sqrt{5} \\]';
 
-  mathContent = `When $ a \\ne 0 $, there are two solutions to \\(ax^2 + bx + c = 0 \\) and they are
-$$ x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$$`;
   constructor(private route: ActivatedRoute, private exerciseService: ExerciseService) {
-
   }
-
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
     this.exerciseService.getExercise(this.id).subscribe(exercise => {
       this.exercise = exercise;
       this.initialize();
     });
-  }
 
+  }
   initialize(): void {
     [this.content, this.answers] = this.exercise.initialize();
     this.submitted = false;

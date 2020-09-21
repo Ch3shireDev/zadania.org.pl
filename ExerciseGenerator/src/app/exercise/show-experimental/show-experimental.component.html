@@ -1,15 +1,25 @@
 <h3>Zadanie ze stechiometrii</h3>
+<p
+    #mathContent
+    [innerHTML]="math"
+></p>
 
-<div>
-    <div style="display:flex;">
-        <div *ngFor="let word of math | split; let i = index">
-            <div *ngIf="word[0] === '$'; else notInput">
-                <input
-                    style="width:10px; margin: 0 10px; height:10px"
-                    [(ngModel)]="variables[i]"
-                >
-            </div>
-            <ng-template #notInput>{{' '}}\({{word}}\){{' '}}</ng-template>
+<!-- <div style="display:flex;">
+    <div *ngFor="let word of math | split; let i = index">
+        <div *ngIf="word[0] === '$'; else notInput">
+            <input
+                style="width:10px; margin: 0 10px; height:10px"
+                [(ngModel)]="variables[i]"
+            >
         </div>
+        <ng-template #notInput>{{' '}}{{word}}{{' '}}</ng-template>
     </div>
+</div> -->
+<div>
+    <p>{{result}}</p>
+</div>
+<div>
+    <p>
+        <button (click)="submit()">Wyślij</button>
+    </p>
 </div>

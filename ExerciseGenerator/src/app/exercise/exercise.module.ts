@@ -1,8 +1,9 @@
+import { SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { ExerciseComponent } from './exercise.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ShowComponent, SplitPipe } from './show/show.component';
+import { SafeHtmlPipe, SanitizeHtmlPipe, ShowComponent, SplitPipe } from './show/show.component';
 import { EditorComponent } from './editor/editor.component';
 import { CreateComponent } from './create/create.component';
 import { EditComponent } from './edit/edit.component';
@@ -15,7 +16,9 @@ import { ShowExperimentalComponent } from './show-experimental/show-experimental
     ExerciseComponent,
     ShowComponent, EditorComponent, CreateComponent, EditComponent, DeleteComponent, ListComponent,
     SplitPipe,
-    ShowExperimentalComponent
+    SanitizeHtmlPipe,
+    ShowExperimentalComponent,
+    SafeHtmlPipe
   ],
   imports: [
     CommonModule,

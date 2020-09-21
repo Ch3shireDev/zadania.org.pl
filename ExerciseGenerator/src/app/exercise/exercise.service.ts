@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Exercise, DataType } from './exercise';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +12,24 @@ export class ExerciseService {
     let exerciseData = [];
 
     try {
-      const exerciseStr = localStorage.getItem('exercises');
-      exerciseData = JSON.parse(exerciseStr);
+      // const exerciseStr = localStorage.getItem('exercises');
+      // exerciseData = JSON.parse(exerciseStr);
+      throw new Error();
     }
     catch {
       exerciseData = [{
         id: '1',
-        title: 'Zadanie z dodawania',
-        content: '$x + $y jest równe:',
+        title: 'Dynamika ruchu postępowego',
+        content: 'Winda może poruszać się w górę i w dół z przyspieszeniem o takiej samej wartości. W windzie tej na wadze sprężynowej stoi studentka. Różnica wskazań wagi przy ruchu w górę i w dół wynosi $x N. Jakie jest przyspieszenie windy, jeżeli ciężar studentki wynosi $y N?',
         variableData: [
-          { name: 'x', expression: 'Math.floor(Math.random() * 10)', type: DataType.Int },
-          { name: 'y', expression: 'Math.floor(Math.random() * 10)', type: DataType.Int }
+          { name: 'x', expression: 'Math.floor(Math.random() * 10+1)*10', type: DataType.Int },
+          { name: 'y', expression: 'Math.floor(Math.random() * 3)*100+300', type: DataType.Int }
         ],
         answerData: [
-          { name: 'Rozwiązanie', expression: '$x + $y', type: DataType.Int }
+          { name: 'z', description: 'Przyspieszenie windy', expression: '$x / $y / 2', type: DataType.Double }
         ],
       }];
+      console.log(exerciseData);
     }
 
     const array = exerciseData.map(e => Object.assign(new Exercise(), e));

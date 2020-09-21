@@ -2,6 +2,7 @@
 
 export enum DataType {
   Int,
+  Double
 }
 
 export class Exercise {
@@ -9,12 +10,12 @@ export class Exercise {
   public title: string;
 
   public content: string;
-  public variableData: { name, expression, type; }[] = [];
 
-  public answerData: { name, expression, type; }[] = [];
+  public variableData: { name, description, expression, type; }[] = [];
+  public answerData: { name, description, expression, type; }[] = [];
 
 
-  public initialize(): [string, { name: any; value: any; userAnswer: any; }[]] {
+  public initialize(): [string, any] {
 
     const variables = this.getVariables();
     const content = this.getContent(variables);
@@ -34,9 +35,13 @@ export class Exercise {
     if (content === undefined) { return ''; }
 
     const matches = content.match(/\$\w+/g);
+
     if (matches) {
       matches.forEach(match => {
-        content = content.replace(match, variables[match.replace('$', '')]);
+        const variable = match.replace('$', '');
+        if (variable in variables) {
+          content = content.replace(match, variables[variable]);
+        }
       });
     }
     return content;
@@ -80,11 +85,11 @@ export class Exercise {
     return undefined;
   }
 
-  public getAnswers(variables: object): { name, value, userAnswer; }[] {
+  public getAnswers(variables: object): { name, description, value, userValue; }[] {
     const questions = [];
     this.answerData.forEach(answer => {
       const value = this.evaluate(answer.expression, variables);
-      questions.push({ name: answer.name, value, userAnswer: undefined });
+      questions.push({ name: answer.name, description: answer.description, value, userValue: undefined });
     });
     return questions;
   }

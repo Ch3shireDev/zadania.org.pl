@@ -1,8 +1,19 @@
-<h3>{{exercise.title}}</h3>
-<p [innerHtml]="content"></p>
+<h3>{{title}}</h3>
+<p
+    id="exercise-content"
+    [innerHTML]="content | safeHtml"
+    #contentElement
+>
+
+
+
+
+
+
+</p>
 <div *ngFor="let answer of answers">
     <p>
-        {{answer.name}}:
+        {{answer.description}}:
         <input [(ngModel)]="answer.userAnswer">
     </p>
 </div>
@@ -15,3 +26,7 @@
     <button routerLink="edit">Edytuj</button>
     <button routerLink='/'>Wróć</button>
 </p>
+
+
+
+<app-show-experimental></app-show-experimental>

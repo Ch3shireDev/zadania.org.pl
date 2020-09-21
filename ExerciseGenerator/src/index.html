@@ -21,16 +21,38 @@
 
 
 
+
+
+
+
+
+
+
         <script>window.MathJax = MathJax;</script>
+
+
+
+
+
+
+
 
 
 
         <script type="text/x-mathjax-config">
             MathJax.Hub.Config({
           "fast-preview": {disabled: true},
-          tex2jax: {preview: "none"}
-        });
+          tex2jax: {preview: "none", processEscapes:true},
+          TeX:{extensions: ["mhchem.js"] }
+            });
         </script>
+
+
+
+
+
+
+
 
 
 
@@ -47,6 +69,13 @@
     <body>
         <app-root></app-root>
     </body>
+
+
+
+
+
+
+
 
 
 
